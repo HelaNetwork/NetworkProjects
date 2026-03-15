@@ -120,7 +120,32 @@ Open dashboard                  → Get dashboard link
 
 ## 📡 Smart Contract
 
-**Contract Address (Hela Testnet)**: `0x9EF05bB79358e602b21575204F2EF6dC310E1b1D`
+## Smart Contract
+ 
+Language:** Solidity 0.8.20  
+Network:** Hela Testnet  
+Chain ID:** 666888  
+Contract Address:** `0x9EF05bB79358e602b21575204F2EF6dC310E1b1D`  
+Contract Name: ZapPay 
+
+### What it does:
+The ZapPay smart contract acts as an internal ledger on the Hela blockchain. 
+Users deposit native HELA tokens into the contract, transfer balances 
+between each other, and withdraw back to their wallets — all triggered 
+through simple WhatsApp messages.
+
+### Functions:
+- `deposit()` — Deposit HELA into the contract
+- `transfer(address, amount)` — Send HELA to another user
+- `withdraw(amount)` — Withdraw HELA back to wallet
+- `getBalance(address)` — Check user balance
+- `getRemainingDailyLimit(address)` — Check daily transfer limit remaining
+
+### Security:
+- Daily transfer limit: 1000 HELA per user
+- Balance validation before every transaction
+- Self-send protection
+- for now it has Zero address protection
 
 ### Functions
 
@@ -275,7 +300,12 @@ VITE_API_URL=http://localhost:3001/api
 
 ---
 
-## 👥 Team
+## 👥 Team members
+Arnav Sharma
+Krishna Sharma
+Yashvardhan Singh
+Himanshu
+Aman Jha
 
 **BLOCKCHAIN-XIII** · HackJKLU v5.0
 
