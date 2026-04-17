@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String?  @unique
+  wallets   Wallet[]
+}
+
+model Wallet {
+  id            String   @id @default(cuid())
+  address       String   @unique
+  chainId       Int      @default(666888)
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt     DateTime @default(now())
+  transactions  Transaction[]
+  subscriptions Subscription[]
+  budgets       Budget[]
+  aiRecs        AIRecommendation[]
+  lpPositions   LPPosition[]
+  bills         BillPayment[]
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  txHash      String?
+  direction   String
+  amountWei   String
+  tokenSymbol String   @default("NATIVE")
+  category    String?
+  createdAt   DateTime @default(now())
+
+  @@index([walletId])
+}
+
+model Subscription {
+  id             String   @id @default(cuid())
+  walletId       String
+  wallet         Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  recipient      String
+  amountWei      String
+  periodSeconds  Int
+  onChainId      Int?
+  label          String?
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  nextDue        DateTime?
+
+  @@index([walletId])
+}
+
+model Budget {
+  id           String   @id @default(cuid())
+  walletId     String
+  wallet       Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  dailyLimitWei String
+  spentTodayWei String   @default("0")
+  dayKey       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([walletId])
+}
+
+model AIRecommendation {
+  id          String   @id @default(cuid())
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  goals       String
+  actionsJson String
+  accepted    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([walletId])
+}
+
+model LPPosition {
+  id         String   @id @default(cuid())
+  walletId   String
+  wallet     Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  poolAddress String
+  poolName   String
+  shares     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([walletId])
+}
+
+model BillPayment {
+  id          String   @id @default(cuid())
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  label       String
+  recipient   String
+  amountWei   String
+  dueAt       DateTime
+  executed    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([walletId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  wallet    String
+  type      String
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([wallet])
+}
