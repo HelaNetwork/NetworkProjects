@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+web3
+langchain
+langchain-google-genai
+google-generativeai
+python-dotenv
+pydantic
+pydantic-settings
+httpx

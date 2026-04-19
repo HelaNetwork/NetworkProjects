@@ -1,0 +1,212 @@
+.features {
+  position: relative;
+  padding: var(--section-padding);
+  z-index: 2;
+}
+
+.features__inner {
+  display: flex;
+  gap: 60px;
+}
+
+/* Left column is empty for the 3D particles */
+.features__visual-col {
+  flex: 1;
+}
+
+/* Right column for content */
+.features__content-col {
+  flex: 1;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* Visible by default; JS adds .features__hidden first, then swaps to .features__visible */
+.features__header {
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* JS initially adds this class to trigger animation */
+.features__header.features__hidden {
+  opacity: 0;
+}
+
+.features__header.features__visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.features__title {
+  font-size: clamp(36px, 4vw, 56px);
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.features__title-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--accent-light);
+  letter-spacing: 0.02em;
+}
+
+.features__subtitle {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 480px;
+}
+
+/* Interactive Cards */
+.features__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.features__card {
+  background: var(--bg-primary); /* pure black */
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 32px 40px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  /* Only transition the properties we actually animate */
+  transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Active State (Hover/Default Expanded) */
+.features__card--active {
+  background: var(--accent);
+  border-color: transparent;
+  transform: scale(1.02);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Keyboard focus indicator */
+.features__card:focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 3px;
+  box-shadow: var(--shadow-glow);
+}
+
+/* Card Top Row */
+.features__card-top {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.features__card-number {
+  font-size: 16px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+.features__card--active .features__card-number {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.features__card-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Collapsible Body */
+.features__card-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  /* Only transition the properties that actually animate */
+  transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.features__card--active .features__card-body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 24px;
+}
+
+.features__card-desc {
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 24px;
+}
+
+/* Tags */
+.features__card-tags {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.features__card-tag {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Tools Grid */
+.features__card-tools {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.features__card-tool {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono, monospace);
+}
+
+.features__card-tool svg {
+  color: var(--accent-light);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .features__inner {
+    flex-direction: column;
+  }
+  
+  .features__visual-col {
+    display: none;
+  }
+
+  .features__content-col {
+    max-width: 100%;
+  }
+
+  .features__card {
+    padding: 24px;
+  }
+}

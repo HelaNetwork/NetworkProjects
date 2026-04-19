@@ -1,0 +1,52 @@
+.particle-field-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0; /* Behind all content */
+  pointer-events: none; /* Let clicks pass through to content */
+}
+
+.particle-field-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none; /* Mouse is handled globally via window listeners */
+}
+
+.particle-field-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.4; /* Match keyframe start value to prevent flash */
+  animation: bgGlowPulse 8s ease-in-out infinite;
+}
+
+@keyframes bgGlowPulse {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .particle-field-container::before {
+    animation: none;
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+  }
+}
+
+@media (max-width: 768px) {
+  .particle-field-container::before {
+    width: 400px;
+    height: 400px;
+  }
+}

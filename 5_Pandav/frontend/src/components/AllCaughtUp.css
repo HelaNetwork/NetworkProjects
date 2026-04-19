@@ -1,0 +1,124 @@
+.all-caught-up {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.all-caught-up-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.all-caught-up-graphic {
+  position: relative;
+  z-index: 1;
+}
+
+.all-caught-up-shield {
+  position: relative;
+  display: flex;
+  height: 96px;
+  width: 96px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.all-caught-up-ring {
+  position: absolute;
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 50%;
+}
+
+.ring-1 { top: -12px; left: -12px; right: -12px; bottom: -12px; border-radius: 28px; }
+.ring-2 { top: -24px; left: -24px; right: -24px; bottom: -24px; border-radius: 32px; border-color: rgba(34, 197, 94, 0.1); }
+.ring-3 { top: -40px; left: -40px; right: -40px; bottom: -40px; border-radius: 40px; border-color: rgba(34, 197, 94, 0.05); }
+
+.all-caught-up-check {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  display: flex;
+  height: 28px;
+  width: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 4px var(--bg-primary);
+}
+
+.all-caught-up-title {
+  position: relative;
+  z-index: 1;
+  margin-top: 32px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.all-caught-up-desc {
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+  max-width: 448px;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.all-caught-up-status {
+  position: relative;
+  z-index: 1;
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 9999px;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: rgba(34, 197, 94, 0.05);
+  padding: 6px 12px;
+}
+
+.pulse-dot-wrapper {
+  position: relative;
+  display: flex;
+  height: 8px;
+  width: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-dot-ping {
+  position: absolute;
+  display: inline-flex;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  opacity: 0.6;
+}
+
+.pulse-dot {
+  position: relative;
+  display: inline-flex;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+}
+
+.bg-success { background-color: var(--success); }
+.status-text {
+  font-size: 12px;
+  font-weight: 500;
+}

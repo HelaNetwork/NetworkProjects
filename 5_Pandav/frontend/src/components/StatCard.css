@@ -1,0 +1,43 @@
+.stat-card {
+  padding: 16px;
+  border-radius: var(--radius-xl);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+
+.stat-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.stat-body {
+  margin-top: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.stat-trend {
+  font-size: 12px;
+  color: var(--text-muted);
+}

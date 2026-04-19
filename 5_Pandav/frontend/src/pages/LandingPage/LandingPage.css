@@ -1,0 +1,27 @@
+.landing-page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg-primary); /* Ensure base background color */
+}
+
+/* 
+ * Create a content layer that sits above the fixed background particles.
+ * It's important that this layer allows pointer events, but doesn't
+ * obscure the background entirely.
+ */
+.content-layer {
+  position: relative;
+  z-index: 10;
+  pointer-events: none; /* Let events pass through empty space */
+}
+
+/* Re-enable pointer events for all content (including nested interactive elements) */
+.content-layer * {
+  pointer-events: auto;
+}
+
+/* Make backgrounds slightly transparent to show particles behind */
+.features, .how, .arch, .stats {
+  background: transparent;
+}

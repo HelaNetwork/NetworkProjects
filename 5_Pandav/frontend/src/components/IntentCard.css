@@ -1,0 +1,209 @@
+.intent-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.intent-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-glass);
+  padding: 16px 20px;
+}
+
+.intent-action-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.intent-action-icon { color: var(--accent-light); }
+
+.intent-amount-section {
+  padding: 20px 20px 16px;
+}
+
+.intent-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.intent-amount-display {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.intent-amount {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.intent-asset {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.intent-reason-section {
+  padding: 0 20px 16px;
+}
+
+.intent-reason-text {
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.intent-auditor-section {
+  margin: 0 20px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 16px;
+}
+
+.bg-gradient-brand-soft {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(129, 140, 248, 0.1) 100%);
+}
+
+.intent-auditor-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.intent-shield-icon-wrapper {
+  display: flex;
+  height: 24px;
+  width: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.25);
+}
+
+.text-accent-light { color: var(--accent-light); }
+
+.intent-auditor-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.intent-auditor-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.intent-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border-glass);
+  padding: 14px 20px;
+}
+
+@media (min-width: 640px) {
+  .intent-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.intent-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.intent-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.intent-meta-item.mono { font-family: var(--font-mono); }
+
+.intent-verify-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  transition: all var(--transition-fast);
+  border: none;
+  cursor: pointer;
+}
+
+.intent-verify-btn:active { transform: scale(0.98); }
+.intent-verify-btn:disabled { cursor: not-allowed; opacity: 0.8; }
+
+.bg-gradient-brand {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+}
+
+.hover-glow-indigo:hover:not(:disabled) {
+  box-shadow: 0 0 36px -8px rgba(99, 102, 241, 0.7);
+}
+
+.btn-shimmer {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.25), transparent);
+  transition: transform 0.7s;
+}
+
+.intent-verify-btn:hover:not(:disabled) .btn-shimmer {
+  transform: translateX(100%);
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.verify-arrow { transition: transform var(--transition-fast); }
+.intent-verify-btn:hover:not(:disabled) .verify-arrow { transform: translate(2px, -2px); }

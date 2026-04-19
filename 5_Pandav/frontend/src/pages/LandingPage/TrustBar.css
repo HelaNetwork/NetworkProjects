@@ -1,0 +1,71 @@
+.trustbar-wrapper {
+  position: relative;
+  width: 100%; /* avoid 100vw overflow from scrollbar */
+  padding: 80px 0;
+  z-index: 2;
+}
+
+.trustbar {
+  border-top: 1px solid var(--border-glass);
+  border-bottom: 1px solid var(--border-glass);
+  background: rgba(255, 255, 255, 0.01);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.trustbar.trustbar__visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.trustbar__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.trustbar__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
+
+.trustbar__metric-value {
+  font-family: var(--font-mono, monospace);
+  font-size: clamp(32px, 3vw, 48px);
+  font-weight: 700;
+  color: var(--accent-light);
+  letter-spacing: -0.02em;
+}
+
+.trustbar__metric-label {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.trustbar__divider {
+  width: 1px;
+  height: 60px;
+  background: var(--border-glass);
+}
+
+@media (max-width: 768px) {
+  .trustbar__inner {
+    flex-direction: column;
+    gap: 40px;
+    padding: 60px 0;
+  }
+  
+  .trustbar__divider {
+    width: 60px;
+    height: 1px;
+  }
+}
