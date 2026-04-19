@@ -29,7 +29,7 @@ Current production deployment details:
 
 ### Explainer Video 
 
-- https://drive.google.com/file/d/1bbD1aEmcvylv--4vqqu8wqIRv6M2YeSI/view?usp=sharing 
+- https://drive.google.com/file/d/1p6tHBRXcsx1kXOkF_5a6YSBa-l5DJyxK/view?usp=sharing
 
 ### HeLa Testnet
 
