@@ -1,0 +1,46 @@
+{
+  "name": "cottonx-backend",
+  "version": "1.0.0",
+  "description": "CottonX — GCP/Gemini backend",
+  "scripts": {
+    "dev": "npx tsx src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "22.5.4",
+    "@types/ws": "^8.5.12",
+    "@uniswap/v2-core": "^1.0.1",
+    "@uniswap/v2-periphery": "^1.1.0-beta.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.0",
+    "typescript": "~5.6.2"
+  },
+  "dependencies": {
+    "@coinbase/coinbase-sdk": "^0.10.0",
+    "@google-cloud/firestore": "^7.10.0",
+    "@google-cloud/storage": "^7.14.0",
+    "@google/generative-ai": "^0.21.0",
+    "@openzeppelin/contracts": "^5.6.1",
+    "@zoralabs/protocol-sdk": "^0.11.6",
+    "axios": "^1.15.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.4",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "multi-agent-orchestrator": "^0.0.17",
+    "openai": "^6.34.0",
+    "solc": "^0.8.34",
+    "source-map-support": "^0.5.21",
+    "twitter-api-v2": "^1.18.1",
+    "viem": "^2.21.44",
+    "ws": "^8.18.0"
+  }
+}
