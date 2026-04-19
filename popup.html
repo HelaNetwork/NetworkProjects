@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CareerLens</title>
+  <style>
+    body { width: 350px; font-family: Arial; padding: 15px; background: #0f172a; color: white; }
+    h2 { color: #6366f1; }
+    .job-card { background: #1e293b; padding: 10px; margin: 8px 0; border-radius: 8px; border-left: 3px solid #6366f1; }
+    button { background: #6366f1; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 8px; }
+    .verified { color: #22c55e; font-size: 12px; }
+    .score { color: #f59e0b; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h2>🎯 CareerLens</h2>
+  <p style="color:#94a3b8; font-size:13px;">AI Job Tracker + Blockchain Verification</p>
+  <div class="job-card">
+    <strong>Google</strong> - Software Engineer<br>
+    <span class="verified">✅ Verified on Polygon</span><br>
+    <span class="score">🤖 Match Score: 87%</span>
+  </div>
+  <div class="job-card">
+    <strong>Microsoft</strong> - Backend Developer<br>
+    <span class="verified">✅ Verified on Polygon</span><br>
+    <span class="score">🤖 Match Score: 79%</span>
+  </div>
+  <button onclick="trackJob()">+ Track This Job</button>
+  <button onclick="verifyCompany()" style="background:#059669; margin-top:4px;">🔗 Verify on Blockchain</button>
+  <script src="popup.js"></script>
+</body>
+</html>

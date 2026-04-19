@@ -1,0 +1,21 @@
+{
+  "name": "careerlens",
+  "version": "1.0.0",
+  "description": "AI Job Tracker with Blockchain Verification on Polygon",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "deploy": "npx hardhat run scripts/deploy.js --network amoy"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "ethers": "^6.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.17.0"
+  }
+}

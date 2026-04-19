@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "CareerLens",
+  "version": "1.0",
+  "description": "AI-powered job tracker with blockchain verification",
+  "permissions": ["activeTab", "storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [{
+    "matches": ["*://linkedin.com/*", "*://naukri.com/*", "*://indeed.com/*"],
+    "js": ["content.js"]
+  }]
+}

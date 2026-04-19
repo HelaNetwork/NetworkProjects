@@ -1,51 +1,28 @@
-# 💰 OpportuFind v3.0
+# CareerLens - AI Job Tracker with Blockchain Verification
 
-Most accurate price comparison Chrome Extension — powered by Puppeteer.
+CareerLens is an AI-powered Chrome Extension that helps job seekers track job applications and verify company authenticity using Polygon blockchain.
 
----
+## Features
+- AI-powered job tracking dashboard
+- Blockchain-based company verification on Polygon Amoy Testnet
+- Smart contract for storing verified job records
+- Chrome Extension for one-click job saving
+- Resume match scoring using NLP
 
-## ✅ SETUP IN 3 STEPS
+## Tech Stack
+- Frontend: HTML, CSS, JavaScript (Chrome Extension)
+- Backend: Node.js + Express
+- Blockchain: Solidity Smart Contract on Polygon Amoy
+- AI: Python NLP for resume matching
+- Database: MongoDB
 
-### STEP 1 — Install Backend (do once)
-Open a terminal (Command Prompt / VS Code terminal):
-```
-cd pricescout-final/backend
-npm install
-```
-⚠️ This downloads Chromium (~170MB) — takes 2-5 minutes, only once.
+## Setup
+1. Clone the repo
+2. Run `npm install`
+3. Deploy smart contract: `npx hardhat run scripts/deploy.js --network amoy`
+4. Load Chrome Extension from `/extension` folder
 
-### STEP 2 — Start Backend (every time you want to use extension)
-```
-node server.js
-```
-You should see: 🚀 PriceScout backend running → http://localhost:3000
-
-Keep this terminal OPEN while using the extension.
-
-### STEP 3 — Load Extension in Chrome
-1. Open Chrome → go to: chrome://extensions/
-2. Turn ON "Developer mode" (top right toggle)
-3. Click "Load unpacked"
-4. Select the "extension" folder inside pricescout-final
-5. Done! ✅
-
----
-
-## HOW TO USE
-1. Open any Amazon.in or Flipkart product page
-2. Wait 5-15 seconds
-3. Widget appears on right side with prices from all 3 sites!
-
----
-
-## WHY IT'S ACCURATE
-- Uses real Puppeteer browser (not HTML scraping)
-- Saves price history in SQLite database
-- Shows AI Deal Score ("Is this a good time to buy?")
-- 4-hour cache makes repeat checks instant
-
----
-
-## NEED HELP?
-- Widget says "Backend offline"? → Run: node server.js in backend folder
-- npm install fails? → Make sure Node.js is installed: https://nodejs.org
+## Smart Contract
+Deployed on Polygon Amoy Testnet
+- Contract: JobVerification.sol
+- Network: Polygon Amoy (Chain ID: 80002)
