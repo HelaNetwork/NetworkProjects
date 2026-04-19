@@ -125,3 +125,6 @@ If AI fails or is restricted, deterministic logic ensures system stability.
 ## Author
 
 Sujal Patil
+Kshitij Bokde
+Yash Shukla
+Rudresh Gangurde
