@@ -1,0 +1,515 @@
+{
+  "contractAddress": "0x8f971F26d2B7cAA642d89AdfCBa83D01A9237BFb",
+  "ownerAddress": "0xacc1f6E32dB61CB6d48FB752ED28E15EA48A4aD6",
+  "network": "hela-testnet",
+  "deployedAt": "2026-04-18T20:11:55.495Z",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "merkleRoot",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "dleCount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "AuditRootAnchored",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "bookingId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "admin",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "name": "BookingOverridden",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "addressHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "SBTIssued",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "bookingId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "riskTier",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        }
+      ],
+      "name": "SubsidyLocked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "bookingId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "proofHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "SubsidyReleased",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "SUBSIDY_AMOUNT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "merkleRoot",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dleCount",
+          "type": "uint256"
+        }
+      ],
+      "name": "anchorAuditRoot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "bookings",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "riskTier",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "fraudScore",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum GasSafe.BookingStatus",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "proofHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "createdAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "settledAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getLatestAuditRoot",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getSBT",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "exists",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "vouchersRemaining",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "riskTier",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "addressHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "issuedAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct GasSafe.SBT",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "addressHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "zkpCommitment",
+          "type": "bytes32"
+        }
+      ],
+      "name": "issueSBT",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "bookingId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "riskTier",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "fraudScore",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        }
+      ],
+      "name": "lockSubsidy",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "merkleRoots",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "bookingId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "name": "overrideBooking",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "bookingId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "proofHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address payable",
+          "name": "agency",
+          "type": "address"
+        }
+      ],
+      "name": "releaseSubsidy",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "sbts",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "exists",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint8",
+          "name": "vouchersRemaining",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "riskTier",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "addressHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "issuedAt",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        }
+      ],
+      "name": "updateRiskTier",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "usedAddressHashes",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ]
+}
