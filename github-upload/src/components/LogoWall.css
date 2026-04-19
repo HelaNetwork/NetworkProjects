@@ -1,0 +1,91 @@
+.logo-wall-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--size) / 14);
+  margin: auto;
+  max-width: 100vw;
+  overflow: hidden;
+  position: relative;
+  /* subtle mask to fade edges */
+  mask-image: linear-gradient(
+    to right,
+    hsl(0 0% 0% / 0),
+    hsl(0 0% 0% / 1) 10%,
+    hsl(0 0% 0% / 1) 90%,
+    hsl(0 0% 0% / 0)
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    hsl(0 0% 0% / 0),
+    hsl(0 0% 0% / 1) 10%,
+    hsl(0 0% 0% / 1) 90%,
+    hsl(0 0% 0% / 0)
+  );
+}
+
+.logo-wall-marquee {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: var(--size);
+}
+
+.marquee--paused .logo-wall-marquee__group {
+  animation-play-state: paused;
+}
+
+.logo-wall-marquee__group {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--size);
+  min-width: 100%;
+  animation: logo-wall-scroll-x var(--duration) linear infinite;
+}
+
+.wrapper--vertical {
+  flex-direction: row;
+}
+
+.marquee--vertical {
+  flex-direction: column;
+}
+
+.marquee--vertical .logo-wall-marquee__group {
+  min-height: 100%;
+  flex-direction: column;
+  animation: logo-wall-scroll-y var(--duration) linear infinite;
+}
+
+@keyframes logo-wall-scroll-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--size)));
+  }
+}
+
+@keyframes logo-wall-scroll-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--size)));
+  }
+}
+
+.logo-wall-marquee__group img {
+  display: block;
+  width: var(--size);
+  height: max-content;
+  max-height: calc(var(--size) * 0.8);
+  object-fit: contain;
+  filter: brightness(0) invert(0.25); /* Forces all logos to uniform dark gray */
+  transition: filter 0.3s ease;
+}
+
+.logo-wall-marquee__group img:hover {
+  filter: brightness(0) invert(0.6); /* Brighter gray on hover */
+}

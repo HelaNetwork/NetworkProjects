@@ -1,0 +1,1 @@
+C:\Users\Aloneking\Desktop\onchainesports\Backend\backend\contracts\asset-mint-program\target\sbpf-solana-solana\release\libasset_mint_program.rlib: C:\Users\Aloneking\Desktop\onchainesports\Backend\backend\contracts\asset-mint-program\src\lib.rs

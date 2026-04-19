@@ -1,0 +1,1 @@
+C:\Users\Aloneking\Desktop\onchainesports\Backend\backend\contracts\prediction-market\target\sbpf-solana-solana\release\prediction_market.so: C:\Users\Aloneking\Desktop\onchainesports\Backend\backend\contracts\prediction-market\src\lib.rs

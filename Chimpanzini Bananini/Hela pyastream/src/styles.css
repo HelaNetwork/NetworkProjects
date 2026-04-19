@@ -1,0 +1,219 @@
+/* Dashboard centering and layout */
+.dashboard-outer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+}
+
+.dashboard-card {
+  min-width: 420px;
+  max-width: 700px;
+  background: #232b3b;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+  padding: 32px 32px 24px 32px;
+  position: relative;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.dashboard-account-badge {
+  background: #1e293b;
+  color: #ffb86c;
+  font-size: 0.98rem;
+  font-family: monospace;
+  padding: 7px 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 rgba(255,184,108,0.10);
+  font-weight: 600;
+}
+
+.dashboard-live-text {
+  font-size: 1.1rem;
+  color: #fff;
+  font-family: 'Fira Mono', monospace;
+  min-height: 1.5em;
+  letter-spacing: 1px;
+  font-weight: 500;
+  white-space: pre;
+}
+
+.dashboard-static-text {
+  font-size: 1.1rem;
+  color: #ffb86c;
+  font-family: 'Fira Mono', monospace;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.dashboard-section {
+  margin-bottom: 24px;
+}
+
+.dashboard-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.dashboard-btns {
+  display: flex;
+  gap: 12px;
+}
+
+.stream-progress-outer {
+  margin-top: 18px;
+  background: #1e293b;
+  border-radius: 10px;
+  height: 22px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.stream-progress-bar {
+  background: linear-gradient(90deg, #ffb86c 0%, #a855f7 100%);
+  height: 100%;
+  transition: width 0.3s;
+}
+.stream-progress-label {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+/* Celebration popup */
+.celebration-popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.celebration-content {
+  background: #fff;
+  color: #a855f7;
+  font-size: 1.5rem;
+  padding: 32px 48px;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.homepage-connect-btn {
+  font-size: 1.3rem;
+  padding: 18px 48px;
+  border-radius: 32px;
+  margin-top: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 24px 0 rgba(255,184,108,0.25);
+}
+
+body {
+  background: #0f172a;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.homepage-bg {
+  min-height: 100vh;
+  width: 100vw;
+  background: url('/bg-homepage.png') center/cover no-repeat, #4366b1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.homepage-overlay {
+  min-height: 100vh;
+  width: 100vw;
+  background: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.homepage-center {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 48px 32px 40px 32px;
+  border-radius: 24px;
+  background: rgba(30, 41, 59, 0.7);
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+}
+
+.homepage-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 16px #fff, 0 0 32px #fff;
+  margin-bottom: 2.5rem;
+  line-height: 1.2;
+}
+
+.homepage-title .brand {
+  color: #ffb86c;
+  text-shadow: 0 0 8px #ffb86c, 0 0 16px #fff;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 10px 0;
+}
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 5px;
+}
+
+.btn-green {
+  background: linear-gradient(90deg, #ffb86c 0%, #ff6e6e 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 12px 0 rgba(255,184,108,0.15);
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-green:hover {
+  background: linear-gradient(90deg, #ff6e6e 0%, #ffb86c 100%);
+  transform: scale(1.05);
+}
+.btn-blue { background: #3b82f6; }
+.btn-purple { background: #a855f7; }
+.btn-red { background: #ef4444; }
+
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin: 5px;
+  width: 260px;
+}

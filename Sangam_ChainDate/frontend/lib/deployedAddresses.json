@@ -1,0 +1,8 @@
+{
+  "MockZKVerifier": "0x88e3515B1925b1E19223E99758340C607baeD473",
+  "DatingCore": "0x7D722A548862AfC52d8FAec245876218c787d04F",
+  "EscrowContent": "0xf6E635A4400a3faac846D955Bb5d25A69A2FaD0C",
+  "deployedAt": "2026-03-14T18:22:48.875Z",
+  "network": "helaTestnet",
+  "chainId": "666888"
+}

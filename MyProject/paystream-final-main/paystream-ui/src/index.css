@@ -1,0 +1,19 @@
+body{
+margin:0;
+}
+.stats{
+display:flex;
+gap:30px;
+margin-top:50px;
+}
+.stat{
+background:rgba(255,255,255,0.08);
+padding:16px 24px;
+border-radius:12px;
+}
+.big{
+font-size:34px;
+margin:25px 0;
+font-weight:bold;
+color:#4ade80;
+}

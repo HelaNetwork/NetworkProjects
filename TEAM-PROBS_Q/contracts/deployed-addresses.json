@@ -1,0 +1,10 @@
+{
+  "network": "hela_testnet",
+  "chainId": 666888,
+  "hlusd": "0xBE75FDe9DeDe700635E3dDBe7e29b5db1A76C125",
+  "taxVault": "0x1E94bd5101c44a4B71ab214D7Aa7619089AF3142",
+  "treasury": "0x250D153fE2A9896784d07F62b11c2f5cffeB64C8",
+  "payStream": "0xD840A35AD760ECAB6240E04971601974ca11831A",
+  "deployer": "0xc7B92C508C1905A5034D2f1997Ac8A8347DEA5fb",
+  "deployedAt": "2026-02-15T20:32:23.616Z"
+}

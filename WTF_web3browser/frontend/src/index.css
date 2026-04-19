@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+:root {
+  --font-family: 'Outfit', sans-serif;
+  --primary: #6366f1;
+  --secondary: #a855f7;
+  --accent: #ec4899;
+  --bg-dark: #07090c;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-dark);
+  color: #f8fafc;
+  font-family: var(--font-family);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.4);
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px rgba(99, 102, 241, 0.4);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: gradient-shift 4s linear infinite;
+}
+
+.nav-active-glow {
+  box-shadow: 0 0 24px -5px var(--primary);
+}
+
+.hero-glow {
+  position: absolute;
+  filter: blur(120px);
+  opacity: 0.12;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.browser-content-area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.iframe-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+.standard-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.standard-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.standard-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.bg-base { background-color: var(--bg-dark); }
+.bg-base\/60 { background-color: rgba(7, 9, 12, 0.6); }
+.bg-base\/95 { background-color: rgba(7, 9, 12, 0.95); }
+
+[data-theme='warm'] {
+  --primary: #F78B2D;
+  --primary-dark: #E86A1F;
+  --bg-main: #FDE8D7;
+  --bg-card: #FFF4EA;
+  --bg-section: #F7E6D6;
+  --text-heading: #4A3A2F;
+  --text-body: #8B7B6F;
+}
+
+[data-theme='warm'] body {
+  background-color: var(--bg-main) !important;
+  color: var(--text-body) !important;
+}
+
+[data-theme='warm'] .glass {
+  background: var(--bg-card);
+  border: 1px solid rgba(247, 139, 45, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(74, 58, 47, 0.1);
+}
+
+[data-theme='warm'] .glass-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(247, 139, 45, 0.15);
+}
+
+[data-theme='warm'] .glass-card:hover {
+  background: var(--bg-section);
+  border-color: rgba(247, 139, 45, 0.5);
+  box-shadow: 0 20px 40px -20px rgba(247, 139, 45, 0.4);
+}
+
+[data-theme='warm'] .gradient-text {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme='warm'] .nav-active-glow {
+  box-shadow: 0 0 24px -5px var(--primary);
+}
+
+/* Tailwind Color Overrides */
+[data-theme='warm'] .text-white,
+[data-theme='warm'] .text-fuchsia-400,
+[data-theme='warm'] .text-indigo-400,
+[data-theme='warm'] .text-purple-400,
+[data-theme='warm'] .text-cyan-400,
+[data-theme='warm'] .text-emerald-400,
+[data-theme='warm'] .text-amber-400,
+[data-theme='warm'] .text-red-400,
+[data-theme='warm'] .text-blue-400 { color: var(--text-heading) !important; }
+
+[data-theme='warm'] .text-white\/40,
+[data-theme='warm'] .text-white\/50,
+[data-theme='warm'] .text-white\/70 { color: var(--text-body) !important; opacity: 1; }
+
+[data-theme='warm'] .bg-white\/5, 
+[data-theme='warm'] .bg-white\/10 { background-color: var(--bg-section) !important; }
+
+[data-theme='warm'] .border-white\/5,
+[data-theme='warm'] .border-white\/10 { border-color: rgba(247, 139, 45, 0.2) !important; }
+
+[data-theme='warm'] .bg-indigo-600,
+[data-theme='warm'] .bg-purple-600, 
+[data-theme='warm'] .bg-fuchsia-600 { background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; color: white !important; }
+
+[data-theme='warm'] .button-primary {
+  background: linear-gradient(135deg, #F78B2D, #E86A1F) !important;
+  color: white !important;
+  border-radius: 12px !important;
+  padding: 10px 18px !important;
+  border: none !important;
+}
+
+[data-theme='warm'] .bg-\[\#0a0c0f\], 
+[data-theme='warm'] .bg-\[\#07090c\], 
+[data-theme='warm'] .bg-base, 
+[data-theme='warm'] .bg-black\/20, 
+[data-theme='warm'] .bg-\[\#0d1117\] { background-color: var(--bg-main) !important; }
+
+[data-theme='warm'] .bg-card-alpha,
+[data-theme='warm'] .bg-base\/60,
+[data-theme='warm'] .bg-\[\#07090c\]\/60,
+[data-theme='warm'] .bg-\[\#07090c\]\/95 { background-color: var(--bg-card) !important; }
+
+[data-theme='warm'] .border-glass-border, 
+[data-theme='warm'] .border-glass-border0 { border-color: rgba(247, 139, 45, 0.2) !important; }

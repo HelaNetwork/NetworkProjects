@@ -1,0 +1,3 @@
+Network: HeLa Testnet
+Chain ID: 666888
+Contract Address: <PASTE_CONTRACT_ADDRESS_AFTER_DEPLOY>

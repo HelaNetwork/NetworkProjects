@@ -1,0 +1,14 @@
+{
+  "network": "HeLa Testnet",
+  "chainId": "666888",
+  "deployedAt": "2026-03-14T14:17:01.052Z",
+  "deployer": "0x0FE26F9CE73c297aC77f11d21C7519BAD2a13Cd9",
+  "contracts": {
+    "BasicAttack": "0xc3b2d183F043108454F1e2617a283f18b97F0CD8",
+    "HeavyStrike": "0x765a38d28Be52A61B4Fc31c09009b5B206D5aEdC",
+    "Shield": "0x0c78A17c272e2BCC720601c16cFAc5ab50901990",
+    "HealMove": "0x9F2365FE2167b37036a07EfCd976233511cca269",
+    "DeckWarsCard": "0xA433EB14723f21F4276c4A91ED074E3f8F80f70e",
+    "DeckWarsGame": "0x44CbDf3552626F17d880d127FF71195F632C14e2"
+  }
+}

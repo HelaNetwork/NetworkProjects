@@ -1,0 +1,18 @@
+{
+  "network": "HeLa Testnet",
+  "chainId": 666888,
+  "timestamp": "2026-02-15T10:21:11.042Z",
+  "deployer": "0x95e38e215CDe9655f6cF5E89E89d00e0BB62144a",
+  "contracts": {
+    "Treasury": "0xC6B9dB5a99F21926501A3a52b992692488fB28d7",
+    "SalaryStream": "0x18453dC8F01fD9f662b98573f0DE1a270817f5bB",
+    "OffRamp": "0x561C4f1D1E7472D4C58cb379F8cFA25E064f15Cf",
+    "TaxVault": "0x95e38e215CDe9655f6cF5E89E89d00e0BB62144a",
+    "OracleSigner": "0xaAaB1B176c5665AF6e8242b699030FfD3f6b7ddB"
+  },
+  "config": {
+    "solidityVersion": "0.8.20",
+    "nativeAsset": "HLUSD",
+    "version": "v2-multi-company"
+  }
+}

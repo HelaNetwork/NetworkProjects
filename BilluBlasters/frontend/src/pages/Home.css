@@ -1,0 +1,437 @@
+.home-minimal {
+    min-height: 100vh;
+    background: #ffffff;
+    color: #000000;
+    font-family: 'Inter', -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Catchy Blockchain Animation Background */
+.blockchain-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.network-grid {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(#e0e0e0 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.5;
+}
+
+.node {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #000;
+    border-radius: 50%;
+}
+
+.node-green {
+    background: #10b981;
+}
+
+.node-red {
+    background: #ef4444;
+}
+
+.node-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: 50%;
+    animation: node-ping 3s infinite ease-out;
+    opacity: 0.2;
+}
+
+@keyframes node-ping {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(4);
+        opacity: 0;
+    }
+}
+
+/* Individual Node Positions & Animations */
+.node-1 {
+    top: 15%;
+    left: 10%;
+    animation: drift-1 20s infinite alternate;
+}
+
+.node-2 {
+    top: 25%;
+    right: 15%;
+    animation: drift-2 25s infinite alternate;
+}
+
+.node-3 {
+    bottom: 20%;
+    left: 30%;
+    animation: drift-1 18s infinite alternate;
+}
+
+.node-4 {
+    bottom: 10%;
+    right: 40%;
+    animation: drift-2 22s infinite alternate;
+}
+
+.node-5 {
+    top: 50%;
+    left: 5%;
+    animation: drift-1 15s infinite alternate;
+}
+
+.node-6 {
+    top: 40%;
+    right: 5%;
+    animation: drift-2 28s infinite alternate;
+}
+
+@keyframes drift-1 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(40px, 20px);
+    }
+}
+
+@keyframes drift-2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(-30px, -40px);
+    }
+}
+
+/* Header */
+.minimal-header {
+    padding: 32px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    font-size: 22px;
+}
+
+.logo-box {
+    width: 32px;
+    height: 32px;
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    border-radius: 6px;
+}
+
+.network-status {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 6px 14px;
+    border-radius: 100px;
+}
+
+.live-dot {
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Main Content */
+.minimal-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 64px;
+    position: relative;
+    z-index: 5;
+}
+
+.minimal-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    /* Explicitly sized to keep form smaller */
+    gap: 100px;
+    align-items: center;
+}
+
+/* Hero Content */
+.hela-badge {
+    font-size: 10px;
+    font-weight: 800;
+    background: #000;
+    color: #fff;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 24px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.hero-content h1 {
+    font-size: 82px;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+    margin-bottom: 24px;
+}
+
+.hero-content p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 480px;
+}
+
+.hero-content strong {
+    color: #000;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.features-inline {
+    display: flex;
+    gap: 32px;
+}
+
+.feat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+}
+
+/* Compact Auth Box */
+.auth-box-compact {
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.03);
+    /* Softer but catchy shadow */
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.auth-header h3 {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+}
+
+.auth-header p {
+    font-size: 13px;
+    color: #888;
+}
+
+.role-pills {
+    display: flex;
+    background: #f4f4f4;
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.role-pills button {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #888;
+}
+
+.role-pills button.active {
+    background: #000000;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.compact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.field-min {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-min label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #999;
+    letter-spacing: 0.05em;
+}
+
+.field-min input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #eeeeee;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    background: #fdfdfd;
+    transition: all 0.2s;
+}
+
+.field-min input:focus {
+    border-color: #000;
+    background: #fff;
+}
+
+.btn-black {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 16px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.btn-black:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.error-small {
+    font-size: 11px;
+    color: #ff3b30;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Footer */
+.minimal-footer {
+    padding: 32px 64px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #bbb;
+    position: relative;
+    z-index: 10;
+}
+
+.dot-sep {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    background: #ddd;
+    border-radius: 50%;
+    margin: 0 16px;
+    vertical-align: middle;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .minimal-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        text-align: center;
+    }
+
+    .hero-content p {
+        margin: 0 auto 40px;
+    }
+
+    .features-inline {
+        justify-content: center;
+    }
+
+    .hero-content h1 {
+        font-size: 56px;
+    }
+
+    .auth-box-compact {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 380px;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .minimal-header,
+    .minimal-footer,
+    .minimal-main {
+        padding: 24px;
+    }
+
+    .hero-content h1 {
+        font-size: 42px;
+    }
+
+    .brand {
+        font-size: 18px;
+    }
+}

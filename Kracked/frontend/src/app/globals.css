@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #faf6f1;
+  --bg-secondary: #f0e8dc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #faf6f1;
+  --bg-input: #f5efe6;
+  --bg-overlay: rgba(139, 90, 43, 0.05);
+
+  --text-primary: #3d2b1f;
+  --text-secondary: #7a6352;
+  --text-muted: #a89483;
+  --text-inverse: #ffffff;
+
+  --border: #e0d5c7;
+  --border-hover: #c4a882;
+
+  --accent: #8b5a2b;
+  --accent-hover: #a0522d;
+  --accent-light: rgba(139, 90, 43, 0.1);
+  --accent-glow: rgba(139, 90, 43, 0.15);
+
+  --success: #8b5a2b;
+  --success-light: rgba(93, 138, 60, 0.1);
+  --warning: #c4922a;
+  --warning-light: rgba(196, 146, 42, 0.1);
+  --danger: #b84233;
+  --danger-light: rgba(184, 66, 51, 0.1);
+  --info: #7a6352;
+  --info-light: rgba(122, 99, 82, 0.1);
+
+  --gradient-hero: linear-gradient(
+    135deg,
+    #faf6f1 0%,
+    #f0e8dc 50%,
+    #e8dcc8 100%
+  );
+  --gradient-accent: linear-gradient(135deg, #8b5a2b, #a0522d);
+  --shadow: 0 1px 3px rgba(61, 43, 31, 0.08), 0 1px 2px rgba(61, 43, 31, 0.06);
+  --shadow-lg: 0 4px 14px rgba(61, 43, 31, 0.1);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1410;
+  --bg-secondary: #231c15;
+  --bg-card: #2a2118;
+  --bg-card-hover: #332a20;
+  --bg-input: #1e1812;
+  --bg-overlay: rgba(212, 175, 127, 0.03);
+
+  --text-primary: #f0e8dc;
+  --text-secondary: #c4a882;
+  --text-muted: #8a7560;
+  --text-inverse: #1a1410;
+
+  --border: #3d3128;
+  --border-hover: #5c4a38;
+
+  --accent: #d4af7f;
+  --accent-hover: #e0c097;
+  --accent-light: rgba(212, 175, 127, 0.1);
+  --accent-glow: rgba(212, 175, 127, 0.08);
+
+  --success: #b88f56;
+  --success-light: rgba(125, 184, 86, 0.1);
+  --warning: #e0a830;
+  --warning-light: rgba(224, 168, 48, 0.1);
+  --danger: #d45a4a;
+  --danger-light: rgba(212, 90, 74, 0.1);
+  --info: #c4a882;
+  --info-light: rgba(196, 168, 130, 0.1);
+
+  --gradient-hero: linear-gradient(
+    135deg,
+    #1a1410 0%,
+    #231c15 50%,
+    #2a2118 100%
+  );
+  --gradient-accent: linear-gradient(135deg, #d4af7f, #c49a6c);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Inter", sans-serif;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-lg);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 3px;
+}
+
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  section > div[style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+nav a:hover {
+  color: var(--accent) !important;
+}

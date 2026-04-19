@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeckWars — On-Chain Card Battle Game on HeLa</title>
+  <meta name="description" content="Battle with NFT cards in a provably fair on-chain 1v1 trading card game deployed on HeLa Blockchain. Own your cards, wager, and win." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">
+          <span>⚔️</span>
+          <span>DECK WARS</span>
+        </a>
+        <ul class="navbar-nav">
+          <li><a href="index.html" class="active">🏠 Home</a></li>
+          <li><a href="pages/collection.html">🃏 Collection</a></li>
+          <li><a href="pages/battle.html">⚔️ Battle</a></li>
+        </ul>
+        <div class="navbar-right">
+          <div class="network-badge" id="network-badge">
+            <span class="network-dot" id="network-dot"></span>
+            <span id="network-name">HeLa Testnet</span>
+          </div>
+          <button class="btn btn-primary btn-sm" id="connect-btn" onclick="connectWallet()">
+            🔗 Connect Wallet
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-eyebrow">
+        <span>⚡</span>
+        <span>Deployed on HeLa Blockchain • Chain ID 666888</span>
+      </div>
+      <h1>
+        <span class="gradient-text glow-text">DECK WARS</span>
+      </h1>
+      <p class="hero-subtitle">
+        Collect NFT warrior cards. Challenge opponents to 1v1 battles. Win with skill and strategy in a provably fair, on-chain trading card game.
+      </p>
+      <div class="hero-actions">
+        <a href="pages/collection.html" class="btn btn-primary btn-lg">🃏 Open Collection</a>
+        <a href="pages/battle.html" class="btn btn-secondary btn-lg">⚔️ Enter Battle</a>
+        <a href="https://testnet-faucet.helachain.com" target="_blank" class="btn btn-secondary btn-lg">💧 Get Testnet HLUSD</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section style="position:relative;z-index:1;">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">🃏</span>
+          <h3>NFT Cards</h3>
+          <p>Each warrior is a unique ERC-721 NFT on HeLa chain. 5 classes, 10 card types with distinct stats — warriors, mages, rogues, paladins, and rangers.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔐</span>
+          <h3>Commit-Reveal Fairness</h3>
+          <p>Rolling commit-reveal scheme ensures provably fair randomness. No player can cheat — both must commit their move hash before revealing, creating tamper-proof outcomes.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h3>Speed-Based Turns</h3>
+          <p>Faster cards act first. Crits, misses, and damage variance are derived from combined player seeds — fair, random, and verifiable on-chain.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🧩</span>
+          <h3>Composable Moves</h3>
+          <p>Each move is its own smart contract. The game is fully extensible — Basic Attack, Heavy Strike, Shield, and Heal are just the start. Anyone can deploy new moves.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💰</span>
+          <h3>Wager & Win</h3>
+          <p>Stake HLUSD when you issue a challenge. Winner takes the full pot. A timeout system prevents griefing — act within 5 minutes or forfeit.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔗</span>
+          <h3>HeLa Blockchain</h3>
+          <p>Built on HeLa's high-performance EVM-compatible Layer-1. Fast finality, low gas, and a full block explorer to verify every battle on-chain.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- HOW TO PLAY -->
+      <div style="max-width:720px; margin:0 auto; text-align:center;">
+        <div class="section-header" style="justify-content:center; flex-direction:column; text-align:center;">
+          <h2 class="section-title">How to Play</h2>
+          <p class="section-subtitle">From wallet connect to on-chain victory</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; text-align:left; margin-bottom:40px;">
+          <div class="feature-card" style="border-color:rgba(0,212,255,0.2);">
+            <strong class="font-hud text-cyan" style="font-size:0.7rem; letter-spacing:0.12em;">STEP 1</strong>
+            <p style="margin-top:8px; font-size:0.88rem; color:var(--text-secondary);">Connect MetaMask and add HeLa Testnet (RPC: <code style="color:var(--cyan); font-size:0.8rem;">testnet-rpc.helachain.com</code>, Chain ID: <code style="color:var(--cyan);">666888</code>)</p>
+          </div>
+          <div class="feature-card" style="border-color:rgba(168,85,247,0.2);">
+            <strong class="font-hud text-purple" style="font-size:0.7rem; letter-spacing:0.12em;">STEP 2</strong>
+            <p style="margin-top:8px; font-size:0.88rem; color:var(--text-secondary);">Mint 3 NFT cards from the Collection page. Each card has unique stats and 4 moves. Mix classes for best strategy.</p>
+          </div>
+          <div class="feature-card" style="border-color:rgba(245,158,11,0.2);">
+            <strong class="font-hud text-gold" style="font-size:0.7rem; letter-spacing:0.12em;">STEP 3</strong>
+            <p style="margin-top:8px; font-size:0.88rem; color:var(--text-secondary);">Issue a challenge with an opponent's address and set your HLUSD wager. Approve your 3 cards for battle.</p>
+          </div>
+          <div class="feature-card" style="border-color:rgba(34,197,94,0.2);">
+            <strong class="font-hud text-green" style="font-size:0.7rem; letter-spacing:0.12em;">STEP 4</strong>
+            <p style="margin-top:8px; font-size:0.88rem; color:var(--text-secondary);">Each turn: commit your move secretly, wait for opponent, then both reveal. Watch the battle resolve on-chain!</p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+          <a href="pages/collection.html" class="btn btn-primary btn-lg">Start Playing →</a>
+          <a href="https://testnet-blockexplorer.helachain.com" target="_blank" class="btn btn-secondary btn-lg">Block Explorer ↗</a>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- CONTRACT ADDRESSES (loaded from deployment.json) -->
+      <div id="contract-info" class="glass" style="padding:28px; margin-bottom:48px; display:none;">
+        <h3 class="section-title" style="font-size:1rem; margin-bottom:16px;">📋 Deployed Contracts</h3>
+        <div id="contract-list" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid var(--border-dim); padding:32px 0; text-align:center; color:var(--text-muted); font-size:0.82rem; position:relative; z-index:1;">
+    <div class="container">
+      <p>⚔️ <strong class="font-hud" style="color:var(--text-secondary);">DECK WARS</strong> — On-chain card battle game deployed on HeLa Blockchain (Testnet)</p>
+      <p style="margin-top:8px;">Inspired by <a href="https://blog.chainsafe.io/on-chain-game-mechanics-with-chainsafe-and-toshimon/" target="_blank" style="color:var(--cyan);">ChainSafe × Toshimon</a> • Built with Hardhat + Ethers.js</p>
+    </div>
+  </footer>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <script src="js/web3.js"></script>
+  <script>
+    // Load deployment info and show contracts
+    fetch('js/deployment.json')
+      .then(r => r.json())
+      .then(data => {
+        const section = document.getElementById('contract-info');
+        const list = document.getElementById('contract-list');
+        section.style.display = 'block';
+        const explorerBase = 'https://testnet-blockexplorer.helachain.com/address/';
+        Object.entries(data.contracts).forEach(([name, addr]) => {
+          list.innerHTML += `
+            <div style="padding:10px 14px; background:var(--bg-deep); border-radius:8px; border:1px solid var(--border-dim);">
+              <div class="font-hud" style="font-size:0.7rem; color:var(--cyan); letter-spacing:0.08em; margin-bottom:4px;">${name}</div>
+              <a href="${explorerBase}${addr}" target="_blank"
+                 style="font-size:0.72rem; color:var(--text-secondary); font-family:monospace; word-break:break-all;">
+                ${addr}
+              </a>
+            </div>`;
+        });
+      })
+      .catch(() => {}); // deployment.json not yet created (before deploy)
+  </script>
+</body>
+</html>
