@@ -32,6 +32,7 @@ Current production deployment details:
 | --- | --- |
 | Chain ID | 666888 |
 | Deployer | 0x4ec137a8BE0466C166997BCfc56FFDafc542201B |
+| ERC20 Agent Payment Token (APT) for A2A Commerce on Hela | 0xA7E6d831e67E5aA2D9Cc6B92D5beCf6617Da0B5b|
 | Agent Registry | 0xeC85ed6E46a49438AF8b3569B81d2a6502BcD606 |
 
 ### Base Sepolia
