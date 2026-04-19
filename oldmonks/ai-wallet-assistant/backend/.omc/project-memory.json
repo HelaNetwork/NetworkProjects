@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776527396004,
+  "projectRoot": "C:\\Users\\Croma\\OneDrive\\Desktop\\Documents\\GitHub\\old-monks-\\ai-wallet-assistant\\backend",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "express",
+        "version": "5.2.1",
+        "category": "backend"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": "npm test",
+    "lintCommand": null,
+    "devCommand": "npm run start",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node index.js"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {},
+  "hotPaths": [
+    {
+      "path": "",
+      "accessCount": 3,
+      "lastAccessed": 1776527839989,
+      "type": "directory"
+    },
+    {
+      "path": "index.js",
+      "accessCount": 1,
+      "lastAccessed": 1776527922576,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"C:\\\\Users\\\\Croma\\\\OneDrive\\\\Desktop\\\\Documents\\\\GitHub\\\\old-monks-\\\\ai-wallet-assistant\\\\backend\\\" && npm run dev\",\"timeout\":30000,\"description\":\"Start the backend dev server\"}",
+  "error": "Exit code 1\nnpm error Missing script: \"dev\"\nnpm error\nnpm error To see a list of scripts, run:\nnpm error   npm run\nnpm error A complete log of this run can be found in: C:\\Users\\Croma\\AppData\\Local\\npm-cache\\_logs\\2026-04-18T15_53_03_396Z-debug-0.log",
+  "timestamp": "2026-04-18T15:53:04.320Z",
+  "retry_count": 1
+}

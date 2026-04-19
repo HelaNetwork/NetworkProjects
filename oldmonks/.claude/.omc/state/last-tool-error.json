@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"gh pr create --title \\\"AI/LLM: Enhance backend logging and resolve merge conflicts\\\" --body \\\"$(cat <<'EOF'\\n## Summary\\n\\n- Enhance backend logging and resolve merge conflicts in AI/LLM b...",
+  "error": "Exit code 127\n/usr/bin/bash: line 20: gh: command not found",
+  "timestamp": "2026-04-19T03:58:55.165Z",
+  "retry_count": 1
+}
