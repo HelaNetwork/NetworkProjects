@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 20% 7%;
+    --foreground: 200 20% 90%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 200 20% 90%;
+
+    --popover: 220 18% 10%;
+    --popover-foreground: 200 20% 90%;
+
+    --primary: 160 100% 45%;
+    --primary-foreground: 220 20% 7%;
+
+    --secondary: 220 15% 16%;
+    --secondary-foreground: 200 20% 85%;
+
+    --muted: 220 15% 14%;
+    --muted-foreground: 215 15% 50%;
+
+    --accent: 280 80% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 160 100% 45%;
+
+    --radius: 0.5rem;
+
+    --neon-green: 160 100% 45%;
+    --neon-cyan: 185 100% 50%;
+    --neon-purple: 280 80% 55%;
+    --neon-orange: 25 100% 55%;
+
+    --sidebar-background: 220 18% 8%;
+    --sidebar-foreground: 200 20% 85%;
+    --sidebar-primary: 160 100% 45%;
+    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-accent: 220 15% 14%;
+    --sidebar-accent-foreground: 200 20% 90%;
+    --sidebar-border: 220 15% 16%;
+    --sidebar-ring: 160 100% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .neon-glow {
+    box-shadow: 0 0 10px hsl(var(--neon-green) / 0.3),
+                0 0 30px hsl(var(--neon-green) / 0.1);
+  }
+
+  .neon-glow-cyan {
+    box-shadow: 0 0 10px hsl(var(--neon-cyan) / 0.3),
+                0 0 30px hsl(var(--neon-cyan) / 0.1);
+  }
+
+  .neon-border {
+    border: 1px solid hsl(var(--neon-green) / 0.3);
+  }
+
+  .neon-text {
+    text-shadow: 0 0 10px hsl(var(--neon-green) / 0.5);
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border rounded-lg;
+  }
+
+  .stat-card {
+    @apply glass-card p-6 relative overflow-hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-[2px];
+    background: linear-gradient(90deg, hsl(var(--neon-green)), hsl(var(--neon-cyan)));
+  }
+}

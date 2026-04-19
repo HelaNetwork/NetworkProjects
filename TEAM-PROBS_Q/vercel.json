@@ -1,0 +1,15 @@
+{
+    "version": 2,
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/frontend/$1"
+        }
+    ],
+    "builds": [
+        {
+            "src": "frontend/package.json",
+            "use": "@vercel/next"
+        }
+    ]
+}

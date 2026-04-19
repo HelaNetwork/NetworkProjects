@@ -1,0 +1,11 @@
+[package]
+name = "prediction_market"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+borsh = { version = "1.5.1", features = ["derive"] }
+solana-program = "1.18.26"

@@ -1,0 +1,20 @@
+# Credentials
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Hardhat
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+contracts/coverage/
+contracts/coverage.json
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.DS_Store
+*.log

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card Collection — DeckWars</title>
+  <meta name="description" content="View and manage your DeckWars NFT card collection. Mint new cards and build your deck." />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="../index.html" class="navbar-logo"><span>⚔️</span><span>DECK WARS</span></a>
+        <ul class="navbar-nav">
+          <li><a href="../index.html">🏠 Home</a></li>
+          <li><a href="collection.html" class="active">🃏 Collection</a></li>
+          <li><a href="battle.html">⚔️ Battle</a></li>
+        </ul>
+        <div class="navbar-right">
+          <div class="network-badge"><span class="network-dot" id="network-dot"></span><span id="network-name">HeLa Testnet</span></div>
+          <button class="btn btn-primary btn-sm" id="connect-btn" onclick="connectWallet()">🔗 Connect Wallet</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <div class="container">
+
+      <!-- PAGE HEADER -->
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">🃏 Card Collection</h1>
+          <p class="section-subtitle">Mint warriors and build your battle deck of 3 cards</p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <span class="badge badge-cyan" id="card-count-badge">0 Cards Owned</span>
+          <a href="battle.html" class="btn btn-secondary btn-sm">⚔️ Go to Battle</a>
+        </div>
+      </div>
+
+      <!-- WALLET PROMPT -->
+      <div id="wallet-prompt" class="glass-elevated" style="padding:48px; text-align:center; margin-bottom:32px;">
+        <div style="font-size:3rem; margin-bottom:16px;">🦊</div>
+        <h2 class="font-hud" style="font-size:1.1rem; color:var(--cyan); margin-bottom:8px; letter-spacing:0.06em;">CONNECT YOUR WALLET</h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem; max-width:420px; margin:0 auto 24px; line-height:1.6;">
+          Connect MetaMask to view your cards and mint new warriors. Make sure you're on HeLa Testnet (Chain ID: 666888).
+        </p>
+        <button class="btn btn-primary btn-lg" onclick="connectWallet()">🔗 Connect MetaMask</button>
+      </div>
+
+      <!-- MINT SECTION -->
+      <div id="mint-section" style="display:none; margin-bottom:40px;">
+        <div class="glass-elevated" style="padding:28px;">
+          <h2 class="section-title" style="font-size:1rem; margin-bottom:6px;">✨ Mint New Card</h2>
+          <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Choose a warrior archetype to mint as an NFT on HeLa. Free on testnet!</p>
+          <div id="template-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-bottom:20px;"></div>
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="mint-btn" onclick="mintSelectedCard()" disabled>
+              ✨ Mint Selected Card
+            </button>
+            <span id="mint-status" style="color:var(--text-secondary); font-size:0.82rem;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY CARDS -->
+      <div id="collection-section" style="display:none;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" style="font-size:1.1rem;">My Warriors</h2>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;" id="filter-bar">
+            <button class="btn btn-secondary btn-sm active-filter" onclick="filterClass('all')" data-filter="all">All</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterClass('Warrior')" data-filter="Warrior">⚔️ Warrior</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterClass('Mage')" data-filter="Mage">🔮 Mage</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterClass('Rogue')" data-filter="Rogue">🗡️ Rogue</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterClass('Paladin')" data-filter="Paladin">🛡️ Paladin</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterClass('Ranger')" data-filter="Ranger">🏹 Ranger</button>
+          </div>
+        </div>
+
+        <div id="cards-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; margin-bottom:40px;">
+          <!-- Cards inserted by JS -->
+        </div>
+
+        <div id="no-cards" style="display:none; text-align:center; padding:60px; color:var(--text-muted);">
+          <div style="font-size:3rem; margin-bottom:16px;">🃏</div>
+          <p class="font-hud" style="font-size:0.9rem; letter-spacing:0.06em;">NO CARDS YET</p>
+          <p style="font-size:0.85rem; margin-top:8px;">Mint your first warrior above to begin!</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CARD DETAIL MODAL -->
+  <div class="modal-overlay" id="card-modal">
+    <div class="modal" style="max-width:420px;">
+      <div style="text-align:center; margin-bottom:20px;">
+        <div id="modal-icon" style="font-size:5rem; filter:drop-shadow(0 0 24px currentColor);">⚔️</div>
+        <h2 class="modal-title" id="modal-name">Card Name</h2>
+        <div id="modal-badges" style="display:flex; gap:6px; justify-content:center; margin-top:6px;"></div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <div class="stat-bar-wrap">
+          <div class="stat-bar-label"><span>❤️ HP</span><span id="modal-hp-text">0/0</span></div>
+          <div class="stat-bar"><div class="stat-bar-fill bar-hp" id="modal-hp-bar" style="width:100%"></div></div>
+        </div>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar-label"><span>⚔️ Attack</span><span id="modal-atk-text">0</span></div>
+          <div class="stat-bar"><div class="stat-bar-fill bar-atk" id="modal-atk-bar" style="width:0%"></div></div>
+        </div>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar-label"><span>🛡️ Defense</span><span id="modal-def-text">0</span></div>
+          <div class="stat-bar"><div class="stat-bar-fill bar-def" id="modal-def-bar" style="width:0%"></div></div>
+        </div>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar-label"><span>⚡ Speed</span><span id="modal-spd-text">0</span></div>
+          <div class="stat-bar"><div class="stat-bar-fill bar-spd" id="modal-spd-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <p class="form-label">Moves</p>
+        <div id="modal-moves" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"></div>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;" onclick="closeCardModal()">Close</button>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="../js/web3.js"></script>
+  <script src="../js/collection.js"></script>
+</body>
+</html>

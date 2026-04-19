@@ -1,0 +1,23 @@
+[36mvite v8.0.0 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming...✓ 15 modules transformed.
+[31m✗[39m Build failed in 290ms
+[31merror during build:
+[31mBuild failed with 1 error:
+
+[31m[builtin:vite-transform] Error:[0m Unexpected token
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/App.jsx:2305:1 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m2305 │[0m }
+ [38;5;240m     │[0m ┬  
+ [38;5;240m     │[0m ╰── 
+[38;5;246m──────╯[0m
+[31m
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/deepa/Downloads/wtf/web3browser-main/web3browser-main/node_modules/vite/node_modules/rolldown/dist/shared/error-CP8smW_P.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/deepa/Downloads/wtf/web3browser-main/web3browser-main/node_modules/vite/node_modules/rolldown/dist/shared/error-CP8smW_P.mjs:18:128)
+    at #build (file:///C:/Users/deepa/Downloads/wtf/web3browser-main/web3browser-main/node_modules/vite/node_modules/rolldown/dist/shared/rolldown-build-4YnQkA76.mjs:3311:34)
+    at async buildEnvironment (file:///C:/Users/deepa/Downloads/wtf/web3browser-main/web3browser-main/node_modules/vite/dist/node/chunks/node.js:32794:64)
+    at async Object.build (file:///C:/Users/deepa/Downloads/wtf/web3browser-main/web3browser-main/node_modules/vite/dist/node/chunks/node.js:33216:19)
+    at async Object.buildApp (file:///C:/Users/deepa/Downloads/wtf/web3browser-main/web3browser-main/node_modules/vite/dist/node/chunks/node.js:33213:153)
+    at async CAC.<anonymous> (file:///C:/Users/deepa/Downloads/wtf/web3browser-main/web3browser-main/node_modules/vite/dist/node/cli.js:778:3) {
+  errors: [Getter/Setter]
+}[39m

@@ -1,0 +1,162 @@
+# Payroll System on Hela Blockchain Network
+
+A blockchain-based payroll system built on the **Hela Network** that enables transparent, real-time salary streaming using smart contracts. Instead of traditional monthly salary cycles, this system streams salary **continuously per second**, giving employees full control over when they access their earned pay.
+
+---
+
+## Tech Stack
+
+| Layer              | Technology   |
+|--------------------|--------------|
+| Blockchain         | Hela Network |
+| Smart Contracts    | Solidity     |
+| Frontend           | React (Vite) |
+| Backend            | Express.js   |
+| Database           | MongoDB      |
+| Wallet Integration | Web3         |
+
+---
+
+## Features
+
+### HR
+
+- Create and manage employee payrolls
+- Configure per-second salary streams via smart contracts
+- Transparent, automated payment execution
+
+### Employee
+
+- Connect a blockchain wallet
+- View active salary streams in real time
+- Withdraw earned balance at any time — no fixed pay dates required
+
+---
+
+## How It Works
+
+1. HR creates a payroll entry for an employee
+2. A smart contract begins streaming salary per second
+3. The employee connects their wallet to the application
+4. The employee withdraws their available balance whenever they choose
+5. All transactions are secured and validated by the smart contract
+
+---
+
+## Project Structure
+
+```
+root/
+│
+├── frontend/
+├── backend/
+├── contracts/
+└── README.md
+```
+
+---
+
+## Environment Setup
+
+Each folder contains a `.env.example` file. Copy and rename it before running:
+
+```bash
+.env.example -> .env
+```
+
+Fill in the required values:
+
+- `MONGODB_URL` — MongoDB connection string
+- `CONTRACT_ADDRESS` — Deployed smart contract address
+- `PRIVATE_KEY` — Wallet private key
+- `RPC_URL` — Hela Network RPC endpoint
+- Additional wallet configuration as needed
+
+---
+
+## Installation
+
+### Backend
+
+```bash
+cd backend
+npm install
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+---
+
+## Running Locally
+
+### Start Backend
+
+```bash
+cd backend
+npm run dev
+```
+
+### Start Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend runs at `http://localhost:5173`  
+The backend runs at `http://localhost:5000`
+
+---
+
+## Demo
+
+**Frontend URL:** [https://streampay-me.netlify.app](https://streampay-me.netlify.app)
+
+| Field    | Value           |
+|----------|-----------------|
+| Email    | user@gmail.com  |
+| Password | 1234            |
+
+> **Note:** The hosted backend is currently unavailable due to restrictions on free hosting platforms. All features work correctly in a local environment.
+
+---
+
+## Smart Contracts
+
+Smart contracts are written in Solidity and deployed on the Hela Blockchain Network. They handle:
+
+- Payroll creation and configuration
+- Per-second salary streaming
+- Withdrawal logic
+- Bonus Logic
+- Emergency Withrawal Logic
+- Security validation and access control
+
+---
+
+## Benefits
+
+- Real-time salary access with no payroll delays
+- Full on-chain transparency
+- Employees have complete flexibility over when to withdraw
+- Automated, trustless payment execution
+
+---
+
+##  Key Features
+
+- Admin dashboard with analytics
+- Easily Deposit Funds
+- Easy Withrawal
+- Highly Accurate upto 18 Decimal Places
+
+---
+
+## WHY BUILT
+
+Built as part of a Blockchain Payroll System project using the Hela Network for KrackHack.

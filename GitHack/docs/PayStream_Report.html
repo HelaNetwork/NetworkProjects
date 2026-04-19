@@ -1,0 +1,318 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PayStream - Problem Statement and Solution Overview</title><style>*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+@page {
+    size: A4;
+    margin: 20mm 18mm 20mm 18mm;
+}
+
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.65;
+    color: #1a1a2e;
+    background: #ffffff;
+    padding: 50px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 28pt;
+    font-weight: 800;
+    color: #6366f1;
+    text-align: center;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 13pt;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-style: italic;
+}
+
+.meta-line {
+    text-align: center;
+    font-size: 9.5pt;
+    color: #94a3b8;
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 16pt;
+    font-weight: 700;
+    color: #312e81;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding-bottom: 5px;
+    border-bottom: 2.5px solid #6366f1;
+}
+
+h3 {
+    font-size: 12.5pt;
+    font-weight: 600;
+    color: #4338ca;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+h4 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #3730a3;
+    margin-top: 14px;
+    margin-bottom: 6px;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
+ul,
+ol {
+    margin-left: 22px;
+    margin-bottom: 10px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+strong {
+    color: #1e1b4b;
+}
+
+code {
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    color: #6366f1;
+}
+
+.toc {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 18px 26px;
+    margin-bottom: 28px;
+}
+
+.toc h3 {
+    color: #312e81;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 13pt;
+}
+
+.toc ol {
+    margin-left: 20px;
+}
+
+.toc li {
+    margin-bottom: 4px;
+}
+
+.toc a {
+    color: #6366f1;
+    text-decoration: none;
+}
+
+.toc a:hover {
+    text-decoration: underline;
+}
+
+.info-box {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border-left: 4px solid #6366f1;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 10.5pt;
+}
+
+.info-box.green {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-left-color: #10b981;
+}
+
+.info-box.amber {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left-color: #f59e0b;
+}
+
+.info-box.red {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border-left-color: #ef4444;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px;
+    font-size: 10pt;
+}
+
+th,
+td {
+    border: 1px solid #cbd5e1;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background: #6366f1;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.diagram-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 8.5pt;
+    line-height: 1.4;
+    white-space: pre;
+    overflow-x: auto;
+    text-align: left;
+}
+
+.page-break {
+    page-break-before: always;
+}
+
+.footer {
+    margin-top: 40px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 9pt;
+    color: #94a3b8;
+}
+
+.flow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.flow-step {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 9.5pt;
+    text-align: center;
+    min-width: 100px;
+}
+
+.flow-arrow {
+    font-size: 18pt;
+    color: #6366f1;
+    font-weight: bold;
+}
+
+.hr-sep {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 30px 0;
+}
+
+@media print {
+    body {
+        padding: 0;
+        max-width: none;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+}
+
+</style></head><body><h1>PayStream</h1><p class="subtitle">Decentralized Payroll Streaming on EVM-Compatible Blockchains</p><p class="meta-line">Problem Statement &amp;
+Solution Overview &nbsp;
+|&nbsp;
+Version 1.0 &nbsp;
+|&nbsp;
+February 2026</p><div class="toc"><h3>Table of Contents</h3><ol><li><a href="#problem">Problem Statement</a></li><li><a href="#objectives">Objectives &amp;
+Scope</a></li><li><a href="#solution">Solution Overview</a></li><li><a href="#architecture">System Architecture</a></li><li><a href="#contracts">Smart Contract Design</a></li><li><a href="#tax">Tax Model</a></li><li><a href="#frontend">Frontend Applications</a></li><li><a href="#security">Security &amp;
+Access Control</a></li><li><a href="#tech-stack">Technology Stack</a></li><li><a href="#deployment">Deployment &amp;
+Networks</a></li><li><a href="#workflow">User Workflow</a></li><li><a href="#conclusion">Conclusion &amp;
+Future Scope</a></li></ol></div><h2 id="problem">1. Problem Statement</h2><p>Traditional payroll systems suffer from several fundamental inefficiencies that affect both employers and employees globally. These legacy systems were designed for a world of monthly or bi-weekly pay cycles and have not kept pace with the demands of the modern workforce,
+especially in the context of remote work,
+the gig economy,
+and cross-border employment.</p><h3>1.1 Delayed Payment Cycles</h3><p>Conventional payroll operates on fixed schedules — typically monthly or bi-weekly. Employees perform work continuously but only receive compensation at the end of a pay period. This creates a misalignment between value delivery and compensation. Workers effectively provide an <strong>interest-free loan</strong>to their employer for the duration of each cycle. For employees living paycheck to paycheck,
+this delay can cause significant financial stress,
+reliance on predatory payday loans,
+and an inability to manage unexpected expenses.</p><h3>1.2 Lack of Transparency</h3><p>Existing payroll platforms are typically <strong>opaque,
+centralized systems</strong>managed solely by the employer or a third-party provider. Employees have limited visibility into how their pay is calculated,
+when deductions are made,
+and where funds are held. Tax withholdings,
+benefit deductions,
+and administrative fees are often applied without clear,
+real-time visibility. Disputes over pay discrepancies are difficult to resolve due to the lack of an immutable,
+auditable ledger.</p><h3>1.3 High Administrative Overhead</h3><p>Managing payroll involves complex,
+multi-step processes — calculating salaries,
+applying tax brackets,
+processing bank transfers,
+handling cross-border payments,
+and maintaining compliance. These processes require dedicated HR personnel and often expensive third-party payroll providers (e.g., ADP, Gusto). Small and medium enterprises (SMEs) are disproportionately burdened by these costs,
+spending significant resources on payroll administration that could be redirected to core business activities.</p><h3>1.4 Intermediary Dependencies</h3><p>Every traditional payroll transaction flows through multiple intermediaries — banks,
+payment processors,
+payroll service providers,
+and tax collection agencies. Each intermediary introduces <strong>additional fees,
+processing delays,
+and potential points of failure</strong>. Cross-border payments are especially problematic,
+with international wire transfers taking 3-5 business days and costing significant fees. These intermediaries also create counterparty risk and single points of failure.</p><h3>1.5 Inflexibility in Compensation Models</h3><p>Traditional systems are poorly suited for modern compensation models such as per-second streaming,
+milestone-based payments,
+or dynamic rate adjustments. Freelancers,
+contractors,
+and gig workers often face even longer payment delays (Net-30 or Net-60 terms) and higher transaction costs. The rigid structure of existing payroll makes it difficult to accommodate the growing demand for flexible and real-time compensation.</p><div class="info-box red"><strong>Core Challenge:</strong>How can we create a payroll system that pays employees continuously in real-time,
+automates tax compliance,
+eliminates intermediaries,
+and provides full transparency — while remaining secure,
+cost-effective,
+and easy to use? </div><div class="page-break"></div><h2 id="objectives">2. Objectives &amp;
+Scope</h2><p>PayStream is designed to address each of the identified problems through the following core objectives:</p><table><tr><th>#</th><th>Objective</th><th>Description</th></tr><tr><td>O1</td><td><strong>Real-Time Salary Streaming</strong></td><td>Enable per-second salary accrual so employees earn continuously and can withdraw at any moment.</td></tr><tr><td>O2</td><td><strong>Automated Tax Deduction</strong></td><td>Automatically deduct a configurable tax percentage on every withdrawal and send it to a secure vault.</td></tr><tr><td>O3</td><td><strong>Decentralized &amp;
+Transparent</strong></td><td>All payroll transactions are recorded on-chain with full auditability. No central authority controls funds.</td></tr><tr><td>O4</td><td><strong>Minimal Intermediaries</strong></td><td>Employer-to-employee payments happen directly via smart contracts — no banks or processors needed.</td></tr><tr><td>O5</td><td><strong>Role-Based Access</strong></td><td>Only authorized HR personnel can create/manage streams. Employees can only withdraw from their own streams.</td></tr><tr><td>O6</td><td><strong>Secure by Design</strong></td><td>Leverage battle-tested OpenZeppelin contracts,
+reentrancy guards,
+and the checks-effects-interactions pattern.</td></tr><tr><td>O7</td><td><strong>User-Friendly Frontends</strong></td><td>Provide intuitive web-based dashboards for both HR managers and employees with MetaMask wallet integration.</td></tr></table><h3>Scope</h3><p>The current MVP (Minimum Viable Product) focuses on:</p><ul><li>ERC-20 token-based salary streaming on EVM-compatible chains.</li><li>Single-token payroll (one token type per deployment).</li><li>Flat-rate tax deduction model (basis-point configurable).</li><li>Two frontend applications: HR Dashboard &amp;
+Employee Portal.</li><li>Local development (Hardhat) and testnet deployment (HeLa Testnet).</li></ul><h2 id="solution">3. Solution Overview</h2><p><strong>PayStream</strong>is a decentralized payroll streaming platform built on Solidity smart contracts deployed to EVM-compatible blockchains. It reimagines the employer-employee compensation relationship by replacing periodic lump-sum payments with a <strong>continuous per-second salary stream</strong>.</p><h3>How It Works</h3><ol><li><strong>HR deploys and funds</strong>— The HR manager deploys the PayStream contracts,
+then deposits ERC-20 tokens into the contract treasury to fund payroll.</li><li><strong>Streams are created</strong>— HR creates a salary stream for each employee by specifying the employee's wallet address and a <em>rate per second</em> (tokens earned per second in the token' s smallest unit).</li><li><strong>Salary accrues continuously</strong>— From the moment a stream is created,
+the employee's salary begins accruing every second. This accrual is computed on-chain using the formula: <code>accrued = ratePerSecond × elapsedSeconds</code>.</li>
+ <li><strong>Employee withdraws anytime</strong>— The employee can call the <code>withdraw()</code>function at any time to claim their accrued salary. There is no minimum withdrawal amount and no waiting period.</li><li><strong>Tax is auto-deducted</strong>— On every withdrawal,
+a configurable percentage (default 10%) is automatically deducted as tax and sent to a separate TaxVault contract. The employee receives the net amount.</li><li><strong>HR manages streams</strong>— HR can pause,
+resume,
+or cancel streams at any time. Pausing or cancelling automatically claims any pending accrued amount for the employee.</li></ol><div class="info-box green"><strong>Key Innovation:</strong>Unlike traditional payroll where money moves in bulk at fixed intervals,
+PayStream allows money to flow continuously — an employee working for 1 hour earns 3,
+600 seconds of salary,
+withdrawable immediately without waiting for a pay cycle. </div><div class="page-break"></div><h2 id="architecture">4. System Architecture</h2><p>PayStream follows a layered architecture with clear separation of concerns between the blockchain layer (smart contracts) and the presentation layer (web frontends).</p><h3>4.1 High-Level Architecture Diagram</h3><div class="diagram-box">┌─────────────────────────────────────────────────────────────────┐ │ FRONTEND LAYER │ │ │ │ ┌─────────────────────┐ ┌─────────────────────┐ │ │ │ HR Dashboard │ │ Employee Portal │ │ │ │ (Vite + React) │ │ (Vite + React) │ │ │ │ Port: 3000 │ │ Port: 3001 │ │ │ │ │ │ │ │ │ │ • Create Streams │ │ • View Earnings │ │ │ │ • Pause / Resume │ │ • Withdraw Salary │ │ │ │ • Cancel Streams │ │ • Live Accrual │ │ │ │ • Fund Treasury │ │ • Stream Details │ │ │ └─────────┬───────────┘ └──────────┬──────────┘ │ │ │ │ │ └────────────┼──────────────────────────────┼─────────────────────┘ │ MetaMask / ethers.js │ ▼ (Web3) ▼ ┌─────────────────────────────────────────────────────────────────┐ │ SMART CONTRACT LAYER │ │ │ │ ┌───────────────────────────────────────────────────────┐ │ │ │ PayStream.sol (Main Contract) │ │ │ │ AccessControl+ReentrancyGuard │ │ │ │ │ │ │ │ Roles: HR_ROLE,
+DEFAULT_ADMIN_ROLE │ │ │ │ Data: Stream[] (employer, employee, rate, time) │ │ │ └──────────────┬────────────────────┬───────────────────┘ │ │ │ │ │ │ ┌───────────▼──────┐ ┌───────▼──────────┐ │ │ │ StreamMath.sol │ │ TaxVault.sol │ │ │ │ (Pure Library) │ │ (Ownable) │ │ │ │ calculateAccrued │ │ deposit() │ │ │ │ splitTax() │ │ withdraw() │ │ │ └──────────────────┘ │ getBalance() │ │ │ └──────────────────┘ │ │ │ │ ┌────────────────────┐ ┌────────────────────┐ │ │ │ MockToken.sol │ │ IPayStream.sol │ │ │ │ (ERC-20 Test) │ │ (Interface) │ │ │ └────────────────────┘ └────────────────────┘ │ └─────────────────────────────────────────────────────────────────┘ │ ▼ ┌─────────────────────────────────────────────────────────────────┐ │ BLOCKCHAIN NETWORK │ │ • Local: Hardhat Node (http: //127.0.0.1:8545)                  │
+    │ • Testnet: HeLa Testnet (Chain ID: 8668) │ └─────────────────────────────────────────────────────────────────┘</div> <h3>4.2 Data Flow Summary</h3> <div class="flow-container" > <div class="flow-step" >HR Funds<br>Treasury</div> <span class="flow-arrow" >→</span> <div class="flow-step" >HR Creates<br>Stream</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Salary<br>Accrues/sec</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Employee<br>Withdraws</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Tax Auto-<br>Deducted</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Net Pay<br>Received</div> </div> <h2 id="contracts" >5. Smart Contract Design</h2> <h3>5.1 Contract Overview</h3> <table> <tr><th>Contract</th><th>Inherits</th><th>Purpose</th></tr> <tr><td><code>PayStream.sol</code></td><td>AccessControl, ReentrancyGuard</td><td>Main contract — stream creation, management, withdrawals, tax splitting, and treasury management.</td></tr> <tr><td><code>TaxVault.sol</code></td><td>Ownable</td><td>Secure vault that holds tax deductions. Only the admin/owner can withdraw collected taxes.</td></tr> <tr><td><code>StreamMath.sol</code></td><td>— (Library)</td><td>Pure math library providing <code>calculateAccrued()</code> and <code>splitTax()</code> functions.</td></tr> <tr><td><code>MockToken.sol</code></td><td>ERC20</td><td>Test ERC-20 token for local development and testing.</td></tr> <tr><td><code>IPayStream.sol</code></td><td>— (Interface)</td><td>Interface definition for all external PayStream functions.</td></tr> </table> <h3>5.2 Stream Data Structure</h3> <p>Each salary stream is represented by the following on-chain struct:</p> <table> <tr><th>Field</th><th>Type</th><th>Description</th></tr> <tr><td><code>employer</code></td><td><code>address</code></td><td>Wallet address of the HR manager who created the stream.</td></tr> <tr><td><code>employee</code></td><td><code>address</code></td><td>Wallet address of the employee receiving the salary.</td></tr> <tr><td><code>ratePerSecond</code></td><td><code>uint256</code></td><td>Tokens earned per second in the token's smallest unit (wei).</td></tr>
+ <tr><td><code>lastClaimTime</code></td><td><code>uint256</code></td><td>Unix timestamp of the last withdrawal (or stream creation).</td></tr> <tr><td><code>active</code></td><td><code>bool</code></td><td>Whether the stream is currently active (accruing salary).</td></tr> </table> <h3>5.3 Key Functions</h3> <h4>HR / Admin Functions</h4> <table> <tr><th>Function</th><th>Access</th><th>Description</th></tr> <tr><td><code>createStream(employee, rate)</code></td><td>HR_ROLE</td><td>Creates a new per-second salary stream for the given employee.</td></tr> <tr><td><code>pauseStream(streamId)</code></td><td>HR_ROLE</td><td>Pauses an active stream. Auto-claims any pending accrued amount first.</td></tr> <tr><td><code>resumeStream(streamId)</code></td><td>HR_ROLE</td><td>Resumes a paused stream. Resets lastClaimTime to current timestamp.</td></tr> <tr><td><code>cancelStream(streamId)</code></td><td>HR_ROLE</td><td>Permanently cancels a stream. Auto-claims remaining accrued amount.</td></tr> <tr><td><code>fundContract(amount)</code></td><td>Anyone</td><td>Deposits ERC-20 tokens into the contract treasury for payroll.</td></tr> <tr><td><code>setTaxRate(basisPoints)</code></td><td>ADMIN</td><td>Updates the tax deduction rate (in basis points).</td></tr> </table> <h4>Employee Functions</h4> <table> <tr><th>Function</th><th>Access</th><th>Description</th></tr> <tr><td><code>withdraw(streamId)</code></td><td>Stream Employee</td><td>Withdraws all accrued salary. Tax is auto-deducted. Protected by ReentrancyGuard.</td></tr> <tr><td><code>calculateAccrued(streamId)</code></td><td>Anyone (view)</td><td>Returns the current unclaimed accrued amount for a stream.</td></tr> </table> <div class="page-break" ></div> <h2 id="tax" >6. Tax Model</h2> <p>PayStream implements an automated, on-chain tax deduction mechanism that removes the need for manual tax processing.</p> <h3>6.1 Basis Points System</h3> <p>Tax rates are stored as <strong>basis points</strong> (bp), where 1 bp=0.01%. This allows fine-grained tax configuration without floating-point arithmetic (which Solidity does not support).</p> <table> <tr><th>Basis Points</th><th>Percentage</th><th>Example</th></tr> <tr><td>100 bp</td><td>1%</td><td>On 1000 tokens → 10 tax, 990 to employee</td></tr> <tr><td>500 bp</td><td>5%</td><td>On 1000 tokens → 50 tax, 950 to employee</td></tr> <tr><td><strong>1000 bp (default)</strong></td><td><strong>10%</strong></td><td><strong>On 1000 tokens → 100 tax, 900 to employee</strong></td></tr> <tr><td>2500 bp</td><td>25%</td><td>On 1000 tokens → 250 tax, 750 to employee</td></tr> </table> <h3>6.2 Tax Calculation Formula</h3> <div class="info-box" > <strong>On every withdrawal:</strong><br> <code>taxShare=(grossAmount × taxBasisPoints) / 10, 000</code><br> <code>employeeShare=grossAmount − taxShare</code><br><br> The <code>taxShare</code> is transferred to the <strong>TaxVault</strong> contract, and the <code>employeeShare</code> is sent directly to the employee's wallet.
+ </div> <h3>6.3 TaxVault</h3> <p>The TaxVault is a separate, isolated contract that holds all collected tax deductions. Key properties:</p> <ul> <li><strong>Ownable:</strong> Only the admin/owner can withdraw accumulated tax funds.</li> <li><strong>Transparent:</strong> Anyone can query the vault balance via <code>getBalance()</code>.</li> <li><strong>Isolated:</strong> Tax funds are completely separated from the PayStream treasury, preventing accidental misuse.</li> </ul> <h2 id="frontend" >7. Frontend Applications</h2> <p>PayStream provides two purpose-built web applications, each targeting a specific user role.</p> <h3>7.1 HR Dashboard (Port 3000)</h3> <p>The HR Dashboard is the administrative control panel for employers and HR managers.</p> <table> <tr><th>Feature</th><th>Description</th></tr> <tr><td>Wallet Connection</td><td>Connect MetaMask wallet. The connected account must hold the HR_ROLE.</td></tr> <tr><td>Create Stream</td><td>Enter employee wallet address and rate per second to start a new salary stream.</td></tr> <tr><td>Manage Streams</td><td>View all active streams with options to Pause, Resume, or Cancel each one.</td></tr> <tr><td>Fund Treasury</td><td>Deposit ERC-20 tokens into the contract to ensure sufficient funds for payroll.</td></tr> <tr><td>Treasury Balance</td><td>Real-time display of the contract's token balance available for salary payments.</td></tr>
+ </table> <h3>7.2 Employee Portal (Port 3001)</h3> <p>The Employee Portal provides employees with a real-time view of their earnings and withdrawal capability.</p> <table> <tr><th>Feature</th><th>Description</th></tr> <tr><td>Wallet Connection</td><td>Connect MetaMask wallet. The portal automatically identifies streams belonging to the connected address.</td></tr> <tr><td>Live Earnings</td><td>Real-time counter showing salary accruing every second with a live updating display.</td></tr> <tr><td>Withdraw Salary</td><td>One-click withdrawal of all accrued salary. Tax deduction is displayed before confirmation.</td></tr> <tr><td>Stream Details</td><td>View stream status (active/paused), rate per second, employer address, and total earned.</td></tr> </table> <h3>7.3 Shared ABI Layer</h3> <p>Both frontends consume contract ABIs and deployed addresses from a shared directory (<code>shared/abi/</code>). The deployment script automatically exports this data, ensuring the frontends always have the correct contract interfaces without manual configuration.</p> <div class="page-break" ></div> <h2 id="security" >8. Security &amp; Access Control</h2> <p>Security is a first-class concern in PayStream. The system leverages multiple layers of protection:</p> <h3>8.1 Access Control (Role-Based)</h3> <table> <tr><th>Role</th><th>Assigned To</th><th>Permissions</th></tr> <tr><td><code>DEFAULT_ADMIN_ROLE</code></td><td>Contract Deployer</td><td>Update tax rate, manage roles, full admin access.</td></tr> <tr><td><code>HR_ROLE</code></td><td>HR Managers</td><td>Create, pause, resume, and cancel salary streams.</td></tr> <tr><td><em>No Role</em></td><td>Employees</td><td>Withdraw from their own streams only. View accrued amounts.</td></tr> </table> <h3>8.2 Security Patterns</h3> <table> <tr><th>Pattern</th><th>Implementation</th><th>Protects Against</th></tr> <tr><td><strong>ReentrancyGuard</strong></td><td>OpenZeppelin's <code>nonReentrant</code> modifier on <code>withdraw()</code></td><td>Reentrancy attacks that could drain funds.</td></tr>
+ <tr><td><strong>Checks-Effects-Interactions</strong></td><td>State (<code>lastClaimTime</code>) updated before any external token transfer.</td><td>State manipulation during external calls.</td></tr> <tr><td><strong>SafeERC20</strong></td><td>All token transfers use OpenZeppelin's <code>SafeERC20</code> wrappers.</td><td>Tokens that don' t return bool on transfer (non-standard ERC-20).</td></tr> <tr><td><strong>Input Validation</strong></td><td>Zero-address checks, zero-amount checks, bounds validation.</td><td>Invalid inputs that could corrupt state or waste gas.</td></tr> <tr><td><strong>Access Control</strong></td><td>OpenZeppelin's role-based access with <code>onlyRole</code> modifiers.</td><td>Unauthorized access to privileged functions.</td></tr>
+ </table> <div class="info-box amber" > <strong>OpenZeppelin Foundation:</strong> PayStream is built entirely on audited, battle-tested OpenZeppelin v5.x contracts — the industry standard for secure Solidity development. No custom cryptographic or financial primitives are used. </div> <h2 id="tech-stack" >9. Technology Stack</h2> <table> <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr> <tr><td><strong>Smart Contracts</strong></td><td>Solidity ^0.8.20</td><td>On-chain payroll logic, tax deduction, and access control.</td></tr> <tr><td><strong>Contract Framework</strong></td><td>Hardhat</td><td>Compilation, testing, deployment, and local blockchain node.</td></tr> <tr><td><strong>Contract Libraries</strong></td><td>OpenZeppelin v5.x</td><td>AccessControl, ReentrancyGuard, SafeERC20, Ownable, ERC20.</td></tr> <tr><td><strong>Frontend Framework</strong></td><td>React (via Vite)</td><td>Component-based UI for HR Dashboard and Employee Portal.</td></tr> <tr><td><strong>Web3 Integration</strong></td><td>ethers.js v6</td><td>Blockchain interaction, contract calls, and wallet connection.</td></tr> <tr><td><strong>Wallet</strong></td><td>MetaMask</td><td>User authentication and transaction signing.</td></tr> <tr><td><strong>Testing</strong></td><td>Mocha + Chai + Hardhat</td><td>Comprehensive smart contract unit and integration tests.</td></tr> <tr><td><strong>Language</strong></td><td>JavaScript / JSX</td><td>Deployment scripts, test suites, and frontend logic.</td></tr> </table> <h2 id="deployment" >10. Deployment &amp; Networks</h2> <h3>10.1 Supported Networks</h3> <table> <tr><th>Network</th><th>Type</th><th>Chain ID</th><th>RPC URL</th></tr> <tr><td><strong>Hardhat Local</strong></td><td>Development</td><td>31337</td><td><code>http: //127.0.0.1:8545</code></td></tr>
+    <tr><td><strong>HeLa Testnet</strong></td><td>Testnet</td><td>8668</td><td><code>https: //testnet-rpc.helachain.com</code></td></tr>
+    </table> <h3>10.2 Deployment Flow</h3> <p>The deployment script (<code>scripts/deploy.js</code>) performs the following steps in sequence:</p> <ol> <li><strong>Deploy MockToken</strong> — A test ERC-20 token with an initial supply minted to the deployer.</li> <li><strong>Deploy TaxVault</strong> — The tax collection vault, initialized with the token address and the deployer as admin.</li> <li><strong>Deploy PayStream</strong> — The main payroll contract, initialized with the token address, TaxVault address, and default tax rate (1000 bp=10%).</li> <li><strong>Export ABIs &amp; Addresses</strong> — Contract ABIs and deployed addresses are written to <code>shared/abi/</code> for frontend consumption.</li> </ol> <div class="page-break" ></div> <h2 id="workflow" >11. User Workflow</h2> <h3>11.1 Employer / HR Workflow</h3> <div class="flow-container" > <div class="flow-step" >Connect<br>MetaMask</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Fund<br>Treasury</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Create<br>Stream</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Monitor<br>Streams</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Pause /<br>Cancel</div> </div> <h3>11.2 Employee Workflow</h3> <div class="flow-container" > <div class="flow-step" >Connect<br>MetaMask</div> <span class="flow-arrow" >→</span> <div class="flow-step" >View<br>Streams</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Watch Live<br>Earnings</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Withdraw<br>Salary</div> <span class="flow-arrow" >→</span> <div class="flow-step" >Receive<br>Net Pay</div> </div> <h3>11.3 Withdrawal Breakdown Example</h3> <div class="info-box" > <strong>Scenario:</strong> Employee has been working for 1 hour (3, 600 seconds) at a rate of 100 wei/sec with a 10% tax rate.<br><br> <strong>Gross Accrued:</strong> 100 × 3, 600=<strong>360, 000 tokens (smallest unit)</strong><br> <strong>Tax Deduction:</strong> 360, 000 × 1, 000 / 10, 000=<strong>36, 000 tokens → TaxVault</strong><br> <strong>Employee Receives:</strong> 360, 000 − 36, 000=<strong>324, 000 tokens → Employee Wallet</strong> </div> <h2 id="conclusion" >12. Conclusion &amp; Future Scope</h2> <h3>12.1 Summary</h3> <p>PayStream successfully demonstrates a working, decentralized payroll streaming system that addresses the core problems of traditional payroll: delayed payments, lack of transparency, high administrative overhead, and intermediary dependencies. By leveraging EVM smart contracts and per-second salary streaming, it provides a fundamentally different and superior approach to employee compensation.</p> <p>The MVP delivers:</p> <ul> <li>&#10003; <strong>Real-time, per-second salary streaming</strong> with on-chain transparency.</li> <li>&#10003; <strong>Automated tax deduction</strong> with configurable basis-point rates.</li> <li>&#10003; <strong>Role-based access control</strong> separating HR and employee permissions.</li> <li>&#10003; <strong>Secure, auditable smart contracts</strong> built on OpenZeppelin standards.</li> <li>&#10003; <strong>Two intuitive web frontends</strong> for HR managers and employees.</li> <li>&#10003; <strong>Local and testnet deployment</strong> support with automated ABI export.</li> </ul> <h3>12.2 Future Enhancements</h3> <table> <tr><th>Feature</th><th>Description</th></tr> <tr><td>Multi-Token Payroll</td><td>Support multiple ERC-20 tokens for salary payments (e.g., USDC, DAI, WETH).</td></tr> <tr><td>Progressive Tax Brackets</td><td>Implement tiered tax rates based on cumulative earnings or income brackets.</td></tr> <tr><td>Batch Stream Creation</td><td>Allow HR to create multiple streams in a single transaction (gas optimization).</td></tr> <tr><td>Employee Self-Service</td><td>Allow employees to update their wallet address or set withdrawal schedules.</td></tr> <tr><td>Analytics Dashboard</td><td>Comprehensive payroll analytics with charts, reports, and export functionality.</td></tr> <tr><td>DAO Governance</td><td>Decentralized governance for tax rate changes and contract upgrades.</td></tr> <tr><td>Cross-Chain Deployment</td><td>Deploy on multiple EVM chains (Ethereum, Polygon, Arbitrum, Base) for wider adoption.</td></tr> <tr><td>Mainnet Deployment</td><td>Audit, optimize gas costs, and deploy to production mainnet networks.</td></tr> </table> <div class="footer" > <p><strong>PayStream</strong> — Decentralized Payroll Streaming &nbsp; |&nbsp; Built with Solidity, Hardhat, React &nbsp; |&nbsp; MIT License</p> <p>Document generated: February 2026</p> </div> </body> </html>

@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-elevated: #1a1a24;
+  --border: #2e2e3a;
+  --accent: #14b8a6;
+  --accent-dim: #0d9488;
+  --muted: #94a3b8;
+  --text: #f1f5f9;
+  --success: #22c55e;
+  --warning: #eab308;
+  --error: #ef4444;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-lg;
+  }
+  .btn-primary {
+    @apply rounded-xl bg-[var(--accent)] px-5 py-2.5 font-semibold text-[var(--bg)] transition hover:opacity-90 active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply rounded-xl border border-[var(--border)] bg-[var(--bg-elevated)] px-5 py-2.5 font-medium transition hover:border-[var(--accent)] hover:bg-[var(--bg-elevated)];
+  }
+  .input {
+    @apply w-full rounded-xl border border-[var(--border)] bg-[var(--bg-elevated)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)];
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-[var(--muted)];
+  }
+}
+
+/* Subtle grid background for hero */
+.hero-pattern {
+  background-image:
+    linear-gradient(rgba(20, 184, 166, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 184, 166, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Section backgrounds - alternate subtle pattern */
+.section-pattern {
+  background-image:
+    linear-gradient(rgba(20, 184, 166, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 184, 166, 0.02) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+
+/* Radiating ring for landing */
+@keyframes radiate {
+  0% { transform: scale(0.8); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 0.1; }
+  100% { transform: scale(0.8); opacity: 0.4; }
+}
+.animate-radiate {
+  animation: radiate 3s ease-in-out infinite;
+}

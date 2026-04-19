@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>PayStream - Hackathon Presentation</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/black.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/highlight/monokai.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown>
+                <textarea data-template>
+# PayStream
+## Solution for SIH
+
+---
+
+# 1. Problem Statement
+**Title**: Real-time Salary Streaming System
+**Domain**: Blockchain / Fintech
+
+**Description**:
+- Traditional payroll systems are slow, opaque, and rigid.
+- Employees wait 30 days for earnings, leading to cash flow issues.
+- Compliance and tax handling is often manual and error-prone.
+- "Debt Trap": Reliance on high-interest payday loans due to delayed wages.
+
+---
+
+# 2. Proposed Solution 💡
+**PayStream: A Real-time Salary Streaming Protocol**
+
+- **Concept**: Money flows like water. Employees earn every second.
+- **Mechanism**: Smart contracts stream HLUSD stablecoin from Treasury to Employee.
+- **Innovation**: Automated tax withholding at the source (Tax Vault).
+- **Drift-Free**: Precision math ensures 0 loss over time.
+
+---
+
+# 3. Technical Approach 🛠️
+
+- **Architecture**: Decentralized Application (dApp)
+- **Flow**:
+  1. HR funds `PayrollTreasury` with HLUSD.
+  2. HR creates streams via `PayStream` contract (Batch supported).
+  3. Employee gains withdrawable balance every second.
+  4. On withdrawal, tax % is diverted to `TaxVault`.
+
+---
+
+# 4. Technology Stack 💻
+
+| Layer | Technology |
+|---|---|
+| **Blockchain** | HeLa Testnet (EVM Compatible) |
+| **Smart Contracts** | Solidity 0.8.24, Hardhat |
+| **Frontend** | Next.js 16, React, TailwindCSS |
+| **Web3 Integration** | Wagmi, Viem, RainbowKit |
+| **Testing** | Hardhat / Chai |
+
+---
+
+# 5. Use Cases 🌍
+
+1.  **Gig Economy & Freelancers**: Instant payment for hours worked.
+2.  **Corporate Payroll**: Automated monthly salary streaming.
+3.  **Grant Distribution**: Transparent funding for research/projects.
+4.  **Subscription Services**: Pay-per-second usage models.
+
+---
+
+# 6. Dependencies / Showstoppers 🚧
+
+-   **Dependencies**:
+    -   HeLa Testnet availability.
+    -   RPC Node stability.
+    -   Browser Wallet (MetaMask) for users.
+
+-   **Strategies**:
+    -   Local fallback (Hardhat Network) for demos.
+    -   Responsive UI design for mobile wallet support.
+
+---
+
+# 7. Demo 🎥
+
+-   **HR Dashboard**: Batch creation from CSV.
+-   **Employee Portal**: Real-time earnings visualization.
+-   **Transaction Flow**: Deposit -> Stream -> Withdraw + Tax.
+
+---
+
+# Thank You!
+
+**Team Name**: PROBS-Q
+**Project**: PayStream
+**Members**: Ravikant, Madhukar Vaibhav
+
+- [GitHub Repository Link]
+- [Live Demo Link]
+                    </textarea>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/highlight/highlight.js"></script>
+    <script>
+        // More info about initialization & config:
+        // - https://revealjs.com/initialization/
+        // - https://revealjs.com/config/
+        Reveal.initialize({
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+        });
+    </script>
+</body>
+
+</html>

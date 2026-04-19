@@ -1,0 +1,20 @@
+{
+  "name": "paystream",
+  "version": "1.0.0",
+  "description": "Decentralized payroll streaming system — stream salaries per second with automatic tax deductions",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:hela": "hardhat run scripts/deploy.js --network hela",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "dotenv": "^16.3.1"
+  }
+}

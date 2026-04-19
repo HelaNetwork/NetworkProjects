@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #020617; /* Elite Obsidian */
+    --foreground: #f8fafc;
+    --hela-teal: 45, 212, 191; /* RGB for HeLa Teal #2DD4BF */
+  }
+
+  body {
+    @apply bg-[#020617] text-slate-100;
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    /* Smooth background glow for Web3 feel */
+    background-image: radial-gradient(circle at 50% -20%, rgba(var(--hela-teal), 0.08), transparent);
+  }
+}
+
+@layer components {
+  /* High-End Glassmorphism */
+  .glass-card {
+    @apply relative overflow-hidden transition-all duration-300;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--hela-teal), 0.1);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-card:hover {
+    border: 1px solid rgba(var(--hela-teal), 0.3);
+    background: rgba(15, 23, 42, 0.4);
+    box-shadow: 0 8px 32px -1px rgba(var(--hela-teal), 0.1);
+  }
+
+  /* Real-time Ticker Glow */
+  .ticker-glow {
+    text-shadow: 0 0 15px rgba(var(--hela-teal), 0.4);
+    background: linear-gradient(to bottom, #fff, rgba(var(--hela-teal), 0.8));
+    -webkit-background-clip: text;
+    -webkit-background-clip: text;
+  background-clip: text; /* 👈 Add this line to fix the warning */
+  -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Interactive Buttons */
+  .btn-primary {
+    @apply px-8 py-4 bg-[#2DD4BF] text-black font-black rounded-2xl transition-all;
+    box-shadow: 0 10px 20px -5px rgba(45, 212, 191, 0.3);
+  }
+
+  .btn-primary:hover {
+    @apply brightness-110 -translate-y-0.5;
+    box-shadow: 0 15px 30px -5px rgba(45, 212, 191, 0.4);
+  }
+}
+
+/* Custom Keyframes for the "Money Stream" */
+@keyframes countUp {
+  from { opacity: 0.5; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-stream {
+  animation: countUp 0.1s ease-out;
+}

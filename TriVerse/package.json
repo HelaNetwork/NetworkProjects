@@ -1,0 +1,29 @@
+{
+  "name": "paystream-protocol",
+  "version": "1.0.0",
+  "description": "PayStream Protocol",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy:local": "hardhat run scripts/deploy-local.js",
+    "deploy:hela": "hardhat run scripts/deploy.js --network hela_testnet"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.4.0",
+    "autoprefixer": "^10.4.24",
+    "chai": "^4.3.10",
+    "hardhat": "^2.22.15",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.10",
+    "@tanstack/react-query": "^5.90.21",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.16.0",
+    "viem": "^2.45.3",
+    "wagmi": "^2.19.5"
+  }
+}

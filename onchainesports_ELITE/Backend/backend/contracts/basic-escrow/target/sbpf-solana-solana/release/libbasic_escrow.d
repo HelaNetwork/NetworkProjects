@@ -1,0 +1,1 @@
+C:\Users\Aloneking\Desktop\onchainesports\Backend\backend\contracts\basic-escrow\target\sbpf-solana-solana\release\libbasic_escrow.rlib: C:\Users\Aloneking\Desktop\onchainesports\Backend\backend\contracts\basic-escrow\src\lib.rs

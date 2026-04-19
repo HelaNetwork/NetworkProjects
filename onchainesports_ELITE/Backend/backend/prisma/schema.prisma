@@ -1,0 +1,216 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String  @id @default(cuid())
+  walletAddress String  @unique
+  username      String?
+  avatarUrl     String?
+  country       String?
+  bio           String?
+
+  createdAt DateTime @default(now())
+
+  assets       UserAsset[]
+  predictions  PredictionPosition[]
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+model Team {
+  id      String  @id @default(cuid())
+  name    String
+  game    String
+  region  String?
+  logoUrl String?
+
+  createdAt DateTime @default(now())
+
+  assets   Asset[]
+  matchesA Match[] @relation("TeamA")
+  matchesB Match[] @relation("TeamB")
+
+  @@map("teams")
+}
+
+model AssetCollection {
+  id             String  @id @default(cuid())
+  name           String
+  description    String?
+  collectionMint String?
+  metadataUri    String?
+
+  createdAt DateTime @default(now())
+
+  assets Asset[]
+
+  @@map("asset_collections")
+}
+
+model Asset {
+  id           String    @id @default(cuid())
+  name         String
+  assetType    AssetType
+  teamId       String?
+  collectionId String?
+
+  mintAddress String?
+  metadataUri String?
+
+  basePrice    Float
+  currentPrice Float
+
+  totalSupply Int
+  circulating Int
+
+  bondingCurveK Float
+
+  createdAt DateTime @default(now())
+
+  team       Team?            @relation(fields: [teamId], references: [id])
+  collection AssetCollection? @relation(fields: [collectionId], references: [id])
+
+  holders UserAsset[]
+
+  @@map("assets")
+}
+
+model UserAsset {
+  id       String @id @default(cuid())
+  userId   String
+  assetId  String
+  quantity Int
+
+  avgPrice Float
+
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  @@unique([userId, assetId])
+  @@map("user_assets")
+}
+
+model Match {
+  id         String       @id @default(cuid())
+  teamAId    String
+  teamBId    String
+  tournament String?
+  startTime  DateTime
+  status     MatchStatus
+  result     MatchResult?
+
+  createdAt DateTime @default(now())
+
+  teamA Team @relation("TeamA", fields: [teamAId], references: [id])
+  teamB Team @relation("TeamB", fields: [teamBId], references: [id])
+
+  market PredictionMarket?
+
+  @@map("matches")
+}
+
+model PredictionMarket {
+  id           String @id @default(cuid())
+  matchId      String @unique
+  contractAddr String
+
+  liquidityPool Float
+
+  supplyA Int
+  supplyB Int
+
+  basePrice Float
+  curveK    Float
+
+  status MarketStatus
+
+  createdAt DateTime @default(now())
+
+  match     Match                @relation(fields: [matchId], references: [id])
+  positions PredictionPosition[]
+
+  @@map("prediction_markets")
+}
+
+model PredictionPosition {
+  id       String @id @default(cuid())
+  userId   String
+  marketId String
+
+  team   PredictionSide
+  amount Int
+
+  avgPrice Float
+
+  createdAt DateTime @default(now())
+
+  user   User             @relation(fields: [userId], references: [id])
+  market PredictionMarket @relation(fields: [marketId], references: [id])
+
+  @@map("prediction_positions")
+}
+
+model Transaction {
+  id     String @id @default(cuid())
+  userId String
+
+  txType   TransactionType
+  assetId  String?
+  marketId String?
+
+  quantity   Int?
+  amountUsdc Float
+
+  txSignature String?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
+}
+
+enum AssetType {
+  TEAM
+  LAND
+  PLAYER
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+}
+
+enum MatchResult {
+  TEAM_A
+  TEAM_B
+}
+
+enum PredictionSide {
+  TEAM_A
+  TEAM_B
+}
+
+enum MarketStatus {
+  OPEN
+  CLOSED
+  SETTLED
+}
+
+enum TransactionType {
+  BUY_ASSET
+  SELL_ASSET
+  BUY_PREDICTION
+  SELL_PREDICTION
+  CLAIM_REWARD
+}

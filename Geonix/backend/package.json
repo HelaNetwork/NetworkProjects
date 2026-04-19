@@ -1,0 +1,38 @@
+{
+  "name": "paystream-backend",
+  "version": "2.0.0",
+  "description": "PayStream Backend - Real-time salary streaming on HeLa Network",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:init": "node src/db/init.js",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js --network helaTestnet",
+    "test": "npx hardhat test"
+  },
+  "keywords": [
+    "paystream",
+    "hela",
+    "blockchain",
+    "salary"
+  ],
+  "author": "PayStream Team",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.9.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "node": "^25.6.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.4",
+    "nodemon": "^3.0.2"
+  }
+}

@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+/* ===== Lenis Required CSS ===== */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+
+/* ===== Dirtyline-style Font (using Unbounded as a bold display alternative) ===== */
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Matrix.org Color Palette */
+  --bg-dark: #000000;
+  --bg-light: #F6F7F9;
+  --text-white: #FFFFFF;
+  --text-dark: #1a1a2e;
+  --text-muted: #94A3B8;
+  --accent-cyan: #00D4FF;
+  --accent-glow: rgba(0, 212, 255, 0.15);
+  --accent-indigo: #4F46E5;
+  --accent-emerald: #10B981;
+
+  /* Fonts */
+  --font-display: 'Unbounded', 'Arial Black', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, * {
+  cursor: url('./cursor/Old Roblox--cursor--SweezyCursors-large.png'), auto !important;
+}
+
+a, button, [role="button"], input[type="submit"], input[type="button"], .cursor-pointer, [style*="cursor: pointer"] {
+  cursor: url('./cursor/Old Roblox--pointer--SweezyCursors-large.png'), pointer !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ===== Topographic Wave Background Pattern ===== */
+.topo-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='topo' x='0' y='0' width='400' height='400' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 0 200 Q 100 150 200 200 T 400 200' fill='none' stroke='%23ffffff08' stroke-width='1'/%3E%3Cpath d='M 0 220 Q 100 170 200 220 T 400 220' fill='none' stroke='%23ffffff06' stroke-width='1'/%3E%3Cpath d='M 0 240 Q 100 190 200 240 T 400 240' fill='none' stroke='%23ffffff05' stroke-width='1'/%3E%3Cpath d='M 0 180 Q 100 130 200 180 T 400 180' fill='none' stroke='%23ffffff07' stroke-width='1'/%3E%3Cpath d='M 0 160 Q 100 110 200 160 T 400 160' fill='none' stroke='%23ffffff04' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23topo)'/%3E%3C/svg%3E");
+}
+
+/* ===== Pill Button Styles ===== */
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: var(--font-body);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+  cursor: url('./cursor/Old Roblox--pointer--SweezyCursors-large.png'), pointer !important;
+}
+
+.pill-btn-primary {
+  background: var(--text-white);
+  color: var(--bg-dark);
+}
+.pill-btn-primary:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+}
+
+.pill-btn-outline {
+  background: transparent;
+  color: var(--text-white);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+.pill-btn-outline:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  transform: translateY(-2px);
+}
+
+.pill-btn-dark {
+  background: var(--bg-dark);
+  color: var(--text-white);
+}
+.pill-btn-dark:hover {
+  background: #1a1a2e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Glow Effects ===== */
+.glow-cyan {
+  box-shadow: 0 0 80px 20px var(--accent-glow), 0 0 200px 60px rgba(0, 212, 255, 0.05);
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== Section Wave Separator ===== */
+.wave-separator {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+.wave-separator svg {
+  display: block;
+  width: 100%;
+  height: 60px;
+}
+
+/* ===== Hide All Scrollbars Globally ===== */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+* {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
+
+/* ===== Landing Page Sections ===== */
+.landing-section {
+  width: 100%;
+  overflow: hidden;
+}
+.landing-section-dark {
+  background: var(--bg-dark);
+}
+.landing-section-light {
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    padding: 50px 20px;
+  }
+}
+
+/* ===== Feature Cards ===== */
+.feature-card {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.5rem;
+  padding: 40px 32px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.feature-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}

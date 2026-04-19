@@ -1,0 +1,42 @@
+{
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "postinstall": "npx prisma generate",
+    "deploy:escrow:devnet": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy-basic-escrow-devnet.ps1",
+    "deploy:asset-mint:devnet": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy-asset-mint-devnet.ps1",
+    "deploy:bonding-curve:devnet": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy-bonding-curve-devnet.ps1",
+    "deploy:prediction-market:devnet": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy-prediction-market-devnet.ps1",
+    "deploy:contracts:devnet": "npm run deploy:asset-mint:devnet; npm run deploy:bonding-curve:devnet; npm run deploy:prediction-market:devnet"
+  },
+  "type": "module",
+  "dependencies": {
+    "@imagekit/javascript": "^5.2.2",
+    "@imagekit/nodejs": "^7.3.0",
+    "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.4",
+    "bs58": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
+    "pg": "^8.20.0",
+    "tweetnacl": "^1.0.3",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^25.3.3",
+    "@types/pg": "^8.18.0",
+    "prisma": "^7.4.2",
+    "ts-node": "^10.9.2"
+  }
+}

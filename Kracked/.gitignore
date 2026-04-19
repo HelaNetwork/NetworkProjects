@@ -1,0 +1,16 @@
+node_modules
+.env
+.env.local
+.env.*.local
+
+backend/node_modules
+backend/artifacts
+backend/cache
+
+frontend/node_modules
+frontend/.next
+
+dist
+build
+
+.DS_Store

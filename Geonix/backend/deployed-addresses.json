@@ -1,0 +1,8 @@
+{
+  "network": "helaTestnet",
+  "deployer": "0x4e0779b89eE3E6898b77A3f384eEa2Cb07b92551",
+  "hlusdToken": "0x5cB0277f586b3b7651a843B2AB75b4F2A7D944c0",
+  "paystreamContract": "0x99c1df5bda4242eB003Ba13b8E1394e2A22b26A7",
+  "taxVault": "0x4e0779b89eE3E6898b77A3f384eEa2Cb07b92551",
+  "timestamp": "2026-02-15T17:34:16.964Z"
+}

@@ -1,0 +1,18 @@
+Frontend Developer - Abhay Pandey(Elite, GitHub - aloneking789)
+- GitHub Repo Admin_Panel - https://github.com/Aloneking789/esports-bet-exchange.git
+- GitHub Repo User_App - https://github.com/Onchain-Esports/Aeternum.git
+
+Backend and Block Chain Developer - Abhijeet Gupta (Elite, GitHub - ag21o9)
+- GitHub Repo Backend - https://github.com/ag21o9/HackJLU
+
+User App Live link - https://expo.dev/artifacts/eas/aBh5UsgFMj9jmbCZN4kU17.apk
+
+Smart Contract Deployed Links:
+
+Asset Mint Program ==  https://explorer.solana.com/address/HWauK4F2eqYviud56Pomnnb4mGTn515i5Dp399MkWCVJ?cluster=devnet
+
+Bonding Curve Market Program == https://explorer.solana.com/address/8sSgY8UKrbVYQ5h3fry5vYEZsPvFpZDK12cxpWHXnhHN?cluster=devnet
+
+Prediction Market Program == https://explorer.solana.com/address/AokKNb8umxbpidMkVbBe6eeFuzqvsh5qBeoiDy23XmNh?cluster=devnet
+
+Basic Escrow Program == https://explorer.solana.com/address/7pcJBPWaeoZgLKierGNLzt64DiTQxsYsD2swoc2HD8TT?cluster=devnet

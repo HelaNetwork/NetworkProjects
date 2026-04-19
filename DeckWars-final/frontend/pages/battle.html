@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Arena — DeckWars</title>
+  <meta name="description" content="Challenge opponents to 1v1 card battles using the commit-reveal fairness scheme on HeLa blockchain." />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="../index.html" class="navbar-logo"><span>⚔️</span><span>DECK WARS</span></a>
+        <ul class="navbar-nav">
+          <li><a href="../index.html">🏠 Home</a></li>
+          <li><a href="collection.html">🃏 Collection</a></li>
+          <li><a href="battle.html" class="active">⚔️ Battle</a></li>
+        </ul>
+        <div class="navbar-right">
+          <div class="network-badge"><span class="network-dot" id="network-dot"></span><span id="network-name">HeLa Testnet</span></div>
+          <button class="btn btn-primary btn-sm" id="connect-btn" onclick="connectWallet()">🔗 Connect Wallet</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <div class="container">
+
+      <!-- WALLET PROMPT -->
+      <div id="wallet-prompt" style="text-align:center; padding:80px 0;">
+        <div style="font-size:3rem; margin-bottom:16px;">⚔️</div>
+        <h2 class="font-hud" style="font-size:1.1rem; color:var(--cyan); margin-bottom:8px; letter-spacing:0.06em;">CONNECT TO BATTLE</h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem; max-width:420px; margin:0 auto 24px; line-height:1.6;">Connect your MetaMask wallet to enter the battle arena.</p>
+        <button class="btn btn-primary btn-lg" onclick="connectWallet()">🔗 Connect MetaMask</button>
+      </div>
+
+      <!-- BATTLE LOBBY -->
+      <div id="battle-lobby" style="display:none;">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">⚔️ Battle Arena</h1>
+            <p class="section-subtitle">Challenge an opponent or accept a pending challenge</p>
+          </div>
+          <span class="badge badge-cyan" id="game-id-badge" style="display:none;"></span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:32px;">
+          <!-- Challenge Form -->
+          <div class="glass-elevated" style="padding:28px;">
+            <h2 class="font-hud" style="font-size:0.85rem; color:var(--cyan); letter-spacing:0.08em; margin-bottom:20px;">⚔️ ISSUE CHALLENGE</h2>
+            <div class="form-group">
+              <label class="form-label">Opponent Address</label>
+              <input type="text" class="form-input" id="opponent-address" placeholder="0x..." />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Wager (HLUSD) — Optional</label>
+              <input type="number" class="form-input" id="wager-amount" placeholder="0.0" step="0.001" min="0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Select Your 3 Battle Cards</label>
+              <div id="my-card-picker" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;"></div>
+              <div id="selected-cards-display" style="display:flex; gap:6px; flex-wrap:wrap; min-height:28px;">
+                <span style="color:var(--text-muted); font-size:0.8rem; align-self:center;">No cards selected</span>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;" id="challenge-btn" onclick="issueChallenge()">⚔️ Issue Challenge</button>
+          </div>
+
+          <!-- Accept Challenge Form -->
+          <div class="glass-elevated" style="padding:28px;">
+            <h2 class="font-hud" style="font-size:0.85rem; color:var(--purple); letter-spacing:0.08em; margin-bottom:20px;">🛡️ ACCEPT CHALLENGE</h2>
+            <div class="form-group">
+              <label class="form-label">Game ID</label>
+              <input type="number" class="form-input" id="accept-game-id" placeholder="Enter game ID..." min="1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Select Your 3 Battle Cards</label>
+              <div id="accept-card-picker" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;"></div>
+              <div id="accept-selected-display" style="display:flex; gap:6px; flex-wrap:wrap; min-height:28px;">
+                <span style="color:var(--text-muted); font-size:0.8rem; align-self:center;">No cards selected</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary" style="width:100%; border-color:var(--border-purple); color:var(--purple);" id="accept-btn" onclick="acceptChallenge()">🛡️ Accept Challenge</button>
+          </div>
+        </div>
+
+        <!-- Active Game ID lookup -->
+        <div class="glass" style="padding:20px; margin-bottom:24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <span class="font-hud" style="font-size:0.75rem; color:var(--text-secondary); letter-spacing:0.08em;">LOAD EXISTING GAME:</span>
+          <input type="number" class="form-input" id="load-game-id" placeholder="Game ID" style="max-width:160px;" min="1" />
+          <button class="btn btn-secondary btn-sm" onclick="loadGame()">Load Game</button>
+          <span id="load-status" style="color:var(--text-muted); font-size:0.8rem;"></span>
+        </div>
+      </div>
+
+      <!-- BATTLE SCREEN -->
+      <div id="battle-screen" style="display:none;">
+        <!-- Turn info bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h2 class="font-hud" style="font-size:0.85rem; color:var(--cyan); letter-spacing:0.08em;">⚔️ BATTLE IN PROGRESS</h2>
+            <p style="color:var(--text-muted); font-size:0.78rem;" id="game-info-label">Game #0 · Turn 0</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-danger btn-sm" onclick="forfeitGame()">🏳️ Forfeit</button>
+            <button class="btn btn-secondary btn-sm" onclick="claimTimeoutVictory()">⏱️ Claim Timeout</button>
+          </div>
+        </div>
+
+        <!-- Main arena -->
+        <div class="battle-arena" id="arena">
+          <!-- Player 1 (me) -->
+          <div class="battle-player" id="my-battle-panel">
+            <div class="player-label">
+              <span>🟢 YOU</span>
+              <span id="my-addr-short" style="font-size:0.65rem; color:var(--text-muted);">0x...</span>
+            </div>
+            <div class="active-card-display">
+              <span class="active-card-icon" id="my-active-icon" style="color:var(--cyan);">⚔️</span>
+              <div class="active-card-name" id="my-active-name">—</div>
+              <div class="hp-bar-large"><div class="hp-bar-fill" id="my-hp-bar" style="width:100%; background:linear-gradient(90deg,#15803d,#22c55e);"></div></div>
+              <div class="hp-text" id="my-hp-text">—</div>
+            </div>
+            <div class="bench-row" id="my-bench"></div>
+          </div>
+
+          <!-- VS -->
+          <div class="battle-vs">
+            <div class="vs-label">VS</div>
+            <div class="turn-indicator badge" id="turn-badge" style="background:rgba(0,212,255,0.1);color:var(--cyan);border:1px solid var(--border-glow);">WAITING</div>
+          </div>
+
+          <!-- Player 2 (opponent) -->
+          <div class="battle-player" id="opp-battle-panel">
+            <div class="player-label">
+              <span>🔴 OPPONENT</span>
+              <span id="opp-addr-short" style="font-size:0.65rem; color:var(--text-muted);">0x...</span>
+            </div>
+            <div class="active-card-display">
+              <span class="active-card-icon" id="opp-active-icon" style="color:var(--purple);">🔮</span>
+              <div class="active-card-name" id="opp-active-name">—</div>
+              <div class="hp-bar-large"><div class="hp-bar-fill" id="opp-hp-bar" style="width:100%;background:linear-gradient(90deg,#7c3aed,#a855f7);"></div></div>
+              <div class="hp-text" id="opp-hp-text">—</div>
+            </div>
+            <div class="bench-row" id="opp-bench"></div>
+          </div>
+        </div>
+
+        <!-- Commit-reveal status bar -->
+        <div class="commit-status" style="margin:20px 0;" id="commit-status-bar">
+          <div class="commit-player">
+            <div class="commit-indicator pending" id="p1-commit-ind">❓</div>
+            <div style="font-size:0.7rem; color:var(--text-muted);">Your Commit</div>
+          </div>
+          <div style="align-self:center; color:var(--text-muted); font-size:0.8rem; padding:0 12px;">→ reveal →</div>
+          <div class="commit-player">
+            <div class="commit-indicator pending" id="p2-commit-ind">❓</div>
+            <div style="font-size:0.7rem; color:var(--text-muted);">Opponent Commit</div>
+          </div>
+        </div>
+
+        <!-- Turn actions -->
+        <div class="glass-elevated" style="padding:24px; margin-bottom:20px;" id="action-panel">
+          <h3 class="font-hud" style="font-size:0.8rem; letter-spacing:0.1em; color:var(--cyan); margin-bottom:16px;" id="action-title">SELECT YOUR MOVE</h3>
+
+          <!-- Step 1: Choose move -->
+          <div id="step-choose-move">
+            <div class="moves-grid" id="moves-grid"></div>
+            <div style="margin-top:16px; display:flex; gap:10px; align-items:center;">
+              <button class="btn btn-primary" id="commit-btn" onclick="commitMove()" disabled>🔒 Commit Move</button>
+              <span style="font-size:0.78rem; color:var(--text-secondary);">Your move will be hidden until both players commit</span>
+            </div>
+          </div>
+
+          <!-- Step 2: Reveal -->
+          <div id="step-reveal-move" style="display:none;">
+            <div class="glass" style="padding:20px; text-align:center; margin-bottom:16px;">
+              <div style="font-size:2rem; margin-bottom:8px;">🔐</div>
+              <p class="font-hud" style="font-size:0.78rem; color:var(--gold); letter-spacing:0.08em; margin-bottom:6px;">MOVE COMMITTED!</p>
+              <p style="color:var(--text-secondary); font-size:0.82rem;">Waiting for opponent to commit their move...</p>
+              <p style="color:var(--text-muted); font-size:0.75rem; margin-top:8px;" id="reveal-hint"></p>
+            </div>
+            <button class="btn btn-success" style="width:100%;" id="reveal-btn" onclick="revealMove()" disabled>
+              ✅ Reveal Move & Resolve Turn
+            </button>
+          </div>
+
+          <!-- Waiting state -->
+          <div id="step-waiting" style="display:none; text-align:center; padding:20px;">
+            <div class="spinner" style="margin:0 auto 16px;"></div>
+            <p class="font-hud" style="font-size:0.78rem; color:var(--text-secondary); letter-spacing:0.08em;" id="waiting-text">WAITING FOR OPPONENT...</p>
+          </div>
+        </div>
+
+        <!-- Battle Log -->
+        <div>
+          <p class="form-label" style="margin-bottom:8px;">📜 Battle Log</p>
+          <div class="battle-log" id="battle-log">
+            <div class="log-entry system">Battle started. Commit your move to begin the first turn!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME OVER SCREEN -->
+      <div id="game-over-screen" style="display:none; text-align:center; padding:80px 0;">
+        <div style="font-size:5rem; margin-bottom:20px;" id="result-icon">🏆</div>
+        <h2 class="font-hud" style="font-size:2.5rem; font-weight:900; margin-bottom:16px;" id="result-title">VICTORY!</h2>
+        <p style="color:var(--text-secondary); font-size:1rem; margin-bottom:32px;" id="result-subtitle">You won the battle!</p>
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-lg" onclick="resetBattle()">⚔️ Fight Again</button>
+          <a href="collection.html" class="btn btn-secondary btn-lg">🃏 View Collection</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="../js/web3.js"></script>
+  <script src="../js/game.js"></script>
+</body>
+</html>
