@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+data_pipeline.db
+.env

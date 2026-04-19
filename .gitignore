@@ -1,0 +1,4 @@
+# Workspace ignores
+.venv/
+__pycache__/
+data_pipeline.db

@@ -1,0 +1,17 @@
+{
+  "name": "ai-agent-backend",
+  "version": "0.1.0",
+  "description": "Backend service to run an AI agent and persist output into a single file.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

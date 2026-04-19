@@ -1,0 +1,8 @@
+pandas==2.2.2
+numpy==1.26.4
+yfinance==0.2.38
+newsapi-python==0.2.7
+pandas-ta==0.3.14b0
+textblob==0.18.0.post0
+APScheduler==3.10.4
+python-dotenv==1.0.1
