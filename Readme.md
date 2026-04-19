@@ -1,162 +1,219 @@
-# HeLa dApp Submission Repository
+# 🛡️ ShieldAI — Wallet Guardian
 
-Welcome to the official **HeLa Ecosystem Project Submission Repository**.
+> AI-powered assistant that integrates with crypto wallets (EVM-compatible) to help users understand transactions, assess risks, and make safe decisions before signing.
 
-This repository is designed to help builders submit their projects that are being developed on the **HeLa Network** as a part of hackathons, bootcamps, ecosystem programs, or independent community contributions.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node](https://img.shields.io/badge/Node.js-18+-green)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
 
-If you have built a consumer-focused or developer-focused dApp on HeLa — this is where you showcase it.
+---
 
-## What Happens After Submission?
+## ✨ Features
 
-Projects submitted through this repository will be evaluated for:
+### 🔍 Transaction Explainer
+Decode any raw transaction into a human-readable explanation. Understands ERC-20/721/1155 transfers, token approvals, DEX swaps, staking, and more.
 
-- 🏆 Hackathon Track Rewards
-- 🚀 Testnet → Mainnet Transition Support
-- 💰 Ecosystem Grant Opportunities
-- 📢 Community & Institutional Marketing
+### ⚡ "What If I Sign This?" Simulator
+Preview the effects of a transaction before you sign it: balance changes, token approvals, NFT transfers, gas costs, and hidden interactions.
 
-## 📌 Submission Guidelines
+### 🛡️ Risk Detection Engine
+Automated threat detection for:
+- Unlimited token approvals
+- NFT `setApprovalForAll` permissions
+- Unknown/unverified contracts
+- Flagged/scam addresses
+- High-value transfers
+- Suspicious gas usage
 
-To ensure consistency and smooth evaluation across all submitted projects, please follow the instructions below carefully.
+Risk scoring: **Low (0-33) / Medium (34-66) / High (67-100)**
 
-### 1. Fork This Repository
+### 💬 AI Chat Assistant (ShieldAI)
+Conversational AI assistant that answers blockchain security questions in plain, beginner-friendly language. Context-aware when a transaction is loaded.
 
-Start by **forking this repository** to your GitHub account.
+### 🔐 Safety Recommendations
+Actionable advice: reject dangerous transactions, reduce approval limits, use burner wallets, and verify contracts.
 
-Once forked, clone your fork locally:
+---
 
-```bash
-git clone https://github.com/<your-username>/<repo-name>.git
-```
+## 🏗️ Tech Stack
 
-### 2. Project Visibility Requirement
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Next.js 14 (App Router), Tailwind CSS, wagmi v2, viem |
+| **Backend** | Node.js, Express.js, ethers.js v6 |
+| **AI** | OpenAI GPT-4o-mini (with intelligent fallbacks) |
+| **Blockchain** | EVM chains — Ethereum, Polygon, Arbitrum, Sepolia |
 
-Your submitted project **must be open-source** for review and ecosystem support.
+---
 
-Closed-source submissions will **not be eligible** for:
-
-- Ecosystem grants
-- Mainnet transition support
-- Institutional exposure
-- Community marketing support
-
-### 3. Create Project Directory
-
-Inside the root directory of the repository, create a folder named:
-
-```bash
-YourProjectName
-```
-
-### 4. Upload Project Files
-
-Upload all the necessary project-related files inside your project folder.
-
-Example:
+## 📂 Project Structure
 
 ```
-YourProjectName/
- └──  ├── contracts/
-      ├── frontend/
-      ├── backend/
-      ├── assets/
-      └── README.md
+web3_AI_wallet/
+├── frontend/                    # Next.js App
+│   ├── src/
+│   │   ├── app/                 # Pages & layout
+│   │   ├── components/          # UI components
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── WalletConnect.tsx
+│   │   │   ├── TransactionPreview.tsx
+│   │   │   ├── RiskMeter.tsx
+│   │   │   ├── ChatAssistant.tsx
+│   │   │   ├── SimulatorPanel.tsx
+│   │   │   └── SafetyRecommendations.tsx
+│   │   ├── lib/                 # Config & API client
+│   │   └── providers/           # Web3 provider
+│   └── package.json
+│
+├── backend/                     # Express API
+│   ├── src/
+│   │   ├── routes/              # API endpoints
+│   │   ├── services/            # Business logic
+│   │   │   ├── decoder.js       # ABI + tx decoder
+│   │   │   ├── riskEngine.js    # Risk scoring
+│   │   │   ├── aiService.js     # OpenAI integration
+│   │   │   └── simulator.js     # Tx simulator
+│   │   ├── prompts/             # AI prompt templates
+│   │   └── utils/               # ABI registry, known contracts
+│   ├── server.js
+│   └── package.json
+│
+├── .env.example
+└── README.md
 ```
 
 ---
 
-### 5. Project README (Mandatory)
+## 🚀 Getting Started
 
-Each project folder **must include a README.md file** that contains the following details:
+### Prerequisites
+- **Node.js** 18+ and npm
+- **MetaMask** browser extension (for wallet connection)
+- **OpenAI API Key** (optional — app works with smart fallbacks)
 
-#### Product Overview
+### 1. Clone & Install
 
-- What is your dApp about?
-- What problem are you solving?
+```bash
+git clone https://github.com/your-repo/web3_AI_wallet.git
+cd web3_AI_wallet
 
-#### Use Case
+# Install backend
+cd backend
+npm install
 
-- Who is this product built for?
-- Why does this matter for users?
+# Install frontend
+cd ../frontend
+npm install
+```
 
-#### Architecture
+### 2. Configure Environment
 
-- How does your product work?
-- What components are involved?
+```bash
+# Backend config
+cd backend
+cp .env.example .env   # Edit .env with your API keys
+```
 
-#### HeLa Integration
+Key environment variables:
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENAI_API_KEY` | Optional | OpenAI key for AI features (fallback mode available) |
+| `PORT` | No | Backend port (default: 3001) |
+| `FRONTEND_URL` | No | Frontend URL for CORS (default: http://localhost:3000) |
 
-- How is your dApp leveraging the HeLa Network?
+### 3. Run Development Servers
 
-#### Deployment Details
+**Terminal 1 — Backend:**
+```bash
+cd backend
+npm run dev
+# API runs on http://localhost:3001
+```
 
-- Testnet / Mainnet Status
-- Smart contract addresses
-- Live demo link (if available)
+**Terminal 2 — Frontend:**
+```bash
+cd frontend
+npm run dev
+# App opens at http://localhost:3000
+```
 
-#### Demo
-
-- Screenshots / Loom / Video walkthrough
+### 4. Use the App
+1. Open **http://localhost:3000**
+2. Connect your MetaMask wallet (optional)
+3. Go to **Analyze** tab → click a **sample transaction** or paste your own
+4. View decoded info, risk assessment, simulation results, and AI analysis
+5. Use the **AI Chat** tab to ask security questions
 
 ---
 
-### 6. Submit a Pull Request
+## 🧪 Sample Test Transactions
 
-Once your project folder is ready:
+The app includes 5 built-in sample transactions:
 
+| Sample | Risk Level | What It Tests |
+|--------|-----------|---------------|
+| Simple ETH Transfer | 🟢 Low | Basic value transfer |
+| Unlimited USDT Approval | 🔴 High | MAX_UINT256 approval detection |
+| Uniswap V2 Swap | 🟢 Low | DEX swap decoding |
+| NFT SetApprovalForAll | 🔴 High | Full NFT collection access |
+| Staking Deposit | 🟡 Medium | Staking contract interaction |
+
+---
+
+## 🔑 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/analyze` | Full analysis (decode + risk + AI) |
+| `POST` | `/api/analyze/decode` | Quick decode (no AI, faster) |
+| `POST` | `/api/simulate` | Transaction simulation |
+| `POST` | `/api/chat` | AI chat assistant |
+| `GET` | `/api/health` | Health check |
+
+### Example Request
 ```bash
-git add .
-git commit -m "Added <YourProjectName> HeLa dApp Submission"
-git push origin main
+curl -X POST http://localhost:3001/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "data": "0x095ea7b30000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "value": "0x0"
+  }'
 ```
 
-Create a **Pull Request** to the original repository for review.
+---
 
-## 📢 Evaluation & Ecosystem Support
+## 🔒 Security & Privacy
 
-Projects that demonstrate:
+- ❌ **No private keys** are ever stored or transmitted
+- ✅ All processing is **read-only** — no on-chain transactions are made
+- 🔐 Transaction data is processed **server-side** and not stored
+- 🛡️ AI interactions use **no user-identifiable information**
 
-- Real-world consumer use cases
-- Active user engagement
-- Transactional activity
-- Product-market fit
+---
 
-may be eligible for:
+## 🚢 Deployment
 
-- Mainnet migration support
-- Ecosystem grants
-- Institutional exposure
-- Community marketing
+### Frontend (Vercel)
+```bash
+cd frontend
+npx vercel --prod
+```
+Set `NEXT_PUBLIC_API_URL` environment variable to your backend URL.
 
-We’re excited to see what you build on HeLa 🚀
-Let’s bring the next generation of consumer dApps on-chain.
+### Backend (Railway / Render / Fly.io)
+```bash
+cd backend
+# Deploy following your platform's docs
+# Set OPENAI_API_KEY and FRONTEND_URL in env
+```
 
-## 📂 Submitted Projects on HeLa
+---
 
-| Project Name    | Description                                                                                                                               | GitHub Repository                                                                                                                    | Live Link                                                                                                                                                                      | Demo Video                                                                                 |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| Momentum        | Decentralized social prediction platform where users stake on real-world outcomes and earn rewards via automated smart contracts on HeLa. | [https://github.com/aaditya3301/Momentum](https://github.com/aaditya3301/Momentum)                                                   | [https://momentum-ten-inky.vercel.app](https://momentum-ten-inky.vercel.app)                                                                                                   | [https://www.youtube.com/watch?v=SML44ulTqeM](https://www.youtube.com/watch?v=SML44ulTqeM) |
-| GitHunters      | Decentralized bounty & funding platform integrating GitHub issues with smart contract escrow and AI-powered developer recommendations.    | [https://github.com/XohamOG/HackAura](https://github.com/XohamOG/HackAura)                                                           | [http://hack-aura-mu.vercel.app](http://hack-aura-mu.vercel.app)                                                                                                               | [https://youtu.be/THzsQGnxGAY](https://youtu.be/THzsQGnxGAY)                               |
-| DeSocialX       | Decentralized social platform combining AI learning modules, NFT rewards, and DAO-led governance for user-owned engagement.               | [https://github.com/ShalmanM27/Hack_Aura---Team_Winnovators](https://github.com/ShalmanM27/Hack_Aura---Team_Winnovators)             | —                                                                                                                                                                              | [https://youtu.be/UdJGudopMCc](https://youtu.be/UdJGudopMCc)                               |
-| Mutual Veil     | Community-driven decentralized insurance platform with transparent governance and instant parametric smart contract payouts.              | [https://github.com/yashbalpande/mutual-veil](https://github.com/yashbalpande/mutual-veil)                                           | [https://mutual-veil.vercel.app/](https://mutual-veil.vercel.app/)                                                                                                             | [https://youtu.be/tiTCB_m2t24](https://youtu.be/tiTCB_m2t24)                               |
-| HeLaFeed        | Decentralized social media platform on HeLa ensuring user data ownership with smart contract-based interactions.                          | [https://github.com/sharrmeen/HeLaFeed](https://github.com/sharrmeen/HeLaFeed)                                                       | [https://helafeed.vercel.app/](https://helafeed.vercel.app/)                                                                                                                   | [https://youtu.be/xKM4XqHgSI0](https://youtu.be/xKM4XqHgSI0)                               |
-| Certified Noobs | Blockchain-based payment streaming platform for decentralized financial transactions.                                                     | [https://github.com/Samartha-Bansal/PayStream](https://github.com/Samartha-Bansal/PayStream)                                         | [https://pay-iota-murex.vercel.app/](https://pay-iota-murex.vercel.app/)                                                                                                       | [https://youtu.be/llkCsU-E0OQ](https://youtu.be/llkCsU-E0OQ)                               |
-| Salrysaathi     | Salary and financial workflow automation solution built on blockchain infrastructure.                                                     | [https://github.com/thekanika139-create/SalrySaathi](https://github.com/thekanika139-create/SalrySaathi)                             | —                                                                                                                                                                              | [https://youtu.be/mD09H1QD-bA](https://youtu.be/mD09H1QD-bA)                               |
-| Billu Blasters  | Decentralized payment drop system leveraging HeLa smart contracts for instant transfers.                                                  | [https://github.com/ShubhamBhatia-dev/payDrop](https://github.com/ShubhamBhatia-dev/payDrop)                                         | —                                                                                                                                                                              | [https://youtu.be/fmLPo3dHJW4](https://youtu.be/fmLPo3dHJW4)                               |
-| TriVerse        | Onchain payment streaming infrastructure for decentralized financial services.                                                            | [https://github.com/vishan-creator/Paystream](https://github.com/vishan-creator/Paystream)                                           | —                                                                                                                                                                              | [https://youtube.com/shorts/uyDfXPHxeGw](https://youtube.com/shorts/uyDfXPHxeGw)           |
-| CTRLesc         | Blockchain-powered project enabling decentralized payment utilities.                                                                      | [https://github.com/wrathrager/krackhack26](https://github.com/wrathrager/krackhack26)                                               | [https://wrathrager.github.io/krackhack26/](https://wrathrager.github.io/krackhack26/)                                                                                         | [https://youtu.be/ARQ-fUdOoQY](https://youtu.be/ARQ-fUdOoQY)                               |
-| Krackheads      | Blockchain-based decentralized application prototype.                                                                                     | [https://github.com/mpssriram/BLOCKCHAIN.git](https://github.com/mpssriram/BLOCKCHAIN.git)                                           | —                                                                                                                                                                              | —                                                                                          |
-| Hela Pe         | Decentralized payment interface built on HeLa infrastructure.                                                                             | [https://github.com/KDS-7Git/HelaPe-Krackhack26](https://github.com/KDS-7Git/HelaPe-Krackhack26)                                     | [https://hela-pe.vercel.app](https://hela-pe.vercel.app)                                                                                                                       | [https://youtu.be/odotMF9-RgA](https://youtu.be/odotMF9-RgA)                               |
-| Dollar Bills    | Payment streaming solution leveraging HeLa smart contracts.                                                                               | [https://github.com/Ritikasewa/Paystream_Hela](https://github.com/Ritikasewa/Paystream_Hela)                                         | —                                                                                                                                                                              | [https://youtu.be/1wU4hoZerQE](https://youtu.be/1wU4hoZerQE)                               |
-| PROBS-Q         | Blockchain prediction-based decentralized application.                                                                                    | [https://github.com/Sourane09/hackthon-project.git](https://github.com/Sourane09/hackthon-project.git)                               | —                                                                                                                                                                              | [https://youtu.be/WVYUANDGt5k](https://youtu.be/WVYUANDGt5k)                               |
-| DIHADI.exe      | Decentralized worker payout infrastructure using smart contracts.                                                                         | [https://github.com/AryaMundra/DihChain](https://github.com/AryaMundra/DihChain)                                                     | [https://dih-chain-hzm1.vercel.app/](https://dih-chain-hzm1.vercel.app/)                                                                                                       | [https://youtu.be/5exDFRqaMek](https://youtu.be/5exDFRqaMek)                               |
-| Rasmalai        | Onchain payment streaming platform.                                                                                                       | [https://github.com/KB156/paystream](https://github.com/KB156/paystream)                                                             | [https://paystream-amo9.vercel.app/](https://paystream-amo9.vercel.app/)                                                                                                       | [https://youtu.be/2rn24uG0CJE](https://youtu.be/2rn24uG0CJE)                               |
-| geonix          | Blockchain-based location-enabled decentralized platform.                                                                                 | [https://github.com/shivanshbadoni007/Krackhack-geonix](https://github.com/shivanshbadoni007/Krackhack-geonix)                       | [https://sage-medovik-b1ed21.netlify.app/login](https://sage-medovik-b1ed21.netlify.app/login)                                                                                 | [https://www.youtube.com/watch?v=1u-3GHTy-g4](https://www.youtube.com/watch?v=1u-3GHTy-g4) |
-| StreamHela      | Streaming-based decentralized payment infrastructure.                                                                                     | [https://github.com/dny-777/hela-paystream](https://github.com/dny-777/hela-paystream)                                               | [https://hela-paystream.vercel.app/](https://hela-paystream.vercel.app/)                                                                                                       | [https://youtu.be/iE4shYc_SJc](https://youtu.be/iE4shYc_SJc)                               |
-| SoftKernel      | Onchain payment streaming application for decentralized finance use cases.                                                                | [https://github.com/DivyanshJindal26/paystream](https://github.com/DivyanshJindal26/paystream)                                       | [https://paystream.softkernel.tech/](https://paystream.softkernel.tech/)                                                                                                       | [https://www.youtube.com/watch?v=zt3LLNC0XWI](https://www.youtube.com/watch?v=zt3LLNC0XWI) |
-| Kracked         | Decentralized financial streaming application.                                                                                            | [https://github.com/paprejajap99/paystream-hela](https://github.com/paprejajap99/paystream-hela)                                     | [https://paystream-hela.vercel.app/](https://paystream-hela.vercel.app/)                                                                                                       | [https://youtu.be/Qjwum-9LZ2c](https://youtu.be/Qjwum-9LZ2c)                               |
-| PayFlux         | Blockchain-based real-time payment streaming solution.                                                                                    | [https://github.com/Jindal-Saab/paystream-final](https://github.com/Jindal-Saab/paystream-final)                                     | [https://paystream-finalliveweb.vercel.app/](https://paystream-finalliveweb.vercel.app/)                                                                                       | [https://youtu.be/wCEKcLIzmG8](https://youtu.be/wCEKcLIzmG8)                               |
-| TokenTitans     | Token-based decentralized payment streaming platform.                                                                                     | [https://github.com/b25354-cloud/KrackHack-Blockchain-TokenTitans](https://github.com/b25354-cloud/KrackHack-Blockchain-TokenTitans) | [https://paystreamv2tokentitans.vercel.app/](https://paystreamv2tokentitans.vercel.app/)                                                                                       | [https://youtu.be/VxcjyU0x69Q](https://youtu.be/VxcjyU0x69Q)                               |
-| CyberStack      | Decentralized blockchain-based payment interface.                                                                                         | [https://github.com/Sam-creator123/krackhack26.git](https://github.com/Sam-creator123/krackhack26.git)                               | [https://krackhack2026.vercel.app/](https://krackhack2026.vercel.app/)                                                                                                         | [https://youtu.be/a9akhmwkeaM](https://youtu.be/a9akhmwkeaM)                               |
-| RetardX2        | Decentralized payment streaming application built on HeLa.                                                                                | [https://github.com/dexterhere-2k/PaySTrem/](https://github.com/dexterhere-2k/PaySTrem/)                                             | [https://silver-pegasus-79931a.netlify.app/](https://silver-pegasus-79931a.netlify.app/)                                                                                       | [https://youtu.be/VXZA2V1bIoQ](https://youtu.be/VXZA2V1bIoQ)                               |
-| ELITE           | Esports Betting Exchange (#blockchain-24).                                                                                                | [https://github.com/Aloneking789/HelaLabs-Elite.git](https://github.com/Aloneking789/HelaLabs-Elite.git)                             | [https://drive.google.com/file/d/1Xfwd5LgHr9nvnNrdyK55FKf5pQIksLVG/view?usp=drive_link](https://drive.google.com/file/d/1Xfwd5LgHr9nvnNrdyK55FKf5pQIksLVG/view?usp=drive_link) | [https://youtu.be/lZYJw9bmwC8](https://youtu.be/lZYJw9bmwC8)                               |
+## 📜 License
+
+MIT License — use freely for learning and building.
+
+---
+
+Built with ❤️ for Web3 safety.
