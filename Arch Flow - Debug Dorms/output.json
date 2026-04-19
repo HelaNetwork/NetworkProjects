@@ -1,0 +1,992 @@
+{
+  "files": [
+    {
+      "filePath": "repo\\examples\\auth\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\auth",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar hash = require('pbkdf2-password')()\r\nvar path = require('node:path');\r\nvar session = require('express-session');\r\n\r\nvar app = module.exports = express();\r\n\r\n// config\r\n\r\napp.set('view engine', 'ejs');\r\napp.set('views', path.join(__dirname, 'views'));\r\n\r\n// middleware\r\n\r\napp.use(express.urlencoded())\r\napp.use(session({\r\n  resave: false, // don't save session if unmodified\r\n  saveUninitialized: false, // don'"
+    },
+    {
+      "filePath": "repo\\examples\\content-negotiation\\db.js",
+      "fileName": "db.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\content-negotiation",
+      "content": "'use strict'\r\n\r\nvar users = [];\r\n\r\nusers.push({ name: 'Tobi' });\r\nusers.push({ name: 'Loki' });\r\nusers.push({ name: 'Jane' });\r\n\r\nmodule.exports = users;\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\content-negotiation\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\content-negotiation",
+      "content": "'use strict'\r\n\r\nvar express = require('../../');\r\nvar app = module.exports = express();\r\nvar users = require('./db');\r\n\r\n// so either you can deal with different types of formatting\r\n// for expected response in index.js\r\napp.get('/', function(req, res){\r\n  res.format({\r\n    html: function(){\r\n      res.send('<ul>' + users.map(function(user){\r\n        return '<li>' + user.name + '</li>';\r\n      }).join('') + '</ul>');\r\n    },\r\n\r\n    text: function(){\r\n      res.send(users.map(function(user){\r\n   "
+    },
+    {
+      "filePath": "repo\\examples\\content-negotiation\\users.js",
+      "fileName": "users.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\content-negotiation",
+      "content": "'use strict'\r\n\r\nvar users = require('./db');\r\n\r\nexports.html = function(req, res){\r\n  res.send('<ul>' + users.map(function(user){\r\n    return '<li>' + user.name + '</li>';\r\n  }).join('') + '</ul>');\r\n};\r\n\r\nexports.text = function(req, res){\r\n  res.send(users.map(function(user){\r\n    return ' - ' + user.name + '\\n';\r\n  }).join(''));\r\n};\r\n\r\nexports.json = function(req, res){\r\n  res.json(users);\r\n};\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\cookie-sessions\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\cookie-sessions",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar cookieSession = require('cookie-session');\r\nvar express = require('../../');\r\n\r\nvar app = module.exports = express();\r\n\r\n// add req.session cookie support\r\napp.use(cookieSession({ secret: 'manny is cool' }));\r\n\r\n// do something with the session\r\napp.get('/', function (req, res) {\r\n  req.session.count = (req.session.count || 0) + 1\r\n  res.send('viewed ' + req.session.count + ' times\\n')\r\n})\r\n\r\n/* istanbul ignore next */\r\nif (!module.parent)"
+    },
+    {
+      "filePath": "repo\\examples\\cookies\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\cookies",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\nvar app = module.exports = express();\r\nvar logger = require('morgan');\r\nvar cookieParser = require('cookie-parser');\r\n\r\n// custom log format\r\nif (process.env.NODE_ENV !== 'test') app.use(logger(':method :url'))\r\n\r\n// parses request cookies, populating\r\n// req.cookies and req.signedCookies\r\n// when the secret is passed, used\r\n// for signing the cookies.\r\napp.use(cookieParser('my secret here'));\r\n\r\n// parses x-w"
+    },
+    {
+      "filePath": "repo\\examples\\downloads\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\downloads",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\nvar path = require('node:path');\r\n\r\nvar app = module.exports = express();\r\n\r\n// path to where the files are stored on disk\r\nvar FILES_DIR = path.join(__dirname, 'files')\r\n\r\napp.get('/', function(req, res){\r\n  res.send('<ul>' +\r\n    '<li>Download <a href=\"/files/notes/groceries.txt\">notes/groceries.txt</a>.</li>' +\r\n    '<li>Download <a href=\"/files/amazing.txt\">amazing.txt</a>.</li>' +\r\n    '<li>Download <a hr"
+    },
+    {
+      "filePath": "repo\\examples\\ejs\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\ejs",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\nvar path = require('node:path');\r\n\r\nvar app = module.exports = express();\r\n\r\n// Register ejs as .html. If we did\r\n// not call this, we would need to\r\n// name our views foo.ejs instead\r\n// of foo.html. The __express method\r\n// is simply a function that engines\r\n// use to hook into the Express view\r\n// system by default, so if we want\r\n// to change \"foo.ejs\" to \"foo.html\"\r\n// we simply pass _any_ function, in th"
+    },
+    {
+      "filePath": "repo\\examples\\error\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\error",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\nvar logger = require('morgan');\r\nvar app = module.exports = express();\r\nvar test = app.get('env') === 'test'\r\n\r\nif (!test) app.use(logger('dev'));\r\n\r\n// error handling middleware have an arity of 4\r\n// instead of the typical (req, res, next),\r\n// otherwise they behave exactly like regular\r\n// middleware, you may have several of them,\r\n// in different orders etc.\r\n\r\nfunction error(err, req, res, next) {\r\n  // l"
+    },
+    {
+      "filePath": "repo\\examples\\error-pages\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\error-pages",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\nvar path = require('node:path');\r\nvar app = module.exports = express();\r\nvar logger = require('morgan');\r\nvar silent = process.env.NODE_ENV === 'test'\r\n\r\n// general config\r\napp.set('views', path.join(__dirname, 'views'));\r\napp.set('view engine', 'ejs');\r\n\r\n// our custom \"verbose errors\" setting\r\n// which we can use in the templates\r\n// via settings['verbose errors']\r\napp.enable('verbose errors');\r\n\r\n// disable"
+    },
+    {
+      "filePath": "repo\\examples\\hello-world\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\hello-world",
+      "content": "'use strict'\r\n\r\nvar express = require('../../');\r\n\r\nvar app = module.exports = express()\r\n\r\napp.get('/', function(req, res){\r\n  res.send('Hello World');\r\n});\r\n\r\n/* istanbul ignore next */\r\nif (!module.parent) {\r\n  app.listen(3000);\r\n  console.log('Express started on port 3000');\r\n}\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\markdown\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\markdown",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar escapeHtml = require('escape-html');\r\nvar express = require('../..');\r\nvar fs = require('node:fs');\r\nvar marked = require('marked');\r\nvar path = require('node:path');\r\n\r\nvar app = module.exports = express();\r\n\r\n// register .md as an engine in express view system\r\n\r\napp.engine('md', function(path, options, fn){\r\n  fs.readFile(path, 'utf8', function(err, str){\r\n    if (err) return fn(err);\r\n    var html = marked.parse(str).replace(/\\{([^}]+)"
+    },
+    {
+      "filePath": "repo\\examples\\multi-router\\controllers\\api_v1.js",
+      "fileName": "api_v1.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\multi-router\\controllers",
+      "content": "'use strict'\r\n\r\nvar express = require('../../..');\r\n\r\nvar apiv1 = express.Router();\r\n\r\napiv1.get('/', function(req, res) {\r\n  res.send('Hello from APIv1 root route.');\r\n});\r\n\r\napiv1.get('/users', function(req, res) {\r\n  res.send('List of APIv1 users.');\r\n});\r\n\r\nmodule.exports = apiv1;\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\multi-router\\controllers\\api_v2.js",
+      "fileName": "api_v2.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\multi-router\\controllers",
+      "content": "'use strict'\r\n\r\nvar express = require('../../..');\r\n\r\nvar apiv2 = express.Router();\r\n\r\napiv2.get('/', function(req, res) {\r\n  res.send('Hello from APIv2 root route.');\r\n});\r\n\r\napiv2.get('/users', function(req, res) {\r\n  res.send('List of APIv2 users.');\r\n});\r\n\r\nmodule.exports = apiv2;\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\multi-router\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\multi-router",
+      "content": "'use strict'\r\n\r\nvar express = require('../..');\r\n\r\nvar app = module.exports = express();\r\n\r\napp.use('/api/v1', require('./controllers/api_v1'));\r\napp.use('/api/v2', require('./controllers/api_v2'));\r\n\r\napp.get('/', function(req, res) {\r\n  res.send('Hello from root route.')\r\n});\r\n\r\n/* istanbul ignore next */\r\nif (!module.parent) {\r\n  app.listen(3000);\r\n  console.log('Express started on port 3000');\r\n}\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\mvc\\controllers\\main\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\mvc\\controllers\\main",
+      "content": "'use strict'\r\n\r\nexports.index = function(req, res){\r\n  res.redirect('/users');\r\n};\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\mvc\\controllers\\pet\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\mvc\\controllers\\pet",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar db = require('../../db');\r\n\r\nexports.engine = 'ejs';\r\n\r\nexports.before = function(req, res, next){\r\n  var pet = db.pets[req.params.pet_id];\r\n  if (!pet) return next('route');\r\n  req.pet = pet;\r\n  next();\r\n};\r\n\r\nexports.show = function(req, res, next){\r\n  res.render('show', { pet: req.pet });\r\n};\r\n\r\nexports.edit = function(req, res, next){\r\n  res.render('edit', { pet: req.pet });\r\n};\r\n\r\nexports.update = function(req, res, next){\r\n  var body"
+    },
+    {
+      "filePath": "repo\\examples\\mvc\\controllers\\user\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\mvc\\controllers\\user",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar db = require('../../db');\r\n\r\nexports.engine = 'hbs';\r\n\r\nexports.before = function(req, res, next){\r\n  var id = req.params.user_id;\r\n  if (!id) return next();\r\n  // pretend to query a database...\r\n  process.nextTick(function(){\r\n    req.user = db.users[id];\r\n    // cant find that user\r\n    if (!req.user) return next('route');\r\n    // found it, move on to the routes\r\n    next();\r\n  });\r\n};\r\n\r\nexports.list = function(req, res, next){\r\n  res.r"
+    },
+    {
+      "filePath": "repo\\examples\\mvc\\controllers\\user-pet\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\mvc\\controllers\\user-pet",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar db = require('../../db');\r\n\r\nexports.name = 'pet';\r\nexports.prefix = '/user/:user_id';\r\n\r\nexports.create = function(req, res, next){\r\n  var id = req.params.user_id;\r\n  var user = db.users[id];\r\n  var body = req.body;\r\n  if (!user) return next('route');\r\n  var pet = { name: body.pet.name };\r\n  pet.id = db.pets.push(pet) - 1;\r\n  user.pets.push(pet);\r\n  res.message('Added pet ' + body.pet.name);\r\n  res.redirect('/user/' + id);\r\n};\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\mvc\\db.js",
+      "fileName": "db.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\mvc",
+      "content": "'use strict'\r\n\r\n// faux database\r\n\r\nvar pets = exports.pets = [];\r\n\r\npets.push({ name: 'Tobi', id: 0 });\r\npets.push({ name: 'Loki', id: 1 });\r\npets.push({ name: 'Jane', id: 2 });\r\npets.push({ name: 'Raul', id: 3 });\r\n\r\nvar users = exports.users = [];\r\n\r\nusers.push({ name: 'TJ', pets: [pets[0], pets[1], pets[2]], id: 0  });\r\nusers.push({ name: 'Guillermo', pets: [pets[3]], id: 1 });\r\nusers.push({ name: 'Nathan', pets: [], id: 2 });\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\mvc\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\mvc",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar logger = require('morgan');\r\nvar path = require('node:path');\r\nvar session = require('express-session');\r\nvar methodOverride = require('method-override');\r\n\r\nvar app = module.exports = express();\r\n\r\n// set our default template engine to \"ejs\"\r\n// which prevents the need for using file extensions\r\napp.set('view engine', 'ejs');\r\n\r\n// set views for error and 404 pages\r\napp.set('views', path.join(__dirname, 'v"
+    },
+    {
+      "filePath": "repo\\examples\\mvc\\lib\\boot.js",
+      "fileName": "boot.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\mvc\\lib",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../..');\r\nvar fs = require('node:fs');\r\nvar path = require('node:path');\r\n\r\nmodule.exports = function(parent, options){\r\n  var dir = path.join(__dirname, '..', 'controllers');\r\n  var verbose = options.verbose;\r\n  fs.readdirSync(dir).forEach(function(name){\r\n    var file = path.join(dir, name)\r\n    if (!fs.statSync(file).isDirectory()) return;\r\n    verbose && console.log('\\n   %s:', name);\r\n    var obj = require(file);"
+    },
+    {
+      "filePath": "repo\\examples\\online\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\online",
+      "content": "'use strict'\r\n\r\n// install redis first:\r\n// https://redis.io/\r\n\r\n// then:\r\n// $ npm install redis online\r\n// $ redis-server\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar online = require('online');\r\nvar redis = require('redis');\r\nvar db = redis.createClient();\r\n\r\n// online\r\n\r\nonline = online(db);\r\n\r\n// app\r\n\r\nvar app = express();\r\n\r\n// activity tracking, in this case using\r\n// the UA string, you would use req.user.id etc\r\n\r\napp.use(function(req, res, next){\r\n  // f"
+    },
+    {
+      "filePath": "repo\\examples\\params\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\params",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar createError = require('http-errors')\r\nvar express = require('../../');\r\nvar app = module.exports = express();\r\n\r\n// Faux database\r\n\r\nvar users = [\r\n  { name: 'tj' }\r\n  , { name: 'tobi' }\r\n  , { name: 'loki' }\r\n  , { name: 'jane' }\r\n  , { name: 'bandit' }\r\n];\r\n\r\n// Convert :to and :from to integers\r\n\r\napp.param(['to', 'from'], function(req, res, next, num, name){\r\n  req.params[name] = parseInt(num, 10);\r\n  if( isNaN(req.params[name]) ){\r\n  "
+    },
+    {
+      "filePath": "repo\\examples\\resource\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\resource",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\n\r\nvar app = module.exports = express();\r\n\r\n// Ad-hoc example resource method\r\n\r\napp.resource = function(path, obj) {\r\n  this.get(path, obj.index);\r\n  this.get(path + '/:a..:b{.:format}', function(req, res){\r\n    var a = parseInt(req.params.a, 10);\r\n    var b = parseInt(req.params.b, 10);\r\n    var format = req.params.format;\r\n    obj.range(req, res, a, b, format);\r\n  });\r\n  this.get(path + '/:id', obj.show);\r\n "
+    },
+    {
+      "filePath": "repo\\examples\\route-map\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\route-map",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar escapeHtml = require('escape-html')\r\nvar express = require('../../lib/express');\r\n\r\nvar verbose = process.env.NODE_ENV !== 'test'\r\n\r\nvar app = module.exports = express();\r\n\r\napp.map = function(a, route){\r\n  route = route || '';\r\n  for (var key in a) {\r\n    switch (typeof a[key]) {\r\n      // { '/path': { ... }}\r\n      case 'object':\r\n        app.map(a[key], route + key);\r\n        break;\r\n      // get: function(){ ... }\r\n      case 'function"
+    },
+    {
+      "filePath": "repo\\examples\\route-middleware\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\route-middleware",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../lib/express');\r\n\r\nvar app = express();\r\n\r\n// Example requests:\r\n//     curl http://localhost:3000/user/0\r\n//     curl http://localhost:3000/user/0/edit\r\n//     curl http://localhost:3000/user/1\r\n//     curl http://localhost:3000/user/1/edit (unauthorized since this is not you)\r\n//     curl -X DELETE http://localhost:3000/user/0 (unauthorized since you are not an admin)\r\n\r\n// Placeholder users\r\nvar users = [\r\n  { id"
+    },
+    {
+      "filePath": "repo\\examples\\route-separation\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\route-separation",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar path = require('node:path');\r\nvar app = express();\r\nvar logger = require('morgan');\r\nvar cookieParser = require('cookie-parser');\r\nvar methodOverride = require('method-override');\r\nvar site = require('./site');\r\nvar post = require('./post');\r\nvar user = require('./user');\r\n\r\nmodule.exports = app;\r\n\r\n// Config\r\n\r\napp.set('view engine', 'ejs');\r\napp.set('views', path.join(__dirname, 'views'));\r\n\r\n/* istanbul "
+    },
+    {
+      "filePath": "repo\\examples\\route-separation\\post.js",
+      "fileName": "post.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\route-separation",
+      "content": "'use strict'\r\n\r\n// Fake posts database\r\n\r\nvar posts = [\r\n  { title: 'Foo', body: 'some foo bar' },\r\n  { title: 'Foo bar', body: 'more foo bar' },\r\n  { title: 'Foo bar baz', body: 'more foo bar baz' }\r\n];\r\n\r\nexports.list = function(req, res){\r\n  res.render('posts', { title: 'Posts', posts: posts });\r\n};\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\route-separation\\site.js",
+      "fileName": "site.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\route-separation",
+      "content": "'use strict'\r\n\r\nexports.index = function(req, res){\r\n  res.render('index', { title: 'Route Separation Example' });\r\n};\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\route-separation\\user.js",
+      "fileName": "user.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\route-separation",
+      "content": "'use strict'\r\n\r\n// Fake user database\r\n\r\nvar users = [\r\n  { name: 'TJ', email: 'tj@vision-media.ca' },\r\n  { name: 'Tobi', email: 'tobi@vision-media.ca' }\r\n];\r\n\r\nexports.list = function(req, res){\r\n  res.render('users', { title: 'Users', users: users });\r\n};\r\n\r\nexports.load = function(req, res, next){\r\n  var id = req.params.id;\r\n  req.user = users[id];\r\n  if (req.user) {\r\n    next();\r\n  } else {\r\n    var err = new Error('cannot find user ' + id);\r\n    err.status = 404;\r\n    next(err);\r\n  }\r\n};\r\n\r"
+    },
+    {
+      "filePath": "repo\\examples\\search\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\search",
+      "content": "'use strict'\r\n\r\n// install redis first:\r\n// https://redis.io/\r\n\r\n// then:\r\n// $ npm install redis\r\n// $ redis-server\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar path = require('node:path');\r\nvar redis = require('redis');\r\n\r\nvar db = redis.createClient();\r\nvar app = express();\r\n\r\napp.use(express.static(path.join(__dirname, 'public')));\r\n\r\n// npm install redis\r\n\r\n/**\r\n * Redis Initialization\r\n */\r\n\r\nasync function initializeRedis() {\r\n  try {\r\n    // connect to Red"
+    },
+    {
+      "filePath": "repo\\examples\\search\\public\\client.js",
+      "fileName": "client.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\search\\public",
+      "content": "'use strict'\r\n\r\nvar search = document.querySelector('[type=search]');\r\nvar code = document.querySelector('pre');\r\n\r\nsearch.addEventListener('keyup', function(){\r\n  var xhr = new XMLHttpRequest;\r\n  xhr.open('GET', '/search/' + search.value, true);\r\n  xhr.onreadystatechange = function(){\r\n    if (xhr.readyState === 4) {\r\n      code.textContent = xhr.responseText;\r\n    }\r\n  };\r\n  xhr.send();\r\n}, false);\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\session\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\session",
+      "content": "'use strict'\r\n\r\n// install redis first:\r\n// https://redis.io/\r\n\r\n// then:\r\n// $ npm install redis\r\n// $ redis-server\r\n\r\nvar express = require('../..');\r\nvar session = require('express-session');\r\n\r\nvar app = express();\r\n\r\n// Populates req.session\r\napp.use(session({\r\n  resave: false, // don't save session if unmodified\r\n  saveUninitialized: false, // don't create session until something stored\r\n  secret: 'keyboard cat'\r\n}));\r\n\r\napp.get('/', function(req, res){\r\n  var body = '';\r\n  if (req.session"
+    },
+    {
+      "filePath": "repo\\examples\\session\\redis.js",
+      "fileName": "redis.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\session",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar logger = require('morgan');\r\nvar session = require('express-session');\r\n\r\n// pass the express to the connect redis module\r\n// allowing it to inherit from session.Store\r\nvar RedisStore = require('connect-redis')(session);\r\n\r\nvar app = express();\r\n\r\napp.use(logger('dev'));\r\n\r\n// Populates req.session\r\napp.use(session({\r\n  resave: false, // don't save session if unmodified\r\n  saveUninitialized: false, // don't"
+    },
+    {
+      "filePath": "repo\\examples\\static-files\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\static-files",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar logger = require('morgan');\r\nvar path = require('node:path');\r\nvar app = express();\r\n\r\n// log requests\r\napp.use(logger('dev'));\r\n\r\n// express on its own has no notion\r\n// of a \"file\". The express.static()\r\n// middleware checks for a file matching\r\n// the `req.path` within the directory\r\n// that you pass it. In this case \"GET /js/app.js\"\r\n// will look for \"./public/js/app.js\".\r\n\r\napp.use(express.static(path."
+    },
+    {
+      "filePath": "repo\\examples\\static-files\\public\\js\\app.js",
+      "fileName": "app.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\static-files\\public\\js",
+      "content": "// foo\r\n"
+    },
+    {
+      "filePath": "repo\\examples\\vhost\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\vhost",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar logger = require('morgan');\r\nvar vhost = require('vhost');\r\n\r\n/*\r\nedit /etc/hosts:\r\n\r\n127.0.0.1       foo.example.com\r\n127.0.0.1       bar.example.com\r\n127.0.0.1       example.com\r\n*/\r\n\r\n// Main server app\r\n\r\nvar main = express();\r\n\r\nif (!module.parent) main.use(logger('dev'));\r\n\r\nmain.get('/', function(req, res){\r\n  res.send('Hello from main app!');\r\n});\r\n\r\nmain.get('/:sub', function(req, res){\r\n  res.send"
+    },
+    {
+      "filePath": "repo\\examples\\view-constructor\\github-view.js",
+      "fileName": "github-view.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\view-constructor",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar https = require('node:https');\r\nvar path = require('node:path');\r\nvar extname = path.extname;\r\n\r\n/**\r\n * Expose `GithubView`.\r\n */\r\n\r\nmodule.exports = GithubView;\r\n\r\n/**\r\n * Custom view that fetches and renders\r\n * remove github templates. You could\r\n * render templates from a database etc.\r\n */\r\n\r\nfunction GithubView(name, options){\r\n  this.name = name;\r\n  options = options || {};\r\n  this.engine = options.engines[extname(name)];\r\n  // \"ro"
+    },
+    {
+      "filePath": "repo\\examples\\view-constructor\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\view-constructor",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\nvar GithubView = require('./github-view');\r\nvar md = require('marked').parse;\r\n\r\nvar app = module.exports = express();\r\n\r\n// register .md as an engine in express view system\r\napp.engine('md', function(str, options, fn){\r\n  try {\r\n    var html = md(str);\r\n    html = html.replace(/\\{([^}]+)\\}/g, function(_, name){\r\n      return options[name] || '';\r\n    });\r\n    fn(null, html);\r\n  } catch(err) {\r\n    fn(err);\r\n "
+    },
+    {
+      "filePath": "repo\\examples\\view-locals\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\view-locals",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../..');\r\nvar path = require('node:path');\r\nvar User = require('./user');\r\nvar app = express();\r\n\r\napp.set('views', path.join(__dirname, 'views'));\r\napp.set('view engine', 'ejs');\r\n\r\n// filter ferrets only\r\n\r\nfunction ferrets(user) {\r\n  return user.species === 'ferret'\r\n}\r\n\r\n// naive nesting approach,\r\n// delegating errors to next(err)\r\n// in order to expose the \"count\"\r\n// and \"users\" locals\r\n\r\napp.get('/', function(req"
+    },
+    {
+      "filePath": "repo\\examples\\view-locals\\user.js",
+      "fileName": "user.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\view-locals",
+      "content": "'use strict'\r\n\r\nmodule.exports = User;\r\n\r\n// faux model\r\n\r\nfunction User(name, age, species) {\r\n  this.name = name;\r\n  this.age = age;\r\n  this.species = species;\r\n}\r\n\r\nUser.all = function(fn){\r\n  // process.nextTick makes sure this function API\r\n  // behaves in an asynchronous manner, like if it\r\n  // was a real DB query to read all users.\r\n  process.nextTick(function(){\r\n    fn(null, users);\r\n  });\r\n};\r\n\r\nUser.count = function(fn){\r\n  process.nextTick(function(){\r\n    fn(null, users.length);\r\n "
+    },
+    {
+      "filePath": "repo\\examples\\web-service\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo\\examples\\web-service",
+      "content": "'use strict'\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar express = require('../../');\r\n\r\nvar app = module.exports = express();\r\n\r\n// create an error with .status. we\r\n// can then use the property in our\r\n// custom error handler (Connect respects this prop as well)\r\n\r\nfunction error(status, msg) {\r\n  var err = new Error(msg);\r\n  err.status = status;\r\n  return err;\r\n}\r\n\r\n// if we wanted to supply more than JSON, we could\r\n// use something similar to the content-negotiation\r\n// example.\r\n\r\n// here "
+    },
+    {
+      "filePath": "repo\\index.js",
+      "fileName": "index.js",
+      "extension": ".js",
+      "folder": "repo",
+      "content": "/*!\r\n * express\r\n * Copyright(c) 2009-2013 TJ Holowaychuk\r\n * Copyright(c) 2013 Roman Shtylman\r\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\r\n * MIT Licensed\r\n */\r\n\r\n'use strict';\r\n\r\nmodule.exports = require('./lib/express');\r\n"
+    },
+    {
+      "filePath": "repo\\lib\\application.js",
+      "fileName": "application.js",
+      "extension": ".js",
+      "folder": "repo\\lib",
+      "content": "/*!\r\n * express\r\n * Copyright(c) 2009-2013 TJ Holowaychuk\r\n * Copyright(c) 2013 Roman Shtylman\r\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\r\n * MIT Licensed\r\n */\r\n\r\n'use strict';\r\n\r\n/**\r\n * Module dependencies.\r\n * @private\r\n */\r\n\r\nvar finalhandler = require('finalhandler');\r\nvar debug = require('debug')('express:application');\r\nvar View = require('./view');\r\nvar http = require('node:http');\r\nvar methods = require('./utils').methods;\r\nvar compileETag = require('./utils').compileETag;\r\nv"
+    },
+    {
+      "filePath": "repo\\lib\\express.js",
+      "fileName": "express.js",
+      "extension": ".js",
+      "folder": "repo\\lib",
+      "content": "/*!\r\n * express\r\n * Copyright(c) 2009-2013 TJ Holowaychuk\r\n * Copyright(c) 2013 Roman Shtylman\r\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\r\n * MIT Licensed\r\n */\r\n\r\n'use strict';\r\n\r\n/**\r\n * Module dependencies.\r\n */\r\n\r\nvar bodyParser = require('body-parser')\r\nvar EventEmitter = require('node:events').EventEmitter;\r\nvar mixin = require('merge-descriptors');\r\nvar proto = require('./application');\r\nvar Router = require('router');\r\nvar req = require('./request');\r\nvar res = require('./respo"
+    },
+    {
+      "filePath": "repo\\lib\\request.js",
+      "fileName": "request.js",
+      "extension": ".js",
+      "folder": "repo\\lib",
+      "content": "/*!\r\n * express\r\n * Copyright(c) 2009-2013 TJ Holowaychuk\r\n * Copyright(c) 2013 Roman Shtylman\r\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\r\n * MIT Licensed\r\n */\r\n\r\n'use strict';\r\n\r\n/**\r\n * Module dependencies.\r\n * @private\r\n */\r\n\r\nvar accepts = require('accepts');\r\nvar isIP = require('node:net').isIP;\r\nvar typeis = require('type-is');\r\nvar http = require('node:http');\r\nvar fresh = require('fresh');\r\nvar parseRange = require('range-parser');\r\nvar parse = require('parseurl');\r\nvar proxya"
+    },
+    {
+      "filePath": "repo\\lib\\response.js",
+      "fileName": "response.js",
+      "extension": ".js",
+      "folder": "repo\\lib",
+      "content": "/*!\r\n * express\r\n * Copyright(c) 2009-2013 TJ Holowaychuk\r\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\r\n * MIT Licensed\r\n */\r\n\r\n'use strict';\r\n\r\n/**\r\n * Module dependencies.\r\n * @private\r\n */\r\n\r\nvar contentDisposition = require('content-disposition');\r\nvar createError = require('http-errors')\r\nvar deprecate = require('depd')('express');\r\nvar encodeUrl = require('encodeurl');\r\nvar escapeHtml = require('escape-html');\r\nvar http = require('node:http');\r\nvar onFinished = require('on-finishe"
+    },
+    {
+      "filePath": "repo\\lib\\utils.js",
+      "fileName": "utils.js",
+      "extension": ".js",
+      "folder": "repo\\lib",
+      "content": "/*!\r\n * express\r\n * Copyright(c) 2009-2013 TJ Holowaychuk\r\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\r\n * MIT Licensed\r\n */\r\n\r\n'use strict';\r\n\r\n/**\r\n * Module dependencies.\r\n * @api private\r\n */\r\n\r\nvar { METHODS } = require('node:http');\r\nvar contentType = require('content-type');\r\nvar etag = require('etag');\r\nvar mime = require('mime-types')\r\nvar proxyaddr = require('proxy-addr');\r\nvar qs = require('qs');\r\nvar querystring = require('node:querystring');\r\nconst { Buffer } = require('nod"
+    },
+    {
+      "filePath": "repo\\lib\\view.js",
+      "fileName": "view.js",
+      "extension": ".js",
+      "folder": "repo\\lib",
+      "content": "/*!\r\n * express\r\n * Copyright(c) 2009-2013 TJ Holowaychuk\r\n * Copyright(c) 2013 Roman Shtylman\r\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\r\n * MIT Licensed\r\n */\r\n\r\n'use strict';\r\n\r\n/**\r\n * Module dependencies.\r\n * @private\r\n */\r\n\r\nvar debug = require('debug')('express:view');\r\nvar path = require('node:path');\r\nvar fs = require('node:fs');\r\n\r\n/**\r\n * Module variables.\r\n * @private\r\n */\r\n\r\nvar dirname = path.dirname;\r\nvar basename = path.basename;\r\nvar extname = path.extname;\r\nvar join ="
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\auth.js",
+      "fileName": "auth.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "var app = require('../../examples/auth')\r\nvar request = require('supertest')\r\n\r\nfunction getCookie(res) {\r\n  return res.headers['set-cookie'][0].split(';')[0];\r\n}\r\n\r\ndescribe('auth', function(){\r\n  describe('GET /',function(){\r\n    it('should redirect to /login', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect('Location', '/login')\r\n      .expect(302, done)\r\n    })\r\n  })\r\n\r\n  describe('GET /login',function(){\r\n    it('should render login form', function(done){\r\n      request("
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\content-negotiation.js",
+      "fileName": "content-negotiation.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar request = require('supertest')\r\n  , app = require('../../examples/content-negotiation');\r\n\r\ndescribe('content-negotiation', function(){\r\n  describe('GET /', function(){\r\n    it('should default to text/html', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect(200, '<ul><li>Tobi</li><li>Loki</li><li>Jane</li></ul>', done)\r\n    })\r\n\r\n    it('should accept to text/plain', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .set('Accept', 'text/plain')\r\n      .expect(20"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\cookie-sessions.js",
+      "fileName": "cookie-sessions.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/cookie-sessions')\r\nvar request = require('supertest')\r\n\r\ndescribe('cookie-sessions', function () {\r\n  describe('GET /', function () {\r\n    it('should display no views', function (done) {\r\n      request(app)\r\n      .get('/')\r\n      .expect(200, 'viewed 1 times\\n', done)\r\n    })\r\n\r\n    it('should set a session cookie', function (done) {\r\n      request(app)\r\n      .get('/')\r\n      .expect('Set-Cookie', /session=/)\r\n      .expect(200, done)\r\n    })\r\n\r\n    it('shou"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\cookies.js",
+      "fileName": "cookies.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/cookies')\r\n  , request = require('supertest');\r\nvar utils = require('../support/utils');\r\n\r\ndescribe('cookies', function(){\r\n  describe('GET /', function(){\r\n    it('should have a form', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect(/<form/, done);\r\n    })\r\n\r\n    it('should respond with no cookies', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect(utils.shouldNotHaveHeader('Set-Cookie'))\r\n      .expect(200, done)\r\n    }"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\downloads.js",
+      "fileName": "downloads.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/downloads')\r\n  , request = require('supertest');\r\n\r\ndescribe('downloads', function(){\r\n  describe('GET /', function(){\r\n    it('should have a link to amazing.txt', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect(/href=\"\\/files\\/amazing.txt\"/, done)\r\n    })\r\n  })\r\n\r\n  describe('GET /files/notes/groceries.txt', function () {\r\n    it('should have a download header', function (done) {\r\n      request(app)\r\n        .get('/files/notes/groceries.tx"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\ejs.js",
+      "fileName": "ejs.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar request = require('supertest')\r\n  , app = require('../../examples/ejs');\r\n\r\ndescribe('ejs', function(){\r\n  describe('GET /', function(){\r\n    it('should respond with html', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect('Content-Type', 'text/html; charset=utf-8')\r\n      .expect(/<li>tobi &lt;tobi@learnboost\\.com&gt;<\\/li>/)\r\n      .expect(/<li>loki &lt;loki@learnboost\\.com&gt;<\\/li>/)\r\n      .expect(/<li>jane &lt;jane@learnboost\\.com&gt;<\\/li>/)\r\n      .expect(200, don"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\error-pages.js",
+      "fileName": "error-pages.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/error-pages')\r\n  , request = require('supertest');\r\n\r\ndescribe('error-pages', function(){\r\n  describe('GET /', function(){\r\n    it('should respond with page list', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect(/Pages Example/, done)\r\n    })\r\n  })\r\n\r\n  describe('Accept: text/html',function(){\r\n    describe('GET /403', function(){\r\n      it('should respond with 403', function(done){\r\n        request(app)\r\n        .get('/403')\r\n        .expe"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\error.js",
+      "fileName": "error.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/error')\r\n  , request = require('supertest');\r\n\r\ndescribe('error', function(){\r\n  describe('GET /', function(){\r\n    it('should respond with 500', function(done){\r\n      request(app)\r\n        .get('/')\r\n        .expect(500,done)\r\n    })\r\n  })\r\n\r\n  describe('GET /next', function(){\r\n    it('should respond with 500', function(done){\r\n      request(app)\r\n        .get('/next')\r\n        .expect(500,done)\r\n    })\r\n  })\r\n\r\n  describe('GET /missing', function(){\r\n    i"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\hello-world.js",
+      "fileName": "hello-world.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/hello-world')\r\nvar request = require('supertest')\r\n\r\ndescribe('hello-world', function () {\r\n  describe('GET /', function () {\r\n    it('should respond with hello world', function (done) {\r\n      request(app)\r\n        .get('/')\r\n        .expect(200, 'Hello World', done)\r\n    })\r\n  })\r\n\r\n  describe('GET /missing', function () {\r\n    it('should respond with 404', function (done) {\r\n      request(app)\r\n        .get('/missing')\r\n        .expect(404, done)\r\n    })\r\n "
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\markdown.js",
+      "fileName": "markdown.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/markdown')\r\nvar request = require('supertest')\r\n\r\ndescribe('markdown', function(){\r\n  describe('GET /', function(){\r\n    it('should respond with html', function(done){\r\n      request(app)\r\n        .get('/')\r\n        .expect(/<h1[^>]*>Markdown Example<\\/h1>/,done)\r\n    })\r\n  })\r\n\r\n  describe('GET /fail',function(){\r\n    it('should respond with an error', function(done){\r\n      request(app)\r\n        .get('/fail')\r\n        .expect(500,done)\r\n    })\r\n  })\r\n})\r\n"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\multi-router.js",
+      "fileName": "multi-router.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "var app = require('../../examples/multi-router')\r\nvar request = require('supertest')\r\n\r\ndescribe('multi-router', function(){\r\n  describe('GET /',function(){\r\n    it('should respond with root handler', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect(200, 'Hello from root route.', done)\r\n    })\r\n  })\r\n\r\n  describe('GET /api/v1/',function(){\r\n    it('should respond with APIv1 root handler', function(done){\r\n      request(app)\r\n      .get('/api/v1/')\r\n      .expect(200, 'Hello fr"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\mvc.js",
+      "fileName": "mvc.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar request = require('supertest')\r\n  , app = require('../../examples/mvc');\r\n\r\ndescribe('mvc', function(){\r\n  describe('GET /', function(){\r\n    it('should redirect to /users', function(done){\r\n      request(app)\r\n      .get('/')\r\n      .expect('Location', '/users')\r\n      .expect(302, done)\r\n    })\r\n  })\r\n\r\n  describe('GET /pet/0', function(){\r\n    it('should get pet', function(done){\r\n      request(app)\r\n      .get('/pet/0')\r\n      .expect(200, /Tobi/, done)\r\n    })\r\n  })\r\n\r\n  describe('GET"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\params.js",
+      "fileName": "params.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "var app = require('../../examples/params')\r\nvar request = require('supertest')\r\n\r\ndescribe('params', function(){\r\n  describe('GET /', function(){\r\n    it('should respond with instructions', function(done){\r\n      request(app)\r\n        .get('/')\r\n        .expect(/Visit/,done)\r\n    })\r\n  })\r\n\r\n  describe('GET /user/0', function(){\r\n    it('should respond with a user', function(done){\r\n      request(app)\r\n        .get('/user/0')\r\n        .expect(/user tj/,done)\r\n    })\r\n  })\r\n\r\n  describe('GET /use"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\resource.js",
+      "fileName": "resource.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "var app = require('../../examples/resource')\r\nvar request = require('supertest')\r\n\r\ndescribe('resource', function(){\r\n  describe('GET /', function(){\r\n    it('should respond with instructions', function(done){\r\n      request(app)\r\n        .get('/')\r\n        .expect(/^<h1>Examples:<\\/h1>/,done)\r\n    })\r\n  })\r\n\r\n  describe('GET /users', function(){\r\n    it('should respond with all users', function(done){\r\n      request(app)\r\n        .get('/users')\r\n        .expect(/^\\[{\"name\":\"tj\"},{\"name\":\"ciaran"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\route-map.js",
+      "fileName": "route-map.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar request = require('supertest')\r\n  , app = require('../../examples/route-map');\r\n\r\ndescribe('route-map', function(){\r\n  describe('GET /users', function(){\r\n    it('should respond with users', function(done){\r\n      request(app)\r\n      .get('/users')\r\n      .expect('user list', done);\r\n    })\r\n  })\r\n\r\n  describe('DELETE /users', function(){\r\n    it('should delete users', function(done){\r\n      request(app)\r\n      .del('/users')\r\n      .expect('delete users', done);\r\n    })\r\n  })\r\n\r\n  describ"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\route-separation.js",
+      "fileName": "route-separation.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar app = require('../../examples/route-separation')\r\nvar request = require('supertest')\r\n\r\ndescribe('route-separation', function () {\r\n  describe('GET /', function () {\r\n    it('should respond with index', function (done) {\r\n      request(app)\r\n      .get('/')\r\n      .expect(200, /Route Separation Example/, done)\r\n    })\r\n  })\r\n\r\n  describe('GET /users', function () {\r\n    it('should list users', function (done) {\r\n      request(app)\r\n      .get('/users')\r\n      .expect(/TJ/)\r\n      .expect(/"
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\vhost.js",
+      "fileName": "vhost.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "var app = require('../../examples/vhost')\r\nvar request = require('supertest')\r\n\r\ndescribe('vhost', function(){\r\n  describe('example.com', function(){\r\n    describe('GET /', function(){\r\n      it('should say hello', function(done){\r\n        request(app)\r\n        .get('/')\r\n        .set('Host', 'example.com')\r\n        .expect(200, /hello/i, done)\r\n      })\r\n    })\r\n\r\n    describe('GET /foo', function(){\r\n      it('should say foo', function(done){\r\n        request(app)\r\n        .get('/foo')\r\n      "
+    },
+    {
+      "filePath": "repo\\test\\acceptance\\web-service.js",
+      "fileName": "web-service.js",
+      "extension": ".js",
+      "folder": "repo\\test\\acceptance",
+      "content": "\r\nvar request = require('supertest')\r\n  , app = require('../../examples/web-service');\r\n\r\ndescribe('web-service', function(){\r\n  describe('GET /api/users', function(){\r\n    describe('without an api key', function(){\r\n      it('should respond with 400 bad request', function(done){\r\n        request(app)\r\n        .get('/api/users')\r\n        .expect(400, done);\r\n      })\r\n    })\r\n\r\n    describe('with an invalid api key', function(){\r\n      it('should respond with 401 unauthorized', function(done){\r\n"
+    },
+    {
+      "filePath": "repo\\test\\app.all.js",
+      "fileName": "app.all.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after')\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('app.all()', function(){\r\n  it('should add a router per method', function(done){\r\n    var app = express();\r\n    var cb = after(2, done)\r\n\r\n    app.all('/tobi', function(req, res){\r\n      res.end(req.method);\r\n    });\r\n\r\n    request(app)\r\n      .put('/tobi')\r\n      .expect(200, 'PUT', cb)\r\n\r\n    request(app)\r\n      .get('/tobi')\r\n      .expect(200, 'GET', cb)\r\n  })\r\n\r\n  it('"
+    },
+    {
+      "filePath": "repo\\test\\app.engine.js",
+      "fileName": "app.engine.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('../')\r\n  , fs = require('node:fs');\r\nvar path = require('node:path')\r\n\r\nfunction render(path, options, fn) {\r\n  fs.readFile(path, 'utf8', function(err, str){\r\n    if (err) return fn(err);\r\n    str = str.replace('{{user.name}}', options.user.name);\r\n    fn(null, str);\r\n  });\r\n}\r\n\r\ndescribe('app', function(){\r\n  describe('.engine(ext, fn)', function(){\r\n    it('should map a template engine', function(done){\r\n      var app "
+    },
+    {
+      "filePath": "repo\\test\\app.head.js",
+      "fileName": "app.head.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../');\r\nvar request = require('supertest');\r\nvar assert = require('node:assert');\r\n\r\ndescribe('HEAD', function(){\r\n  it('should default to GET', function(done){\r\n    var app = express();\r\n\r\n    app.get('/tobi', function(req, res){\r\n      // send() detects HEAD\r\n      res.send('tobi');\r\n    });\r\n\r\n    request(app)\r\n    .head('/tobi')\r\n    .expect(200, done);\r\n  })\r\n\r\n  it('should output the same headers as GET requests', function(done){\r\n    var app = expres"
+    },
+    {
+      "filePath": "repo\\test\\app.js",
+      "fileName": "app.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('app', function(){\r\n  it('should inherit from event emitter', function(done){\r\n    var app = express();\r\n    app.on('foo', done);\r\n    app.emit('foo');\r\n  })\r\n\r\n  it('should be callable', function(){\r\n    var app = express();\r\n    assert.equal(typeof app, 'function');\r\n  })\r\n\r\n  it('should 404 without routes', function(done){\r\n    request(express())\r\n    .get('/')\r\n   "
+    },
+    {
+      "filePath": "repo\\test\\app.listen.js",
+      "fileName": "app.listen.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\nvar assert = require('node:assert')\r\n\r\ndescribe('app.listen()', function(){\r\n  it('should wrap with an HTTP server', function(done){\r\n    var app = express();\r\n\r\n    var server = app.listen(0, function () {\r\n      server.close(done)\r\n    });\r\n  })\r\n  it('should callback on HTTP server errors', function (done) {\r\n    var app1 = express()\r\n    var app2 = express()\r\n\r\n    var server1 = app1.listen(0, function (err) {\r\n      assert(!err)\r\n      app2.list"
+    },
+    {
+      "filePath": "repo\\test\\app.locals.js",
+      "fileName": "app.locals.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('../')\r\n\r\ndescribe('app', function(){\r\n  describe('.locals', function () {\r\n    it('should default object with null prototype', function () {\r\n      var app = express()\r\n      assert.ok(app.locals)\r\n      assert.strictEqual(typeof app.locals, 'object')\r\n      assert.strictEqual(Object.getPrototypeOf(app.locals), null)\r\n    })\r\n\r\n    describe('.settings', function () {\r\n      it('should contain app settings ', function () "
+    },
+    {
+      "filePath": "repo\\test\\app.options.js",
+      "fileName": "app.options.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('OPTIONS', function(){\r\n  it('should default to the routes defined', function(done){\r\n    var app = express();\r\n\r\n    app.post('/', function(){});\r\n    app.get('/users', function(req, res){});\r\n    app.put('/users', function(req, res){});\r\n\r\n    request(app)\r\n    .options('/users')\r\n    .expect('Allow', 'GET, HEAD, PUT')\r\n    .expect(200, 'GET, HEAD, PUT', done);\r\n  })\r\n\r\n  it('should only include each "
+    },
+    {
+      "filePath": "repo\\test\\app.param.js",
+      "fileName": "app.param.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('app', function(){\r\n  describe('.param(names, fn)', function(){\r\n    it('should map the array', function(done){\r\n      var app = express();\r\n\r\n      app.param(['id', 'uid'], function(req, res, next, id){\r\n        id = Number(id);\r\n        if (isNaN(id)) return next('route');\r\n        req.params.id = id;\r\n        next();\r\n      });\r\n\r\n      app.get('/post/:id', function(req, res){\r\n        var id = req.p"
+    },
+    {
+      "filePath": "repo\\test\\app.render.js",
+      "fileName": "app.render.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('..');\r\nvar path = require('node:path')\r\nvar tmpl = require('./support/tmpl');\r\n\r\ndescribe('app', function(){\r\n  describe('.render(name, fn)', function(){\r\n    it('should support absolute paths', function(done){\r\n      var app = createApp();\r\n\r\n      app.locals.user = { name: 'tobi' };\r\n\r\n      app.render(path.join(__dirname, 'fixtures', 'user.tmpl'), function (err, str) {\r\n        if (err) return done(err);\r\n        asse"
+    },
+    {
+      "filePath": "repo\\test\\app.request.js",
+      "fileName": "app.request.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after')\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('app', function(){\r\n  describe('.request', function(){\r\n    it('should extend the request prototype', function(done){\r\n      var app = express();\r\n\r\n      app.request.querystring = function(){\r\n        return require('node:url').parse(this.url).query;\r\n      };\r\n\r\n      app.use(function(req, res){\r\n        res.end(req.querystring());\r\n      });\r\n\r\n      request(app)\r\n      "
+    },
+    {
+      "filePath": "repo\\test\\app.response.js",
+      "fileName": "app.response.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after')\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('app', function(){\r\n  describe('.response', function(){\r\n    it('should extend the response prototype', function(done){\r\n      var app = express();\r\n\r\n      app.response.shout = function(str){\r\n        this.send(str.toUpperCase());\r\n      };\r\n\r\n      app.use(function(req, res){\r\n        res.shout('hey');\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('HEY'"
+    },
+    {
+      "filePath": "repo\\test\\app.route.js",
+      "fileName": "app.route.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../');\r\nvar request = require('supertest');\r\n\r\ndescribe('app.route', function(){\r\n  it('should return a new route', function(done){\r\n    var app = express();\r\n\r\n    app.route('/foo')\r\n    .get(function(req, res) {\r\n      res.send('get');\r\n    })\r\n    .post(function(req, res) {\r\n      res.send('post');\r\n    });\r\n\r\n    request(app)\r\n    .post('/foo')\r\n    .expect('post', done);\r\n  });\r\n\r\n  it('should all .VERB after .all', function(done){\r\n    var app = expre"
+    },
+    {
+      "filePath": "repo\\test\\app.router.js",
+      "fileName": "app.router.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after');\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , assert = require('node:assert')\r\n  , methods = require('../lib/utils').methods;\r\n\r\nvar shouldSkipQuery = require('./support/utils').shouldSkipQuery\r\n\r\ndescribe('app.router', function () {\r\n  it('should restore req.params after leaving router', function (done) {\r\n    var app = express();\r\n    var router = new express.Router();\r\n\r\n    function handler1(req, res, next) {\r\n      res.s"
+    },
+    {
+      "filePath": "repo\\test\\app.routes.error.js",
+      "fileName": "app.routes.error.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('app', function(){\r\n  describe('.VERB()', function(){\r\n    it('should not get invoked without error handler on error', function(done) {\r\n      var app = express();\r\n\r\n      app.use(function(req, res, next){\r\n        next(new Error('boom!'))\r\n      });\r\n\r\n      app.get('/bar', function(req, res){\r\n        res.send('hello, world!');\r\n      });\r\n\r\n      request(app)\r\n  "
+    },
+    {
+      "filePath": "repo\\test\\app.use.js",
+      "fileName": "app.use.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after');\r\nvar assert = require('node:assert')\r\nvar express = require('..');\r\nvar request = require('supertest');\r\n\r\ndescribe('app', function(){\r\n  it('should emit \"mount\" when mounted', function(done){\r\n    var blog = express()\r\n      , app = express();\r\n\r\n    blog.on('mount', function(arg){\r\n      assert.strictEqual(arg, app)\r\n      done();\r\n    });\r\n\r\n    app.use(blog);\r\n  })\r\n\r\n  describe('.use(app)', function(){\r\n    it('should mount the app', function(do"
+    },
+    {
+      "filePath": "repo\\test\\config.js",
+      "fileName": "config.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert');\r\nvar express = require('..');\r\n\r\ndescribe('config', function () {\r\n  describe('.set()', function () {\r\n    it('should set a value', function () {\r\n      var app = express();\r\n      app.set('foo', 'bar');\r\n      assert.equal(app.get('foo'), 'bar');\r\n    })\r\n\r\n    it('should set prototype values', function () {\r\n      var app = express()\r\n      app.set('hasOwnProperty', 42)\r\n      assert.strictEqual(app.get('hasOwnProperty'), 42)\r\n    })\r\n\r\n    "
+    },
+    {
+      "filePath": "repo\\test\\exports.js",
+      "fileName": "exports.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('../');\r\nvar request = require('supertest');\r\n\r\ndescribe('exports', function(){\r\n  it('should expose Router', function(){\r\n    assert.strictEqual(typeof express.Router, 'function')\r\n  })\r\n\r\n  it('should expose json middleware', function () {\r\n    assert.equal(typeof express.json, 'function')\r\n    assert.equal(express.json.length, 1)\r\n  })\r\n\r\n  it('should expose raw middleware', function () {\r\n    assert.equal(typeof expre"
+    },
+    {
+      "filePath": "repo\\test\\express.json.js",
+      "fileName": "express.json.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar AsyncLocalStorage = require('node:async_hooks').AsyncLocalStorage\r\nconst { Buffer } = require('node:buffer');\r\n\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('express.json()', function () {\r\n  it('should parse JSON', function (done) {\r\n    request(createApp())\r\n      .post('/')\r\n      .set('Content-Type', 'application/json')\r\n      .send('{\"user\":\"tobi\"}')\r\n      .expect(200, '{\"user\":\"tobi\"}', done)\r\n  })\r\n\r"
+    },
+    {
+      "filePath": "repo\\test\\express.raw.js",
+      "fileName": "express.raw.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar AsyncLocalStorage = require('node:async_hooks').AsyncLocalStorage\r\n\r\nvar express = require('..')\r\nvar request = require('supertest')\r\nconst { Buffer } = require('node:buffer');\r\n\r\ndescribe('express.raw()', function () {\r\n  before(function () {\r\n    this.app = createApp()\r\n  })\r\n\r\n  it('should parse application/octet-stream', function (done) {\r\n    request(this.app)\r\n      .post('/')\r\n      .set('Content-Type', 'application/octet-stream')\r\n"
+    },
+    {
+      "filePath": "repo\\test\\express.static.js",
+      "fileName": "express.static.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('..')\r\nvar path = require('node:path')\r\nconst { Buffer } = require('node:buffer');\r\n\r\nvar request = require('supertest')\r\nvar utils = require('./support/utils')\r\n\r\nvar fixtures = path.join(__dirname, '/fixtures')\r\nvar relative = path.relative(process.cwd(), fixtures)\r\n\r\nvar skipRelative = ~relative.indexOf('..') || path.resolve(relative) === relative\r\n\r\ndescribe('express.static()', function () {\r\n  describe('basic operati"
+    },
+    {
+      "filePath": "repo\\test\\express.text.js",
+      "fileName": "express.text.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar AsyncLocalStorage = require('node:async_hooks').AsyncLocalStorage\r\nconst { Buffer } = require('node:buffer');\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('express.text()', function () {\r\n  before(function () {\r\n    this.app = createApp()\r\n  })\r\n\r\n  it('should parse text/plain', function (done) {\r\n    request(this.app)\r\n      .post('/')\r\n      .set('Content-Type', 'text/plain')\r\n      .send('user is tobi')\r\n"
+    },
+    {
+      "filePath": "repo\\test\\express.urlencoded.js",
+      "fileName": "express.urlencoded.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar AsyncLocalStorage = require('node:async_hooks').AsyncLocalStorage\r\nconst { Buffer } = require('node:buffer');\r\n\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('express.urlencoded()', function () {\r\n  before(function () {\r\n    this.app = createApp()\r\n  })\r\n\r\n  it('should parse x-www-form-urlencoded', function (done) {\r\n    request(this.app)\r\n      .post('/')\r\n      .set('Content-Type', 'application/x-www-form-u"
+    },
+    {
+      "filePath": "repo\\test\\middleware.basic.js",
+      "fileName": "middleware.basic.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('../');\r\nvar request = require('supertest');\r\n\r\ndescribe('middleware', function(){\r\n  describe('.next()', function(){\r\n    it('should behave like connect', function(done){\r\n      var app = express()\r\n        , calls = [];\r\n\r\n      app.use(function(req, res, next){\r\n        calls.push('one');\r\n        next();\r\n      });\r\n\r\n      app.use(function(req, res, next){\r\n        calls.push('two');\r\n        next();\r\n      });\r\n\r\n  "
+    },
+    {
+      "filePath": "repo\\test\\regression.js",
+      "fileName": "regression.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('throw after .end()', function(){\r\n  it('should fail gracefully', function(done){\r\n    var app = express();\r\n\r\n    app.get('/', function(req, res){\r\n      res.end('yay');\r\n      throw new Error('boom');\r\n    });\r\n\r\n    request(app)\r\n    .get('/')\r\n    .expect('yay')\r\n    .expect(200, done);\r\n  })\r\n})\r\n"
+    },
+    {
+      "filePath": "repo\\test\\req.accepts.js",
+      "fileName": "req.accepts.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.accepts(type)', function(){\r\n    it('should return true when Accept is not present', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res, next){\r\n        res.end(req.accepts('json') ? 'yes' : 'no');\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('yes', done);\r\n    })\r\n\r\n    it('should return true when present', function(done){"
+    },
+    {
+      "filePath": "repo\\test\\req.acceptsCharsets.js",
+      "fileName": "req.acceptsCharsets.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.acceptsCharsets(type)', function(){\r\n    describe('when Accept-Charset is not present', function(){\r\n      it('should return true', function(done){\r\n        var app = express();\r\n\r\n        app.use(function(req, res, next){\r\n          res.end(req.acceptsCharsets('utf-8') ? 'yes' : 'no');\r\n        });\r\n\r\n        request(app)\r\n        .get('/')\r\n        .expect('yes', done)"
+    },
+    {
+      "filePath": "repo\\test\\req.acceptsEncodings.js",
+      "fileName": "req.acceptsEncodings.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.acceptsEncodings', function () {\r\n    it('should return encoding if accepted', function (done) {\r\n      var app = express();\r\n\r\n      app.get('/', function (req, res) {\r\n        res.send({\r\n          gzip: req.acceptsEncodings('gzip'),\r\n          deflate: req.acceptsEncodings('deflate')\r\n        })\r\n      })\r\n\r\n      request(app)\r\n        .get('/')\r\n        .set('Accept-"
+    },
+    {
+      "filePath": "repo\\test\\req.acceptsLanguages.js",
+      "fileName": "req.acceptsLanguages.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.acceptsLanguages', function(){\r\n    it('should return language if accepted', function (done) {\r\n      var app = express();\r\n\r\n      app.get('/', function (req, res) {\r\n        res.send({\r\n          'en-us': req.acceptsLanguages('en-us'),\r\n          en: req.acceptsLanguages('en')\r\n        })\r\n      })\r\n\r\n      request(app)\r\n        .get('/')\r\n        .set('Accept-Language"
+    },
+    {
+      "filePath": "repo\\test\\req.baseUrl.js",
+      "fileName": "req.baseUrl.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('req', function(){\r\n  describe('.baseUrl', function(){\r\n    it('should be empty for top-level route', function(done){\r\n      var app = express()\r\n\r\n      app.get('/:a', function(req, res){\r\n        res.end(req.baseUrl)\r\n      })\r\n\r\n      request(app)\r\n      .get('/foo')\r\n      .expect(200, '', done)\r\n    })\r\n\r\n    it('should contain lower path', function(done){\r\n      var app = express()\r\n      var sub = "
+    },
+    {
+      "filePath": "repo\\test\\req.fresh.js",
+      "fileName": "req.fresh.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.fresh', function(){\r\n    it('should return true when the resource is not modified', function(done){\r\n      var app = express();\r\n      var etag = '\"12345\"';\r\n\r\n      app.use(function(req, res){\r\n        res.set('ETag', etag);\r\n        res.send(req.fresh);\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .set('If-None-Match', etag)\r\n      .expect(304, done);\r\n    "
+    },
+    {
+      "filePath": "repo\\test\\req.get.js",
+      "fileName": "req.get.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , assert = require('node:assert');\r\n\r\ndescribe('req', function(){\r\n  describe('.get(field)', function(){\r\n    it('should return the header field value', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        assert(req.get('Something-Else') === undefined);\r\n        res.end(req.get('Content-Type'));\r\n      });\r\n\r\n      request(app)\r\n      .post('/')\r\n      .set('Content-Type', 'a"
+    },
+    {
+      "filePath": "repo\\test\\req.host.js",
+      "fileName": "req.host.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n\r\ndescribe('req', function(){\r\n  describe('.host', function(){\r\n    it('should return the Host when present', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.end(req.host);\r\n      });\r\n\r\n      request(app)\r\n      .post('/')\r\n      .set('Host', 'example.com')\r\n      .expect('example.com', done);\r\n    })\r\n\r\n    it('should strip port number', function(done){\r\n      var app"
+    },
+    {
+      "filePath": "repo\\test\\req.hostname.js",
+      "fileName": "req.hostname.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n\r\ndescribe('req', function(){\r\n  describe('.hostname', function(){\r\n    it('should return the Host when present', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.end(req.hostname);\r\n      });\r\n\r\n      request(app)\r\n      .post('/')\r\n      .set('Host', 'example.com')\r\n      .expect('example.com', done);\r\n    })\r\n\r\n    it('should strip port number', function(done){\r\n     "
+    },
+    {
+      "filePath": "repo\\test\\req.ip.js",
+      "fileName": "req.ip.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.ip', function(){\r\n    describe('when X-Forwarded-For is present', function(){\r\n      describe('when \"trust proxy\" is enabled', function(){\r\n        it('should return the client addr', function(done){\r\n          var app = express();\r\n\r\n          app.enable('trust proxy');\r\n\r\n          app.use(function(req, res, next){\r\n            res.send(req.ip);\r\n          });\r\n\r\n     "
+    },
+    {
+      "filePath": "repo\\test\\req.ips.js",
+      "fileName": "req.ips.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.ips', function(){\r\n    describe('when X-Forwarded-For is present', function(){\r\n      describe('when \"trust proxy\" is enabled', function(){\r\n        it('should return an array of the specified addresses', function(done){\r\n          var app = express();\r\n\r\n          app.enable('trust proxy');\r\n\r\n          app.use(function(req, res, next){\r\n            res.send(req.ips);\r\n"
+    },
+    {
+      "filePath": "repo\\test\\req.is.js",
+      "fileName": "req.is.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('req.is()', function () {\r\n  describe('when given a mime type', function () {\r\n    it('should return the type when matching', function (done) {\r\n      var app = express()\r\n\r\n      app.use(function (req, res) {\r\n        res.json(req.is('application/json'))\r\n      })\r\n\r\n      request(app)\r\n      .post('/')\r\n      .type('application/json')\r\n      .send('{}')\r\n      .expect(200, '\"application/json\"', done)\r\n "
+    },
+    {
+      "filePath": "repo\\test\\req.path.js",
+      "fileName": "req.path.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.path', function(){\r\n    it('should return the parsed pathname', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.end(req.path);\r\n      });\r\n\r\n      request(app)\r\n      .get('/login?redirect=/post/1/comments')\r\n      .expect('/login', done);\r\n    })\r\n  })\r\n})\r\n"
+    },
+    {
+      "filePath": "repo\\test\\req.protocol.js",
+      "fileName": "req.protocol.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.protocol', function(){\r\n    it('should return the protocol string', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.end(req.protocol);\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('http', done);\r\n    })\r\n\r\n    describe('when \"trust proxy\" is enabled', function(){\r\n      it('should respect X-Forwarded-Proto"
+    },
+    {
+      "filePath": "repo\\test\\req.query.js",
+      "fileName": "req.query.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.query', function(){\r\n    it('should default to {}', function(done){\r\n      var app = createApp();\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect(200, '{}', done);\r\n    });\r\n\r\n    it('should default to parse simple keys', function (done) {\r\n      var app = createApp();\r\n\r\n      request(app)\r\n      .get('/?user[name]=tj')\r\n      "
+    },
+    {
+      "filePath": "repo\\test\\req.range.js",
+      "fileName": "req.range.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..');\r\nvar request = require('supertest')\r\n\r\ndescribe('req', function(){\r\n  describe('.range(size)', function(){\r\n    it('should return parsed ranges', function (done) {\r\n      var app = express()\r\n\r\n      app.use(function (req, res) {\r\n        res.json(req.range(120))\r\n      })\r\n\r\n      request(app)\r\n      .get('/')\r\n      .set('Range', 'bytes=0-50,51-100')\r\n      .expect(200, '[{\"start\":0,\"end\":50},{\"start\":51,\"end\":100}]', done)\r\n    })\r\n\r\n    it('should"
+    },
+    {
+      "filePath": "repo\\test\\req.route.js",
+      "fileName": "req.route.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.route', function(){\r\n    it('should be the executed Route', function(done){\r\n      var app = express();\r\n\r\n      app.get('/user/:id{/:op}', function(req, res, next){\r\n        res.header('path-1', req.route.path)\r\n        next();\r\n      });\r\n\r\n      app.get('/user/:id/edit', function(req, res){\r\n        res.header('path-2', req.route.path)\r\n        res.end();\r\n      });\r\n"
+    },
+    {
+      "filePath": "repo\\test\\req.secure.js",
+      "fileName": "req.secure.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.secure', function(){\r\n    describe('when X-Forwarded-Proto is missing', function(){\r\n      it('should return false when http', function(done){\r\n        var app = express();\r\n\r\n        app.get('/', function(req, res){\r\n          res.send(req.secure ? 'yes' : 'no');\r\n        });\r\n\r\n        request(app)\r\n        .get('/')\r\n        .expect('no', done)\r\n      })\r\n    })\r\n  })"
+    },
+    {
+      "filePath": "repo\\test\\req.signedCookies.js",
+      "fileName": "req.signedCookies.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , cookieParser = require('cookie-parser')\r\n\r\ndescribe('req', function(){\r\n  describe('.signedCookies', function(){\r\n    it('should return a signed JSON cookie', function(done){\r\n      var app = express();\r\n\r\n      app.use(cookieParser('secret'));\r\n\r\n      app.use(function(req, res){\r\n        if (req.path === '/set') {\r\n          res.cookie('obj', { foo: 'bar' }, { signed: true });\r\n          res.end();\r\n        }"
+    },
+    {
+      "filePath": "repo\\test\\req.stale.js",
+      "fileName": "req.stale.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.stale', function(){\r\n    it('should return false when the resource is not modified', function(done){\r\n      var app = express();\r\n      var etag = '\"12345\"';\r\n\r\n      app.use(function(req, res){\r\n        res.set('ETag', etag);\r\n        res.send(req.stale);\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .set('If-None-Match', etag)\r\n      .expect(304, done);\r\n   "
+    },
+    {
+      "filePath": "repo\\test\\req.subdomains.js",
+      "fileName": "req.subdomains.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.subdomains', function(){\r\n    describe('when present', function(){\r\n      it('should return an array', function(done){\r\n        var app = express();\r\n\r\n        app.use(function(req, res){\r\n          res.send(req.subdomains);\r\n        });\r\n\r\n        request(app)\r\n        .get('/')\r\n        .set('Host', 'tobi.ferrets.example.com')\r\n        .expect(200, ['ferrets', 'tobi'],"
+    },
+    {
+      "filePath": "repo\\test\\req.xhr.js",
+      "fileName": "req.xhr.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('req', function(){\r\n  describe('.xhr', function(){\r\n    before(function () {\r\n      this.app = express()\r\n      this.app.get('/', function (req, res) {\r\n        res.send(req.xhr)\r\n      })\r\n    })\r\n\r\n    it('should return true when X-Requested-With is xmlhttprequest', function(done){\r\n      request(this.app)\r\n        .get('/')\r\n        .set('X-Requested-With', 'xmlhttprequest')\r\n        .expect(200, 'tr"
+    },
+    {
+      "filePath": "repo\\test\\res.append.js",
+      "fileName": "res.append.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('res', function () {\r\n  describe('.append(field, val)', function () {\r\n    it('should append multiple headers', function (done) {\r\n      var app = express()\r\n\r\n      app.use(function (req, res, next) {\r\n        res.append('Set-Cookie', 'foo=bar')\r\n        next()\r\n      })\r\n\r\n      app.use(function (req, res) {\r\n        res.append('Set-Cookie', 'fizz=buzz')\r\n        res"
+    },
+    {
+      "filePath": "repo\\test\\res.attachment.js",
+      "fileName": "res.attachment.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nconst { Buffer } = require('node:buffer');\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('res', function(){\r\n  describe('.attachment()', function(){\r\n    it('should Content-Disposition to attachment', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.attachment().send('foo');\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('Content-Disposition', 'attachment', done);\r\n    })\r\n  })\r\n\r\n  "
+    },
+    {
+      "filePath": "repo\\test\\res.clearCookie.js",
+      "fileName": "res.clearCookie.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('res', function(){\r\n  describe('.clearCookie(name)', function(){\r\n    it('should set a cookie passed expiry', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.clearCookie('sid').end();\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('Set-Cookie', 'sid=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT')\r\n      .expect(200, done)\r\n    })\r\n  })\r\n\r"
+    },
+    {
+      "filePath": "repo\\test\\res.cookie.js",
+      "fileName": "res.cookie.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , cookieParser = require('cookie-parser')\r\n\r\ndescribe('res', function(){\r\n  describe('.cookie(name, object)', function(){\r\n    it('should generate a JSON cookie', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.cookie('user', { name: 'tobi' }).end();\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('Set-Cookie', 'user=j%3A%7B%22name%22%3A%22tobi%22%7D;"
+    },
+    {
+      "filePath": "repo\\test\\res.download.js",
+      "fileName": "res.download.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after');\r\nvar assert = require('node:assert')\r\nvar AsyncLocalStorage = require('node:async_hooks').AsyncLocalStorage\r\nconst { Buffer } = require('node:buffer');\r\n\r\nvar express = require('..');\r\nvar path = require('node:path')\r\nvar request = require('supertest');\r\nvar utils = require('./support/utils')\r\n\r\nvar FIXTURES_PATH = path.join(__dirname, 'fixtures')\r\n\r\ndescribe('res', function(){\r\n  describe('.download(path)', function(){\r\n    it('should transfer as an"
+    },
+    {
+      "filePath": "repo\\test\\res.format.js",
+      "fileName": "res.format.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after')\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , assert = require('node:assert');\r\n\r\nvar app1 = express();\r\n\r\napp1.use(function(req, res, next){\r\n  res.format({\r\n    'text/plain': function(){\r\n      res.send('hey');\r\n    },\r\n\r\n    'text/html': function(){\r\n      res.send('<p>hey</p>');\r\n    },\r\n\r\n    'application/json': function(a, b, c){\r\n      assert(req === a)\r\n      assert(res === b)\r\n      assert(next === c)\r\n      res.send("
+    },
+    {
+      "filePath": "repo\\test\\res.get.js",
+      "fileName": "res.get.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..');\r\nvar request = require('supertest');\r\n\r\ndescribe('res', function(){\r\n  describe('.get(field)', function(){\r\n    it('should get the response header field', function (done) {\r\n      var app = express();\r\n\r\n      app.use(function (req, res) {\r\n        res.setHeader('Content-Type', 'text/x-foo');\r\n        res.send(res.get('Content-Type'));\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect(200, 'text/x-foo', done);\r\n    })\r\n  })\r\n})\r\n"
+    },
+    {
+      "filePath": "repo\\test\\res.json.js",
+      "fileName": "res.json.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , assert = require('node:assert');\r\n\r\ndescribe('res', function(){\r\n  describe('.json(object)', function(){\r\n    it('should not support jsonp callbacks', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.json({ foo: 'bar' });\r\n      });\r\n\r\n      request(app)\r\n      .get('/?callback=foo')\r\n      .expect('{\"foo\":\"bar\"}', done);\r\n    })\r\n\r\n    it('should not override previo"
+    },
+    {
+      "filePath": "repo\\test\\res.jsonp.js",
+      "fileName": "res.jsonp.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , assert = require('node:assert');\r\nvar utils = require('./support/utils');\r\n\r\ndescribe('res', function(){\r\n  describe('.jsonp(object)', function(){\r\n    it('should respond with jsonp', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.jsonp({ count: 1 });\r\n      });\r\n\r\n      request(app)\r\n      .get('/?callback=something')\r\n      .expect('Content-Type', 'text/javascrip"
+    },
+    {
+      "filePath": "repo\\test\\res.links.js",
+      "fileName": "res.links.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..');\r\nvar request = require('supertest');\r\n\r\ndescribe('res', function(){\r\n  describe('.links(obj)', function(){\r\n    it('should set Link header field', function (done) {\r\n      var app = express();\r\n\r\n      app.use(function (req, res) {\r\n        res.links({\r\n          next: 'http://api.example.com/users?page=2',\r\n          last: 'http://api.example.com/users?page=5'\r\n        });\r\n        res.end();\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      ."
+    },
+    {
+      "filePath": "repo\\test\\res.locals.js",
+      "fileName": "res.locals.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('res', function(){\r\n  describe('.locals', function(){\r\n    it('should be empty by default', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.json(res.locals)\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect(200, {}, done)\r\n    })\r\n  })\r\n\r\n  it('should work when mounted', function(done){\r\n    var app = express();\r\n    var blog = express();\r\n\r\n "
+    },
+    {
+      "filePath": "repo\\test\\res.location.js",
+      "fileName": "res.location.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\n  , assert = require('node:assert')\r\n  , url = require('node:url');\r\n\r\ndescribe('res', function(){\r\n  describe('.location(url)', function(){\r\n    it('should set the header', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.location('http://google.com/').end();\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('Location', 'http://google.com/')\r\n      .expec"
+    },
+    {
+      "filePath": "repo\\test\\res.redirect.js",
+      "fileName": "res.redirect.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..');\r\nvar request = require('supertest');\r\nvar utils = require('./support/utils');\r\n\r\ndescribe('res', function(){\r\n  describe('.redirect(url)', function(){\r\n    it('should default to a 302 redirect', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.redirect('http://google.com');\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('location', 'http://google.com')\r\n      .expect(302, done)\r\n    })\r\n\r\n"
+    },
+    {
+      "filePath": "repo\\test\\res.render.js",
+      "fileName": "res.render.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..');\r\nvar path = require('node:path')\r\nvar request = require('supertest');\r\nvar tmpl = require('./support/tmpl');\r\n\r\ndescribe('res', function(){\r\n  describe('.render(name)', function(){\r\n    it('should support absolute paths', function(done){\r\n      var app = createApp();\r\n\r\n      app.locals.user = { name: 'tobi' };\r\n\r\n      app.use(function(req, res){\r\n        res.render(path.join(__dirname, 'fixtures', 'user.tmpl'))\r\n      });\r\n\r\n      request(app)\r\n    "
+    },
+    {
+      "filePath": "repo\\test\\res.send.js",
+      "fileName": "res.send.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert')\r\nconst { Buffer } = require('node:buffer');\r\nvar express = require('..');\r\nvar methods = require('../lib/utils').methods;\r\nvar request = require('supertest');\r\nvar utils = require('./support/utils');\r\n\r\nvar shouldSkipQuery = require('./support/utils').shouldSkipQuery\r\n\r\ndescribe('res', function(){\r\n  describe('.send()', function(){\r\n    it('should set body to \"\"', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r"
+    },
+    {
+      "filePath": "repo\\test\\res.sendFile.js",
+      "fileName": "res.sendFile.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after');\r\nvar assert = require('node:assert')\r\nvar AsyncLocalStorage = require('node:async_hooks').AsyncLocalStorage\r\nconst { Buffer } = require('node:buffer');\r\n\r\nvar express = require('../')\r\n  , request = require('supertest')\r\nvar onFinished = require('on-finished');\r\nvar path = require('node:path');\r\nvar fixtures = path.join(__dirname, 'fixtures');\r\nvar utils = require('./support/utils');\r\n\r\ndescribe('res', function(){\r\n  describe('.sendFile(path)', funct"
+    },
+    {
+      "filePath": "repo\\test\\res.sendStatus.js",
+      "fileName": "res.sendStatus.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..')\r\nvar request = require('supertest')\r\n\r\ndescribe('res', function () {\r\n  describe('.sendStatus(statusCode)', function () {\r\n    it('should send the status code and message as body', function (done) {\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.sendStatus(201);\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect(201, 'Created', done);\r\n    })\r\n\r\n    it('should work with unknown code', function (done) {\r\n    "
+    },
+    {
+      "filePath": "repo\\test\\res.set.js",
+      "fileName": "res.set.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..');\r\nvar request = require('supertest');\r\n\r\ndescribe('res', function(){\r\n  describe('.set(field, value)', function(){\r\n    it('should set the response header field', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.set('Content-Type', 'text/x-foo; charset=utf-8').end();\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('Content-Type', 'text/x-foo; charset=utf-8')\r\n      .end(done);\r\n    })\r\n\r\n   "
+    },
+    {
+      "filePath": "repo\\test\\res.status.js",
+      "fileName": "res.status.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\nconst express = require('../.');\r\nconst request = require('supertest');\r\n\r\ndescribe('res', function () {\r\n  describe('.status(code)', function () {\r\n\r\n    it('should set the status code when valid', function (done) {\r\n      var app = express();\r\n\r\n      app.use(function (req, res) {\r\n        res.status(200).end();\r\n      });\r\n\r\n      request(app)\r\n        .get('/')\r\n        .expect(200, done);\r\n    });\r\n\r\n    describe('accept valid ranges', function() {\r\n      // not testing w/ 100"
+    },
+    {
+      "filePath": "repo\\test\\res.type.js",
+      "fileName": "res.type.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('../')\r\n  , request = require('supertest');\r\n\r\ndescribe('res', function(){\r\n  describe('.type(str)', function(){\r\n    it('should set the Content-Type based on a filename', function(done){\r\n      var app = express();\r\n\r\n      app.use(function(req, res){\r\n        res.type('foo.js').end('var name = \"tj\";');\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect('Content-Type', 'text/javascript; charset=utf-8')\r\n      .end(done)\r\n    })\r\n\r\n    it('shou"
+    },
+    {
+      "filePath": "repo\\test\\res.vary.js",
+      "fileName": "res.vary.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar express = require('..');\r\nvar request = require('supertest');\r\nvar utils = require('./support/utils');\r\n\r\ndescribe('res.vary()', function(){\r\n  describe('with no arguments', function(){\r\n    it('should throw error', function (done) {\r\n      var app = express();\r\n\r\n      app.use(function (req, res) {\r\n        res.vary();\r\n        res.end();\r\n      });\r\n\r\n      request(app)\r\n      .get('/')\r\n      .expect(500, /field.*required/, done)\r\n    })\r\n  })\r\n\r\n  describe('with an empty "
+    },
+    {
+      "filePath": "repo\\test\\Route.js",
+      "fileName": "Route.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after');\r\nvar assert = require('node:assert')\r\nvar express = require('../')\r\n  , Route = express.Route\r\n  , methods = require('../lib/utils').methods\r\n\r\ndescribe('Route', function(){\r\n  it('should work without handlers', function(done) {\r\n    var req = { method: 'GET', url: '/' }\r\n    var route = new Route('/foo')\r\n    route.dispatch(req, {}, done)\r\n  })\r\n\r\n  it('should not stack overflow with a large sync stack', function (done) {\r\n    this.timeout(5000) // "
+    },
+    {
+      "filePath": "repo\\test\\Router.js",
+      "fileName": "Router.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar after = require('after');\r\nvar express = require('../')\r\n  , Router = express.Router\r\n  , methods = require('../lib/utils').methods\r\n  , assert = require('node:assert');\r\n\r\ndescribe('Router', function () {\r\n  it('should return a function with router methods', function () {\r\n    var router = new Router();\r\n    assert(typeof router === 'function')\r\n\r\n    assert(typeof router.get === 'function')\r\n    assert(typeof router.handle === 'function')\r\n    assert(typeof router.use === '"
+    },
+    {
+      "filePath": "repo\\test\\support\\env.js",
+      "fileName": "env.js",
+      "extension": ".js",
+      "folder": "repo\\test\\support",
+      "content": "\r\nprocess.env.NODE_ENV = 'test';\r\nprocess.env.NO_DEPRECATION = 'body-parser,express';\r\n"
+    },
+    {
+      "filePath": "repo\\test\\support\\tmpl.js",
+      "fileName": "tmpl.js",
+      "extension": ".js",
+      "folder": "repo\\test\\support",
+      "content": "var fs = require('node:fs');\r\n\r\nvar variableRegExp = /\\$([0-9a-zA-Z\\.]+)/g;\r\n\r\nmodule.exports = function renderFile(fileName, options, callback) {\r\n  function onReadFile(err, str) {\r\n    if (err) {\r\n      callback(err);\r\n      return;\r\n    }\r\n\r\n    try {\r\n      str = str.replace(variableRegExp, generateVariableLookup(options));\r\n    } catch (e) {\r\n      err = e;\r\n      err.name = 'RenderError'\r\n    }\r\n\r\n    callback(err, str);\r\n  }\r\n\r\n  fs.readFile(fileName, 'utf8', onReadFile);\r\n};\r\n\r\nfunction "
+    },
+    {
+      "filePath": "repo\\test\\support\\utils.js",
+      "fileName": "utils.js",
+      "extension": ".js",
+      "folder": "repo\\test\\support",
+      "content": "\r\n/**\r\n * Module dependencies.\r\n * @private\r\n */\r\n\r\nvar assert = require('node:assert');\r\nconst { Buffer } = require('node:buffer');\r\n\r\n/**\r\n * Module exports.\r\n * @public\r\n */\r\n\r\nexports.shouldHaveBody = shouldHaveBody\r\nexports.shouldHaveHeader = shouldHaveHeader\r\nexports.shouldNotHaveBody = shouldNotHaveBody\r\nexports.shouldNotHaveHeader = shouldNotHaveHeader;\r\nexports.shouldSkipQuery = shouldSkipQuery\r\n\r\n/**\r\n * Assert that a supertest response has a specific body.\r\n *\r\n * @param {Buffer} buf\r"
+    },
+    {
+      "filePath": "repo\\test\\utils.js",
+      "fileName": "utils.js",
+      "extension": ".js",
+      "folder": "repo\\test",
+      "content": "'use strict'\r\n\r\nvar assert = require('node:assert');\r\nconst { Buffer } = require('node:buffer');\r\nvar utils = require('../lib/utils');\r\n\r\ndescribe('utils.etag(body, encoding)', function(){\r\n  it('should support strings', function(){\r\n    assert.strictEqual(utils.etag('express!'),\r\n      '\"8-O2uVAFaQ1rZvlKLT14RnuvjPIdg\"')\r\n  })\r\n\r\n  it('should support utf8 strings', function(){\r\n    assert.strictEqual(utils.etag('express❤', 'utf8'),\r\n      '\"a-JBiXf7GyzxwcrxY4hVXUwa7tmks\"')\r\n  })\r\n\r\n  it('should "
+    }
+  ],
+  "folders": []
+}

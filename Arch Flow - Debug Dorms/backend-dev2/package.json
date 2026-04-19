@@ -1,0 +1,30 @@
+{
+  "name": "backend-dev2",
+  "version": "1.0.0",
+  "description": "Repository Architecture Analyzer Backend",
+  "main": "dist/api/server.js",
+  "scripts": {
+    "dev": "nodemon src/api/server.ts",
+    "start": "node dist/api/server.js",
+    "build": "tsc",
+    "test": "ts-node src/test-cases.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dagre": "^0.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.18.2",
+    "graphlib": "^2.1.8",
+    "groq-sdk": "^1.1.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/dagre": "^0.7.54",
+    "@types/express": "^4.17.21",
+    "@types/graphlib": "^2.1.12",
+    "@types/node": "^20.10.0",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
+  }
+}

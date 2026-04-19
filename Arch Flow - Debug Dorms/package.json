@@ -1,0 +1,17 @@
+{
+  "name": "ingestion_layer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "fs-extra": "^11.3.4",
+    "simple-git": "^3.36.0"
+  }
+}
