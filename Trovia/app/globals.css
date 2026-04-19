@@ -1,0 +1,384 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   BASE
+   ============================================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background text-on-background;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(45deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(255,255,255,0.02) 100%);
+  animation: gradientShift 8s ease infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ============================================================
+   REVEAL ANIMATIONS — The core Aptos-style system
+
+   Every animated element starts HIDDEN, then gets `.in-view`
+   when it enters the viewport. Animations are DRAMATIC:
+   - 50px travel distance (not 10px)
+   - 0.7s duration (not 0.3s)
+   - Strong cubic-bezier easing
+   ============================================================ */
+
+/* --- SLIDE UP (primary) --- */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- SLIDE DOWN --- */
+.reveal-down {
+  opacity: 0;
+  transform: translateY(-50px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-down.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- SLIDE LEFT --- */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-left.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* --- SLIDE RIGHT --- */
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-right.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* --- SCALE UP --- */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-scale.in-view {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* --- BLUR IN --- */
+.reveal-blur {
+  opacity: 0;
+  filter: blur(16px);
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out,
+              filter 0.8s ease-out,
+              transform 0.8s ease-out;
+}
+.reveal-blur.in-view {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+/* --- CLIP REVEAL (wipe-in from left) --- */
+.reveal-clip {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.reveal-clip.in-view {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* ============================================================
+   STAGGER CHILDREN — items inside a stagger container
+   Each [data-item] starts hidden, gets .item-visible with delay
+   ============================================================ */
+
+[data-item] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+[data-item].item-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   HERO-SPECIFIC KEYFRAMES
+   ============================================================ */
+
+@keyframes heroTitleIn {
+  from {
+    opacity: 0;
+    transform: translateY(80px) scale(0.95);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes heroSubtitleIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroCTAIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes heroCardSlide {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hero-title {
+  animation: heroTitleIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero-subtitle {
+  opacity: 0;
+  animation: heroSubtitleIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+}
+
+.hero-cta {
+  opacity: 0;
+  animation: heroCTAIn 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s forwards;
+}
+
+.hero-card {
+  opacity: 0;
+  animation: heroCardSlide 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s forwards;
+}
+
+/* HeLa floating card — continuous gentle float + border shimmer */
+@keyframes helaFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes borderShimmer {
+  0% { opacity: 0; background-position: -200% 0; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0; background-position: 200% 0; }
+}
+
+.hela-floating-card {
+  animation: helaFloat 4s ease-in-out 1.8s infinite;
+}
+
+/* ============================================================
+   FLOATING / AMBIENT ANIMATIONS
+   ============================================================ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.float-anim {
+  animation: float 5s ease-in-out infinite;
+}
+
+.float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+}
+
+.pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* ============================================================
+   SCROLL INDICATOR
+   ============================================================ */
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(8px); opacity: 0.8; }
+}
+
+.scroll-indicator {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+/* ============================================================
+   HOVER EFFECTS
+   ============================================================ */
+
+a, button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glow sweep */
+.glow-effect {
+  position: relative;
+  overflow: hidden;
+}
+.glow-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  transition: left 0.5s ease;
+}
+.glow-effect:hover::after {
+  left: 100%;
+}
+
+/* Scanline hover */
+@keyframes scanline {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+
+.scanline-hover {
+  position: relative;
+  overflow: hidden;
+}
+.scanline-hover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -10%;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.scanline-hover:hover::before {
+  opacity: 1;
+  animation: scanline 1.2s linear infinite;
+}
+
+/* Glitch flicker on hover */
+@keyframes glitchFlicker {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+.glitch-hover:hover {
+  animation: glitchFlicker 0.3s steps(4) 1;
+}
+
+/* ============================================================
+   BRACKET LINKS
+   ============================================================ */
+
+.bracket-link::before { content: "[ "; }
+.bracket-link::after { content: " ]"; }
+.bracket-btn::before { content: "[ "; }
+.bracket-btn::after { content: " ↗ ]"; }
+
+/* ============================================================
+   MATERIAL ICONS
+   ============================================================ */
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { @apply bg-surface-container; }
+::-webkit-scrollbar-thumb { @apply bg-outline hover:bg-outline-variant; border-radius: 3px; }
+
+/* ============================================================
+   LEGACY — keep old animate-in for pages not yet updated
+   ============================================================ */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+section.animate-in {
+  animation: fadeInUp 0.8s ease-out forwards;
+}

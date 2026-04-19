@@ -1,0 +1,17 @@
+.git
+.github
+.next
+.vscode
+.env
+.env.local
+.env.*.local
+node_modules
+npm-debug.log
+data/automation-store.json
+artifacts
+cache
+typechain-types
+tsconfig.tsbuildinfo
+deployments/demo-*.json
+scripts/_debugTradingDeploy.js
+scripts/_debugTradingDeploy.ts
