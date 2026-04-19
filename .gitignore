@@ -4,7 +4,6 @@
 .vercelartifacts/
 cache/
 ignition/
-contracts/
 scripts/deploy.js
 test/
 hardhat.config.js
