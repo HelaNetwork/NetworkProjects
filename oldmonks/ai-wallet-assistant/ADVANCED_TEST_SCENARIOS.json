@@ -1,0 +1,270 @@
+{
+  "test_scenarios": [
+    {
+      "id": 11,
+      "scenario_name": "Honeypot Token Trap",
+      "description": "User tries to swap tokens, but the token contract has a hidden trap that reverts all sells.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xFakeContractAddressForHoneypot123456",
+        "value": "0",
+        "data": "0xa9059cbb000000000000000000000000...",
+        "gasLimit": "150000",
+        "nonce": 30,
+        "chainId": 1
+      },
+      "expected_risk_level": "HIGH",
+      "expected_explanation": "This transaction interacts with a contract that appears to be a honeypot token. The contract contains hidden logic that prevents users from selling. Once tokens are purchased, they cannot be removed. This is a classic rug pull mechanism.",
+      "expected_flags": [
+        "honeypot_contract",
+        "no_sell_mechanism",
+        "trap_pattern",
+        "critical_risk"
+      ]
+    },
+    {
+      "id": 12,
+      "scenario_name": "Extreme Gas Fee Overpayment",
+      "description": "User sets gas price to 10,000 Gwei (500x normal) for a simple transfer.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "value": "1000000000000000000",
+        "data": "0x",
+        "gasLimit": "21000",
+        "gasPrice": "10000000000000",
+        "nonce": 35,
+        "chainId": 1
+      },
+      "expected_risk_level": "MEDIUM",
+      "expected_explanation": "Your gas price (10,000 Gwei) is extremely excessive for current network conditions. This simple ETH transfer will cost 100x-500x more than necessary. This appears to be an error. Consider reducing your gas price immediately.",
+      "expected_flags": [
+        "excessive_gas_price",
+        "massive_overpayment",
+        "user_error_likely"
+      ]
+    },
+    {
+      "id": 13,
+      "scenario_name": "Yield Farming Low-Risk Deposit",
+      "description": "User deposits DAI into a major audited yield farming protocol (Curve Finance).",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "0",
+        "data": "0x095ea7b30000000000000000000000008dEaD3B6B0CD5cAeE760dC02B50657521BD6548F00000000000000000000000000000000000000000000056bc75e2d63100000",
+        "gasLimit": "90000",
+        "nonce": 40,
+        "chainId": 1
+      },
+      "expected_risk_level": "LOW",
+      "expected_explanation": "This is an approval for a well-known yield farming protocol. The contract is audited and widely used. Amount is reasonable. This is a legitimate DeFi interaction with low risk for experienced users.",
+      "expected_flags": [
+        "yield_farm_protocol",
+        "audited",
+        "trusted_contract",
+        "reasonable_amount"
+      ]
+    },
+    {
+      "id": 14,
+      "scenario_name": "Flash Loan Attack Attempt (Simulated)",
+      "description": "Simulated flash loan contract interaction that would drain pool.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+        "value": "0",
+        "data": "0x12345678abcdefgh...",
+        "gasLimit": "500000",
+        "nonce": 45,
+        "chainId": 1
+      },
+      "expected_risk_level": "HIGH",
+      "expected_explanation": "This transaction involves a flash loan interaction with extremely high gas consumption. Flash loans are used in advanced DeFi attacks. Unless you are a developer testing legitimate flash loan usage, this is extremely risky.",
+      "expected_flags": [
+        "flash_loan_pattern",
+        "extremely_high_gas",
+        "advanced_defi_risk",
+        "potential_exploit"
+      ]
+    },
+    {
+      "id": 15,
+      "scenario_name": "Zero-Address Transfer (Burn)",
+      "description": "User intentionally burns tokens by sending to 0x000...000",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "0",
+        "data": "0xa9059cbb0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000de0b6b3a7640000",
+        "gasLimit": "65000",
+        "nonce": 50,
+        "chainId": 1
+      },
+      "expected_risk_level": "MEDIUM",
+      "expected_explanation": "This transaction sends tokens to the zero address (0x000...000), which permanently removes them from circulation (burning). This is intentional token destruction. Make absolutely sure this is what you intended, as tokens cannot be recovered.",
+      "expected_flags": [
+        "burn_transaction",
+        "zero_address_transfer",
+        "irreversible_action"
+      ]
+    },
+    {
+      "id": 16,
+      "scenario_name": "Staking Rewards Claim",
+      "description": "User claims accumulated staking rewards from a legitimate staking contract.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xC92E8bdf79f0507f65a392b0ab4667716BFnF4c1",
+        "value": "0",
+        "data": "0x4e6461da",
+        "gasLimit": "150000",
+        "nonce": 55,
+        "chainId": 1
+      },
+      "expected_risk_level": "LOW",
+      "expected_explanation": "This is a claim transaction for earned staking rewards. The contract is well-known and legitimate. You're simply claiming tokens you've already earned. Safe to proceed.",
+      "expected_flags": [
+        "staking_claim",
+        "reward_withdrawal",
+        "legitimate_protocol"
+      ]
+    },
+    {
+      "id": 17,
+      "scenario_name": "Unknown NFT Marketplace Interaction",
+      "description": "User approves unlimited NFTs to an unknown, unverified marketplace.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xRandomUnknownNFTContract123456789AbCdEfG",
+        "value": "0",
+        "data": "0xa22cb4650000000000000000000000001111111111111111111111111111111111111111ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "gasLimit": "100000",
+        "nonce": 60,
+        "chainId": 1
+      },
+      "expected_risk_level": "HIGH",
+      "expected_explanation": "You are approving unlimited NFT access to an unknown contract. This is extremely risky—an attacker could steal all your NFTs. Unverified NFT marketplaces are common phishing vectors. NEVER approve unlimited access. Use established platforms (OpenSea, LooksRare) instead.",
+      "expected_flags": [
+        "nft_approval",
+        "unlimited_access",
+        "unknown_contract",
+        "high_nft_risk"
+      ]
+    },
+    {
+      "id": 18,
+      "scenario_name": "Multi-Call Transaction (Batched)",
+      "description": "User performs multiple swaps in one transaction via 1inch router.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0x1111111111111111111111111111111111111111",
+        "value": "1000000000000000000",
+        "data": "0xe449022e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000300a0865b000000000000000000000000000000000000000000000000000000000",
+        "gasLimit": "400000",
+        "nonce": 65,
+        "chainId": 1
+      },
+      "expected_risk_level": "MEDIUM",
+      "expected_explanation": "This is a complex batched transaction using a DEX aggregator. Multiple swaps are being combined for efficiency. The contract (1inch) is trusted, but the complexity increases risk. Ensure you understand all swaps before confirming. Gas usage will be significant.",
+      "expected_flags": [
+        "multi_call_transaction",
+        "batched_swaps",
+        "aggregator_protocol",
+        "high_gas_usage",
+        "complex_interaction"
+      ]
+    },
+    {
+      "id": 19,
+      "scenario_name": "Governance Token Vote",
+      "description": "User votes on a protocol governance proposal using their tokens.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+        "value": "0",
+        "data": "0x0121b93f0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+        "gasLimit": "200000",
+        "nonce": 70,
+        "chainId": 1
+      },
+      "expected_risk_level": "LOW",
+      "expected_explanation": "This is a governance vote transaction. You're voting on protocol decisions. This is a legitimate protocol action with no asset risk. Your voting power will be used but your tokens remain yours.",
+      "expected_flags": [
+        "governance_vote",
+        "voting_protocol",
+        "safe_interaction",
+        "consensus_mechanism"
+      ]
+    },
+    {
+      "id": 20,
+      "scenario_name": "Advanced: Private Pool Deposit (Whitelisted User)",
+      "description": "User deposits into a private liquidity pool after being whitelisted.",
+      "transaction_data": {
+        "from": "0x742d35Cc6634C0532925a3b844Bc226e4f71aAA0",
+        "to": "0xPrivatePoolContractAddress123456789AbCdEf",
+        "value": "10000000000000000000",
+        "data": "0xd0e30db0",
+        "gasLimit": "120000",
+        "nonce": 75,
+        "chainId": 1
+      },
+      "expected_risk_level": "MEDIUM",
+      "expected_explanation": "This is a deposit to a private liquidity pool. Such pools have restricted access and are less audited than public pools. Higher counterparty risk exists. Ensure you trust the pool operators completely before proceeding.",
+      "expected_flags": [
+        "private_pool",
+        "restricted_access",
+        "counterparty_risk",
+        "lower_audit_likelihood"
+      ]
+    }
+  ],
+  "scenario_metadata": {
+    "total_scenarios": 20,
+    "coverage": {
+      "transaction_types": [
+        "simple_transfer",
+        "token_approval",
+        "contract_interaction",
+        "dex_swap",
+        "nft_mint",
+        "lending_protocol",
+        "staking",
+        "governance",
+        "batch_operation",
+        "advanced_defi"
+      ],
+      "risk_levels_covered": {
+        "low": 5,
+        "medium": 8,
+        "high": 7
+      },
+      "attack_vectors": [
+        "unlimited_approval",
+        "phishing",
+        "honeypot",
+        "rug_pull",
+        "zero_approval",
+        "excessive_gas",
+        "flash_loan",
+        "nft_theft"
+      ]
+    },
+    "validation_approach": {
+      "step_1": "Run each scenario through /api/analyze endpoint",
+      "step_2": "Verify risk_level matches expected_risk_level",
+      "step_3": "Check that all expected_flags are detected",
+      "step_4": "Validate explanation covers key risks",
+      "step_5": "Log mismatches or unexpected behaviors",
+      "step_6": "Iterate on prompt engineering if accuracy <85%"
+    },
+    "success_criteria": {
+      "risk_detection_accuracy": "≥92%",
+      "flag_precision": "≥90%",
+      "false_positives": "<3%",
+      "false_negatives": "<2%",
+      "explanation_quality": "≥85% user comprehension"
+    }
+  }
+}

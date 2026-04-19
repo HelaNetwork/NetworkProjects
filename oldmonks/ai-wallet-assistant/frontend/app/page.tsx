@@ -1,19 +1,16 @@
 "use client";
 
 import { useState, FormEvent } from 'react';
-import { saveAnalysis, createAnalysis } from '@/lib/history';
+import { saveAnalysis, createAnalysis, getAnalysisById } from '@/lib/history';
 import Link from 'next/link';
-import Header from '@/components/Header';
 
 interface AnalysisResult {
   summary: string;
   risk_level: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  risk_score?: number;
-  risk_factors?: string[];
   explanation: {
     simple: string;
     technical: string;
-  };
+  } | string;
 }
 
 interface ChatMessage {
@@ -26,6 +23,7 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [currentAnalysisId, setCurrentAnalysisId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
@@ -63,18 +61,20 @@ export default function Home() {
         LOW: 'Safe' as const,
         MEDIUM: 'Warning' as const,
         HIGH: 'Critical' as const,
+        CRITICAL: 'Critical' as const,
       };
       const analysis = createAnalysis(
         transactionData,
         {
-          status: statusMap[data.risk_level as keyof typeof statusMap],
+          status: statusMap[data.risk_level as keyof typeof statusMap] || 'Warning',
           summary: data.summary,
-          details: typeof data.explanation === 'object'
-            ? `${data.explanation.simple}\n\n${data.explanation.technical}`
+          details: typeof data.explanation === 'object' 
+            ? `${data.explanation.simple}\n\nTechnical: ${data.explanation.technical}`
             : data.explanation,
         }
       );
       saveAnalysis(analysis);
+      setCurrentAnalysisId(analysis.id);
     } catch (err: any) {
       setError(err.message || 'Analysis failed. Start backend: cd ai-wallet-assistant/backend && node index.js');
     } finally {
@@ -118,25 +118,15 @@ export default function Home() {
       setChatMessages(newMessages);
 
       // Append to analysis chatHistory if result exists
-      if (result && transactionData) {
-        const statusMap = {
-          LOW: 'Safe' as const,
-          MEDIUM: 'Warning' as const,
-          HIGH: 'Critical' as const,
-        };
-        const analysis = createAnalysis(
-          transactionData,
-          {
-            status: statusMap[result.risk_level as keyof typeof statusMap],
-            summary: result.summary,
-            details: result.explanation.simple || JSON.stringify(result.explanation),
-          },
-          newMessages.map(m => ({
+      if (result && transactionData && currentAnalysisId) {
+        const existing = getAnalysisById(currentAnalysisId);
+        if (existing) {
+          existing.chatHistory = newMessages.map(m => ({
             role: m.type === 'user' ? 'user' : 'assistant',
             message: m.text
-          }))
-        );
-        saveAnalysis(analysis);
+          }));
+          saveAnalysis(existing);
+        }
       }
     } catch (err: any) {
       const errorMessage: ChatMessage = { type: 'ai', text: `Error: ${err.message}. Backend must be running.` };
@@ -157,15 +147,13 @@ export default function Home() {
   };
 
   return (
-    <>
-      <Header />
-      <main style={{
-        minHeight: '100vh',
-        padding: '4rem 2rem',
-        backgroundColor: '#f5f5f5',
-        fontFamily: '"Arial Black", Arial, sans-serif',
-        lineHeight: 1.4
-      }}>
+    <main style={{
+      minHeight: '100vh',
+      padding: '4rem 2rem',
+      backgroundColor: '#f5f5f5',
+      fontFamily: '"Arial Black", Arial, sans-serif',
+      lineHeight: 1.4
+    }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
@@ -202,6 +190,36 @@ export default function Home() {
           }}>
             BRUTAL TRANSACTION ANALYSIS
           </p>
+
+          <div style={{ marginTop: '2rem' }}>
+            <Link href="/login" style={{
+              display: 'inline-block',
+              padding: '1rem 2rem',
+              backgroundColor: '#00f5ff',
+              color: 'black',
+              border: '4px solid black',
+              boxShadow: '6px 6px 0 black',
+              fontWeight: '900',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              fontSize: '1.2rem',
+              transition: 'all 0.1s'
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.transform = 'translate(4px, 4px)';
+              e.currentTarget.style.boxShadow = '2px 2px 0 black';
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.transform = '';
+              e.currentTarget.style.boxShadow = '6px 6px 0 black';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = '';
+              e.currentTarget.style.boxShadow = '6px 6px 0 black';
+            }}>
+              🔗 CONNECT WALLET
+            </Link>
+          </div>
         </div>
 
         <div style={{
@@ -369,49 +387,29 @@ export default function Home() {
                     {result.summary}
                   </h3>
                 </div>
-                {result.risk_score !== undefined && (
-                  <div style={{
-                    padding: '0.5rem 1rem',
-                    border: '2px solid black',
-                    backgroundColor: '#f5f5f5',
-                    fontWeight: 'bold',
-                    marginBottom: '1rem',
-                    fontFamily: 'monospace'
-                  }}>
-                    RISK SCORE: {result.risk_score}/100
-                  </div>
-                )}
-                {result.risk_factors && result.risk_factors.length > 0 && (
-                  <ul style={{
-                    margin: '0 0 1rem 0',
-                    paddingLeft: '1.5rem',
-                    fontFamily: 'monospace',
-                    fontWeight: '500'
-                  }}>
-                    {result.risk_factors.map((factor, i) => (
-                      <li key={i} style={{ marginBottom: '0.3rem' }}>{factor}</li>
-                    ))}
-                  </ul>
-                )}
-                <p style={{
-                  fontSize: '1rem',
+                <div style={{
+                  fontSize: '1.1rem',
                   color: 'black',
-                  lineHeight: 1.6,
-                  margin: '0 0 0.75rem 0',
+                  lineHeight: '1.6',
+                  margin: 0,
                   fontFamily: 'monospace',
                   fontWeight: '500'
                 }}>
-                  <strong>Simple:</strong> {result.explanation?.simple}
-                </p>
-                <p style={{
-                  fontSize: '0.9rem',
-                  color: '#444',
-                  lineHeight: 1.6,
-                  margin: 0,
-                  fontFamily: 'monospace'
-                }}>
-                  <strong>Technical:</strong> {result.explanation?.technical}
-                </p>
+                  {typeof result.explanation === 'object' ? (
+                    <>
+                      <p style={{ marginBottom: '1rem' }}>
+                        <strong style={{ backgroundColor: 'black', color: 'white', padding: '2px 6px' }}>SIMPLE:</strong><br/>
+                        {result.explanation.simple}
+                      </p>
+                      <p style={{ margin: 0 }}>
+                        <strong style={{ backgroundColor: 'black', color: 'white', padding: '2px 6px' }}>TECHNICAL:</strong><br/>
+                        {result.explanation.technical}
+                      </p>
+                    </>
+                  ) : (
+                    <p>{result.explanation}</p>
+                  )}
+                </div>
                 <Link href="/history" style={{
                   display: 'inline-block',
                   marginTop: '1.5rem',
@@ -551,7 +549,6 @@ export default function Home() {
         </div>
       </div>
     </main>
-    </>
   );
 }
 

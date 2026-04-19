@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getAnalysisById, type Analysis } from '@/lib/history';
+import { getAnalysisById, Analysis } from '@/lib/history';
 import StatusBadge from '@/components/StatusBadge';
 import Link from 'next/link';
 
@@ -57,7 +57,7 @@ export default function HistoryDetail() {
     });
 
   return (
-    <main className="min-h-screen py-12 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-gray-50 to-white">
+    <main className="min-h-screen py-12 px-6 md:px-12 lg:px-24" style={{ backgroundColor: '#f5f5f5', fontFamily: '"Arial Black", Arial, sans-serif', color: 'black' }}>
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <div className="mb-12">
@@ -100,7 +100,11 @@ export default function HistoryDetail() {
           {/* Details */}
           <div className="border-8 border-black bg-white shadow-[-20px_20px_0_black] p-10 rotate-[-2deg]">
             <h3 className="text-2xl font-black uppercase mb-6 tracking-wide border-b-4 border-black pb-4">Details</h3>
-            <p className="text-lg font-mono leading-relaxed">{analysis.result.details}</p>
+            <div className="text-lg font-mono leading-relaxed whitespace-pre-wrap">
+              {typeof analysis.result.details === 'object' 
+                ? JSON.stringify(analysis.result.details, null, 2) 
+                : analysis.result.details}
+            </div>
           </div>
         </div>
 

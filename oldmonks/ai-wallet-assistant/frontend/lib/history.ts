@@ -64,8 +64,11 @@ export function createAnalysis(
   result: {status: Status; summary: string; details: string},
   chatHistory: Analysis['chatHistory'] = []
 ): Analysis {
+  const generateId = () => {
+    try { return crypto.randomUUID(); } catch (e) { return Math.random().toString(36).substring(2, 15); }
+  };
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     timestamp: Date.now(),
     inputText,
     result,

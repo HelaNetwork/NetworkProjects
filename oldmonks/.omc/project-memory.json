@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776573883243,
+  "projectRoot": "C:\\Users\\Croma\\OneDrive\\Desktop\\Documents\\GitHub\\old-monks-",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "ai-wallet-assistant": {
+      "path": "ai-wallet-assistant",
+      "purpose": null,
+      "fileCount": 7,
+      "lastAccessed": 1776573883184,
+      "keyFiles": [
+        "ADVANCED_TEST_SCENARIOS.json",
+        "API_DOCUMENTATION.md",
+        "docker-compose.yml",
+        "PUSH_SUMMARY.md",
+        "README.md"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "ai-wallet-assistant\\backend\\.env",
+      "accessCount": 1,
+      "lastAccessed": 1776573904250,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\backend\\.env.example",
+      "accessCount": 1,
+      "lastAccessed": 1776573904317,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

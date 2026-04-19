@@ -19,10 +19,3 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
-/* Hide Reown AppKit's auto-injected floating button - we use our own controlled button */
-appkit-button,
-appkit-button::part(button),
-wui-button {
-  display: none !important;
-}

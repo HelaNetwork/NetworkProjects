@@ -7,46 +7,23 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const statusStyles: Record<Status, { bg: string; text: string; shadow: string }> = {
-  Safe: {
-    bg: "#00e676",
-    text: "black",
-    shadow: "#00a854"
-  },
-  Warning: {
-    bg: "#ffd600",
-    text: "black",
-    shadow: "#cca800"
-  },
-  Critical: {
-    bg: "#ff3b3b",
-    text: "white",
-    shadow: "#cc0000"
-  }
+const statusStyles: Record<Status, string> = {
+  Safe: "bg-[#00ff00] text-black border-black shadow-[4px_4px_0_black]",
+  Warning: "bg-[#ffff00] text-black border-black shadow-[4px_4px_0_black]",
+  Critical: "bg-[#ff0000] text-white border-black shadow-[4px_4px_0_black]"
 };
 
 export default function StatusBadge({ status, className = "" }: StatusBadgeProps) {
-  const style = statusStyles[status];
-
   return (
-    <div
-      className={className}
-      style={{
-        padding: '0.5rem 1rem',
-        backgroundColor: style.bg,
-        color: style.text,
-        border: '3px solid black',
-        fontWeight: '900',
-        fontSize: '0.875rem',
-        textTransform: 'uppercase',
-        fontFamily: '"Arial Black", sans-serif',
-        boxShadow: `4px 4px 0 ${style.shadow}`,
-        display: 'inline-block',
-        transition: 'all 0.1s'
-      }}
+    <div 
+      className={`
+        px-4 py-2 border-4 font-black text-sm uppercase tracking-wide
+        inline-block transition-all duration-150
+        ${statusStyles[status]} ${className}
+      `}
+      style={{ fontFamily: '"Arial Black", sans-serif' }}
     >
       {status} RISK
     </div>
   );
 }
-
