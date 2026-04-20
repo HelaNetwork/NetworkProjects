@@ -26,6 +26,11 @@ Current production deployment details:
 
 - Frontend: https://delegent-protocol.vercel.app
 
+
+### Explainer Video 
+
+- https://drive.google.com/file/d/1bbD1aEmcvylv--4vqqu8wqIRv6M2YeSI/view?usp=sharing 
+
 ### HeLa Testnet
 
 | Item | Value |
