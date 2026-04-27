@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-duo-green: #58CC02;
+  --color-duo-green-dark: #46A302;
+  --color-duo-blue: #1CB0F6;
+  --color-duo-blue-dark: #1899D6;
+  --color-duo-yellow: #FFC800;
+  --color-duo-yellow-dark: #E5B300;
+  --color-duo-red: #FF4B4B;
+  --color-duo-red-dark: #E54343;
+  --color-duo-eel: #4B4B4B;
+  --color-duo-wolf: #777777;
+  --color-duo-hare: #AFAFAF;
+  --color-duo-swan: #E5E5E5;
+
+  --font-nunito: "Nunito", sans-serif;
+
+  --shadow-duo: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+  --shadow-duo-pressed: 0 0 0 0 rgba(0, 0, 0, 0.2);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  font-family: 'Nunito', sans-serif;
+}
+
+body {
+  @apply bg-white text-duo-eel overflow-x-hidden;
+}
+
+/* Duolingo Button Base */
+.duo-button {
+  @apply relative inline-flex items-center justify-center transition-all duration-100 font-extrabold uppercase tracking-wide select-none outline-none;
+}
+
+.duo-button-active {
+  @apply transform translate-y-1 !shadow-none;
+}
+
+
+/* Custom progress bar transition */
+.progress-bar-fill {
+  transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
