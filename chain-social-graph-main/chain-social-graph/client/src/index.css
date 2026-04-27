@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    background-color: #0a0a0f;
+    color: #e8e8f0;
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #12121a; }
+  ::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #6c63ff; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-chain-accent hover:bg-chain-accent-hover text-white font-display text-sm px-5 py-2.5 rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply border border-chain-border text-chain-text-muted hover:border-chain-accent hover:text-chain-accent font-display text-sm px-5 py-2.5 rounded-lg transition-all duration-200 active:scale-95;
+  }
+  .card {
+    @apply bg-chain-card border border-chain-border rounded-xl;
+  }
+  .input {
+    @apply bg-chain-surface border border-chain-border rounded-lg px-4 py-2.5 text-chain-text placeholder-chain-text-muted focus:outline-none focus:border-chain-accent transition-colors text-sm w-full;
+  }
+  .address-badge {
+    @apply font-display text-xs text-chain-accent bg-chain-accent/10 px-2 py-1 rounded-md;
+  }
+}

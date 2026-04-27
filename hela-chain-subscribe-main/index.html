@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ChainPass</title>
+<style>
+/* ─── reset & tokens ─────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060a;
+  --s1:#0e0e16;
+  --s2:#13131e;
+  --s3:#1a1a2c;
+  --border:#22223a;
+  --border2:#2e2e50;
+  --purple:#7c3aed;
+  --purple-l:#a855f7;
+  --purple-dim:rgba(124,58,237,.14);
+  --gold:#f59e0b;
+  --green:#10b981;
+  --red:#ef4444;
+  --text:#e4e4f0;
+  --dim:#7878a0;
+  --muted:#3a3a58;
+  --font:'Segoe UI',system-ui,sans-serif;
+  --mono:'Courier New',monospace;
+  --r:10px;--rl:16px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ─── topbar ─────────────────────────────────────────────── */
+.bar{background:var(--s1);border-bottom:1px solid var(--border);height:58px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99}
+.logo{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;letter-spacing:-.4px}
+.hex{width:30px;height:30px;background:var(--purple);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.badge{background:rgba(245,158,11,.12);color:var(--gold);border:1px solid rgba(245,158,11,.28);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;letter-spacing:.4px}
+.bar-r{display:flex;align-items:center;gap:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s}
+.dot.on{background:var(--green);box-shadow:0 0 6px var(--green)}
+#statusTxt{font-size:12px;color:var(--dim)}
+
+/* ─── buttons ────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);border:1px solid var(--border2);background:var(--s2);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;font-family:var(--font)}
+.btn:hover{border-color:var(--purple);background:var(--purple-dim);color:var(--purple-l)}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn.pri:hover{background:var(--purple-l);border-color:var(--purple-l);color:#fff}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700}
+.btn.gold:hover{background:#fbbf24;border-color:#fbbf24;color:#000}
+.btn.ghost-red{border-color:rgba(239,68,68,.35);color:var(--red);background:rgba(239,68,68,.06)}
+.btn.ghost-red:hover{border-color:var(--red);background:rgba(239,68,68,.13)}
+.btn:disabled{opacity:.38;cursor:not-allowed;pointer-events:none}
+
+/* ─── layout ─────────────────────────────────────────────── */
+.wrap{max-width:860px;margin:0 auto;padding:28px 20px 80px}
+
+/* ─── connect screen ─────────────────────────────────────── */
+#connectScreen{text-align:center;padding:72px 24px;background:var(--s1);border:1px solid var(--border);border-radius:var(--rl)}
+.big-hex{width:88px;height:88px;background:var(--purple-dim);border:1px solid rgba(124,58,237,.25);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--purple-l);margin:0 auto 22px}
+#connectScreen h1{font-size:24px;font-weight:700;margin-bottom:8px}
+#connectScreen p{color:var(--dim);margin-bottom:28px;line-height:1.7}
+.meta-logo{font-size:18px;margin-right:4px}
+
+/* ─── app shell ──────────────────────────────────────────── */
+#app{display:none}
+
+/* ─── net bar ────────────────────────────────────────────── */
+.netbar{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 15px;display:flex;align-items:center;gap:14px;font-size:12px;color:var(--dim);flex-wrap:wrap;margin-bottom:22px}
+.netbar strong{color:var(--text)}
+.sep{width:1px;height:12px;background:var(--border2);flex-shrink:0}
+.netbar a{color:var(--purple-l);text-decoration:none}
+.netbar a:hover{text-decoration:underline}
+
+/* ─── wallet card ────────────────────────────────────────── */
+.wcard{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:22px;position:relative;overflow:hidden}
+.wcard::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 75% 40%,rgba(124,58,237,.06),transparent 55%);pointer-events:none}
+.wcard-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.wlabel{font-size:11px;color:var(--dim);letter-spacing:.9px;text-transform:uppercase;margin-bottom:5px}
+.waddr-row{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-family:var(--mono);font-size:12px;max-width:100%;overflow:hidden}
+.waddr-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.copy{background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px;padding:0;line-height:1;flex-shrink:0;transition:color .18s}
+.copy:hover{color:var(--purple-l)}
+.bal{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-top:18px;line-height:1}
+.bal-sym{font-size:17px;color:var(--dim);font-weight:400}
+.bal-sub{font-size:12px;color:var(--dim);margin-top:5px}
+
+/* ─── tabs ───────────────────────────────────────────────── */
+.tabs{display:flex;gap:3px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:3px;margin-bottom:18px}
+.tab{flex:1;padding:8px;border:none;background:none;color:var(--dim);font-size:13px;font-weight:600;cursor:pointer;border-radius:7px;transition:all .18s;font-family:var(--font);text-align:center}
+.tab.on{background:var(--purple);color:#fff}
+.tab:hover:not(.on){color:var(--text);background:var(--s2)}
+.panel{display:none}.panel.on{display:block}
+
+/* ─── card ───────────────────────────────────────────────── */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl);padding:22px;margin-bottom:14px}
+.ctitle{font-size:12px;font-weight:700;letter-spacing:.6px;color:var(--dim);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:7px}
+
+/* ─── form ───────────────────────────────────────────────── */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--dim);margin-bottom:5px;letter-spacing:.2px}
+.field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;padding:9px 13px;outline:none;transition:border-color .18s}
+.field input:focus{border-color:var(--purple)}
+.field input::placeholder{color:var(--muted)}
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1}
+
+/* ─── stats row ──────────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.slabel{font-size:11px;color:var(--dim);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px}
+.sval{font-size:20px;font-weight:700;color:var(--text)}
+.sunit{font-size:11px;color:var(--dim);margin-top:1px}
+
+/* ─── pass card ──────────────────────────────────────────── */
+.pass-card{background:linear-gradient(135deg,var(--s3) 0%,rgba(124,58,237,.12) 100%);border:1px solid rgba(124,58,237,.3);border-radius:14px;padding:22px;margin-bottom:18px;position:relative;overflow:hidden}
+.pass-card::before{content:'CPASS';position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:72px;font-weight:900;color:rgba(124,58,237,.05);letter-spacing:-3px;pointer-events:none;font-family:var(--mono)}
+.pass-tier{font-size:11px;color:var(--purple-l);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.pass-price{font-size:32px;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-1px}
+.pass-price span{font-size:15px;color:var(--dim);font-weight:400}
+.pass-feats{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+.pass-feats li{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px}
+.pass-feats li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--purple);flex-shrink:0}
+
+/* ─── status chips ───────────────────────────────────────── */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.chip.green{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+.chip.red{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.chip.purple{background:var(--purple-dim);color:var(--purple-l);border:1px solid rgba(124,58,237,.2)}
+
+/* ─── alert boxes ────────────────────────────────────────── */
+.alert{border-radius:8px;padding:11px 14px;font-size:13px;margin-top:12px;display:none}
+.alert.show{display:block}
+.alert.ok{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.22);color:var(--green)}
+.alert.err{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.22);color:var(--red)}
+.alert.info{background:var(--purple-dim);border:1px solid rgba(124,58,237,.22);color:var(--purple-l)}
+
+/* ─── pending bar ────────────────────────────────────────── */
+.pending{background:var(--s2);border:1px solid rgba(124,58,237,.3);border-radius:var(--r);padding:12px 16px;display:none;align-items:center;gap:10px;font-size:13px;margin-top:12px}
+.pending.show{display:flex}
+.pending a{color:var(--purple-l);text-decoration:none;font-family:var(--mono);font-size:11px;word-break:break-all}
+.pending a:hover{text-decoration:underline}
+
+/* ─── tx history ─────────────────────────────────────────── */
+.txrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.txrow:last-child{border-bottom:none}
+.txicon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.txicon.s{background:rgba(239,68,68,.1);color:var(--red)}
+.txicon.p{background:var(--purple-dim);color:var(--purple-l)}
+.txicon.w{background:rgba(16,185,129,.1);color:var(--green)}
+.txinfo{flex:1;min-width:0}
+.txlabel{font-size:13px;font-weight:600}
+.txhash{font-family:var(--mono);font-size:11px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.txhash a{color:var(--dim);text-decoration:none}
+.txhash a:hover{color:var(--purple-l)}
+.txamt{text-align:right;flex-shrink:0;font-size:13px;font-weight:700}
+.txamt.neg{color:var(--red)}
+.txamt.pos{color:var(--green)}
+.txsym{font-size:11px;color:var(--dim);font-weight:400}
+
+/* ─── creator panel ──────────────────────────────────────── */
+.creator-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.camount-wrap{position:relative}
+.camount-wrap input{padding-right:56px}
+.max-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--purple-l);cursor:pointer;background:none;border:none;padding:0;font-family:var(--font)}
+.max-btn:hover{color:var(--purple)}
+
+/* ─── send panel ─────────────────────────────────────────── */
+#panel-send .card{padding:22px}
+
+/* ─── spinner ────────────────────────────────────────────── */
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.18);border-top-color:#fff;border-radius:50%;animation:sp .55s linear infinite;display:inline-block;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ─── toast ──────────────────────────────────────────────── */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--s2);border:1px solid var(--border2);border-radius:var(--r);padding:11px 18px;font-size:13px;color:var(--text);z-index:999;transition:transform .28s ease;display:flex;align-items:center;gap:9px;max-width:440px;min-width:220px;box-shadow:0 6px 28px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:rgba(16,185,129,.4)}
+.toast.err{border-color:rgba(239,68,68,.4)}
+.toast.info{border-color:rgba(124,58,237,.4)}
+
+/* ─── responsive ─────────────────────────────────────────── */
+@media(max-width:560px){
+  .stats{grid-template-columns:1fr 1fr}
+  .pass-feats{grid-template-columns:1fr}
+  .creator-grid{grid-template-columns:1fr}
+  .wcard-top{flex-direction:column}
+  .bal{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══════════════════════════════════════════════ -->
+<header class="bar">
+  <div class="logo">
+    <div class="hex">C</div>
+    ChainPass
+    <span class="badge">TESTNET</span>
+  </div>
+  <div class="bar-r">
+    <div class="dot" id="dot"></div>
+    <span id="statusTxt">Not connected</span>
+    <button class="btn pri" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+    <button class="btn ghost-red" id="disconnectBtn" style="display:none" onclick="disconnect()">Disconnect</button>
+  </div>
+</header>
+
+<!-- ══ WRAP ════════════════════════════════════════════════ -->
+<div class="wrap">
+
+  <!-- connect screen -->
+  <div id="connectScreen">
+    <div class="big-hex">C</div>
+    <h1>ChainPass</h1>
+    <p>On-chain subscription & creator access NFT<br>
+       on Helachain Testnet · Chain ID 666888 · HLUSD</p>
+    <button class="btn pri" style="font-size:15px;padding:12px 30px" onclick="connectWallet()">
+      <span class="meta-logo">🦊</span> Connect MetaMask
+    </button>
+  </div>
+
+  <!-- app (hidden until connected) -->
+  <div id="app">
+
+    <!-- net bar -->
+    <div class="netbar">
+      <span><strong>Helachain Testnet</strong></span>
+      <div class="sep"></div>
+      <span>Chain <strong>666888</strong></span>
+      <div class="sep"></div>
+      <span>Contract: <strong id="contractShort" style="font-family:var(--mono);color:var(--purple-l)">not loaded</strong></span>
+      <div class="sep"></div>
+      <a href="https://testnet-blockexplorer.helachain.com" target="_blank">Explorer ↗</a>
+    </div>
+
+    <!-- wallet card -->
+    <div class="wcard">
+      <div class="wcard-top">
+        <div>
+          <div class="wlabel">Connected Wallet</div>
+          <div class="waddr-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;opacity:.6"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+            <span id="addrTxt"></span>
+            <button class="copy" onclick="copyAddr()" title="Copy">⧉</button>
+          </div>
+        </div>
+        <button class="btn" onclick="refreshBalance()" style="flex-shrink:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+      </div>
+      <div class="bal" id="balEl">— <span class="bal-sym">HLUSD</span></div>
+      <div class="bal-sub">Helachain Testnet balance</div>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs">
+      <button class="tab on" onclick="tab('subscribe',this)">Get ChainPass</button>
+      <button class="tab"    onclick="tab('send',this)">Send HLUSD</button>
+      <button class="tab"    onclick="tab('history',this)">History</button>
+    </div>
+
+    <!-- ══ SUBSCRIBE PANEL ══════════════════════════════════ -->
+    <div class="panel on" id="panel-subscribe">
+
+      <!-- contract loader -->
+      <div class="card">
+        <div class="ctitle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          Load Contract
+        </div>
+        <div class="field">
+          <label>ChainPass contract address</label>
+          <div class="input-row">
+            <input type="text" id="contractInput" placeholder="0x…" oninput="resetContract()" />
+            <button class="btn pri" id="loadBtn" onclick="loadContract()">Load</button>
+          </div>
+        </div>
+        <div id="loadAlert" class="alert"></div>
+      </div>
+
+      <!-- pass info (shown after load) -->
+      <div id="passSection" style="display:none">
+
+        <!-- stats -->
+        <div class="stats">
+          <div class="stat">
+            <div class="slabel">Pass Price</div>
+            <div class="sval" id="statPrice">—</div>
+            <div class="sunit">HLUSD per pass</div>
+          </div>
+          <div class="stat">
+            <div class="slabel">Total Passes</div>
+            <div class="sval" id="statSupply">—</div>
+            <div class="sunit">minted so far</div>
+          </div>
+          <div class="stat">
+            <div class="slabel">Your Status</div>
+            <div class="sval" id="statStatus">—</div>
+            <div class="sunit" id="statStatusSub"></div>
+          </div>
+        </div>
+
+        <!-- pass card -->
+        <div class="pass-card">
+          <div class="pass-tier">ChainPass · CPASS</div>
+          <div class="pass-price" id="passPrice">0.0100 <span>HLUSD</span></div>
+          <ul class="pass-feats">
+            <li>On-chain access NFT</li>
+            <li>Minted to your wallet</li>
+            <li>Excess auto-refunded</li>
+            <li>Transferable ERC-721</li>
+          </ul>
+        </div>
+
+        <!-- already subscribed notice -->
+        <div id="alreadyMsg" class="alert ok" style="margin-bottom:14px">
+          ✓ You already hold a ChainPass for this contract. Your access is active.
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn pri" id="subscribeBtn" onclick="doSubscribe()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+            Get ChainPass
+          </button>
+          <button class="btn" onclick="checkStatus()">Check My Status</button>
+          <button class="btn" onclick="loadContract()" style="margin-left:auto">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Reload
+          </button>
+        </div>
+
+        <div class="pending" id="subPending">
+          <div class="spin"></div>
+          <div>Tx submitted — <a id="subTxLink" href="#" target="_blank">view on explorer</a></div>
+        </div>
+        <div id="subAlert" class="alert"></div>
+      </div>
+
+      <!-- creator tools (shown if wallet = creator) -->
+      <div class="card" id="creatorCard" style="display:none">
+        <div class="ctitle" style="color:var(--gold)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Creator Tools
+        </div>
+        <div class="stats" style="grid-template-columns:1fr;margin-bottom:14px">
+          <div class="stat">
+            <div class="slabel">Contract Balance</div>
+            <div class="sval" id="statCBal">—</div>
+            <div class="sunit">HLUSD accumulated</div>
+          </div>
+        </div>
+        <div class="creator-grid">
+          <!-- withdraw -->
+          <div>
+            <div style="font-size:12px;color:var(--dim);margin-bottom:7px">Withdraw all funds to your wallet</div>
+            <button class="btn gold" onclick="doWithdraw()" style="width:100%">Withdraw Funds</button>
+          </div>
+          <!-- set price -->
+          <div>
+            <div style="font-size:12px;color:var(--dim);margin-bottom:7px">Update subscription price (HLUSD)</div>
+            <div style="display:flex;gap:7px">
+              <input type="number" id="newPriceEl" placeholder="e.g. 0.05" min="0" step="any"
+                style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:8px 11px;outline:none;font-family:var(--font)" />
+              <button class="btn" onclick="doSetPrice()">Set</button>
+            </div>
+          </div>
+        </div>
+        <div class="pending" id="creatorPending">
+          <div class="spin"></div>
+          <div>Tx submitted — <a id="creatorTxLink" href="#" target="_blank">view on explorer</a></div>
+        </div>
+        <div id="creatorAlert" class="alert"></div>
+      </div>
+
+    </div><!-- /panel-subscribe -->
+
+    <!-- ══ SEND PANEL ═══════════════════════════════════════ -->
+    <div class="panel" id="panel-send">
+      <div class="card">
+        <div class="ctitle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send HLUSD
+        </div>
+        <div class="field">
+          <label>Recipient address</label>
+          <input type="text" id="sendTo" placeholder="0x…" />
+        </div>
+        <div class="field">
+          <label>Amount (HLUSD)</label>
+          <div class="camount-wrap">
+            <input type="number" id="sendAmt" placeholder="0.0" min="0" step="any" />
+            <button class="max-btn" onclick="setMax()">MAX</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <button class="btn pri" onclick="doSend()">Send HLUSD</button>
+          <button class="btn" onclick="clearSend()">Clear</button>
+        </div>
+        <div class="pending" id="sendPending">
+          <div class="spin"></div>
+          <div>Submitted — <a id="sendTxLink" href="#" target="_blank">view on explorer</a></div>
+        </div>
+        <div id="sendAlert" class="alert"></div>
+      </div>
+    </div>
+
+    <!-- ══ HISTORY PANEL ════════════════════════════════════ -->
+    <div class="panel" id="panel-history">
+      <div class="card">
+        <div class="ctitle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Transaction History
+        </div>
+        <div id="txList">
+          <div style="text-align:center;padding:32px;color:var(--dim)">No transactions yet this session.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app -->
+</div><!-- /wrap -->
+
+<!-- toast -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const CHAIN_ID  = '0xa2d08';   // 666888 decimal — Helachain Testnet
+const RPC_URL   = 'https://testnet-rpc.helachain.com';
+const EXPLORER  = 'https://testnet-blockexplorer.helachain.com';
+const HELA_NET  = {
+  chainId: CHAIN_ID,
+  chainName: 'Hela Official Runtime Testnet',
+  nativeCurrency: { name: 'HLUSD', symbol: 'HLUSD', decimals: 18 },
+  rpcUrls: [RPC_URL],
+  blockExplorerUrls: [EXPLORER]
+};
+
+// ChainPass ABI function selectors (keccak256 of signature, first 4 bytes)
+const FN = {
+  subscribe:         '0xa6f2ae3a',  // subscribe()
+  isSubscribed:      '0x80c63aeb',  // isSubscribed(address)
+  subscriptionPrice: '0xd8dfeb45',  // subscriptionPrice()
+  totalSupply:       '0x18160ddd',  // totalSupply()
+  contractBalance:   '0x8b7afe2e',  // contractBalance()
+  creator:           '0x02d05d3f',  // creator()
+  withdraw:          '0x3ccfd60b',  // withdraw()
+  setPrice:          '0x91b7f5ed',  // setPrice(uint256)
+};
+
+// Gas values — always explicit on HeLa to skip estimateGas (which crashes on HeLa RPC)
+const GAS = {
+  subscribe: '0x7A120',  // 500 000
+  withdraw:  '0x30D40',  // 200 000
+  setPrice:  '0x15F90',  // 90 000
+  transfer:  '0x7530',   // 30 000
+};
+// HeLa testnet gas price: 1 gwei
+const GAS_PRICE = '0x3B9ACA00';
+
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+let wallet       = null;   // connected address
+let walletBal    = '0';    // HLUSD balance string
+let contract     = null;   // loaded contract address
+let contractPrice= null;   // subscriptionPrice as BigInt (wei)
+let isCreator    = false;
+let txLog        = [];
+let rpcIdx       = 1;
+
+// ═══════════════════════════════════════════════════════════
+//  RPC — direct fetch to bypass MetaMask estimateGas
+// ═══════════════════════════════════════════════════════════
+async function rpc(method, params = []) {
+  const r = await fetch(RPC_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: rpcIdx++, method, params })
+  });
+  const j = await r.json();
+  if (j.error) throw new Error(j.error.message || JSON.stringify(j.error));
+  return j.result;
+}
+
+// eth_call via direct RPC (NOT MetaMask) — avoids MetaMask triggering estimateGas
+async function call(to, data) {
+  return rpc('eth_call', [{ to, data, gas: '0x989680' }, 'latest']);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ABI ENCODING HELPERS
+// ═══════════════════════════════════════════════════════════
+function encAddr(addr) {
+  return addr.replace('0x','').toLowerCase().padStart(64,'0');
+}
+function encUint(n) {
+  return BigInt(n).toString(16).padStart(64,'0');
+}
+// Safe ETH→wei without float loss
+function toWei(amount) {
+  const s = amount.toString();
+  const [w = '0', f = ''] = s.split('.');
+  const frac = (f + '0'.repeat(18)).slice(0, 18);
+  return BigInt(w) * 1_000_000_000_000_000_000n + BigInt(frac);
+}
+function toWeiHex(amount) { return '0x' + toWei(amount).toString(16); }
+function fromWei(hexOrBig) {
+  const n = typeof hexOrBig === 'bigint' ? hexOrBig : BigInt(hexOrBig);
+  return Number(n) / 1e18;
+}
+function fmtEth(val, dp = 4) { return parseFloat(val).toFixed(dp); }
+
+// ═══════════════════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════════════════
+function short(a) { return a ? a.slice(0,6)+'…'+a.slice(-4) : ''; }
+
+let toastTimer;
+function toast(msg, type = 'info', ms = 4500) {
+  clearTimeout(toastTimer);
+  const icons = { ok:'✓', err:'✕', info:'ℹ' };
+  document.getElementById('toastIcon').textContent = icons[type] || 'ℹ';
+  document.getElementById('toastMsg').textContent = msg;
+  const el = document.getElementById('toast');
+  el.className = 'toast show ' + type;
+  toastTimer = setTimeout(() => el.classList.remove('show'), ms);
+}
+
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'alert show ' + type;
+}
+function hideAlert(id) {
+  const el = document.getElementById(id);
+  el.className = 'alert';
+}
+
+function tab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('panel-' + name).classList.add('on');
+}
+
+function copyAddr() {
+  if (!wallet) return;
+  navigator.clipboard.writeText(wallet).then(() => toast('Address copied', 'ok', 2000));
+}
+
+function setMax() {
+  document.getElementById('sendAmt').value = parseFloat(walletBal).toFixed(6);
+}
+function clearSend() {
+  document.getElementById('sendTo').value = '';
+  document.getElementById('sendAmt').value = '';
+  document.getElementById('sendPending').classList.remove('show');
+  hideAlert('sendAlert');
+}
+
+function addHistory(type, label, amountEth, hash) {
+  txLog.unshift({ type, label, amountEth, hash });
+  renderHistory();
+}
+function renderHistory() {
+  const el = document.getElementById('txList');
+  if (!txLog.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--dim)">No transactions yet this session.</div>';
+    return;
+  }
+  const icons = { s:'↑', p:'◈', w:'↓' };
+  el.innerHTML = txLog.map(tx => `
+    <div class="txrow">
+      <div class="txicon ${tx.type}">${icons[tx.type]||'?'}</div>
+      <div class="txinfo">
+        <div class="txlabel">${tx.label}</div>
+        <div class="txhash"><a href="${EXPLORER}/tx/${tx.hash}" target="_blank">${tx.hash}</a></div>
+      </div>
+      <div>
+        <div class="txamt ${tx.amountEth < 0 ? 'neg':'pos'}">${tx.amountEth < 0 ? '':'+'}${Math.abs(tx.amountEth).toFixed(4)}</div>
+        <div class="txsym">HLUSD</div>
+      </div>
+    </div>`).join('');
+}
+
+function resetContract() {
+  contract = null; contractPrice = null; isCreator = false;
+  document.getElementById('passSection').style.display = 'none';
+  document.getElementById('creatorCard').style.display = 'none';
+  document.getElementById('contractShort').textContent = 'not loaded';
+  hideAlert('loadAlert');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CONTRACT READS
+// ═══════════════════════════════════════════════════════════
+async function loadContract() {
+  const addr = document.getElementById('contractInput').value.trim();
+  if (!addr.match(/^0x[0-9a-fA-F]{40}$/)) {
+    showAlert('loadAlert', '✕ Enter a valid 0x… contract address (42 chars)', 'err'); return;
+  }
+  if (!wallet) { showAlert('loadAlert', '✕ Connect your wallet first', 'err'); return; }
+
+  const btn = document.getElementById('loadBtn');
+  btn.innerHTML = '<div class="spin" style="border-top-color:var(--purple-l)"></div>';
+  btn.disabled = true;
+  hideAlert('loadAlert');
+
+  try {
+    // read subscriptionPrice
+    const priceHex  = await call(addr, FN.subscriptionPrice);
+    contractPrice   = BigInt(priceHex);
+    const priceEth  = fromWei(contractPrice);
+
+    // read totalSupply
+    const supplyHex = await call(addr, FN.totalSupply);
+    const supply    = parseInt(supplyHex, 16);
+
+    // read contractBalance
+    const cBalHex   = await call(addr, FN.contractBalance);
+    const cBal      = fromWei(BigInt(cBalHex));
+
+    // read creator
+    const creatorHex = await call(addr, FN.creator);
+    const creatorAddr = '0x' + creatorHex.slice(-40);
+    isCreator = creatorAddr.toLowerCase() === wallet.toLowerCase();
+
+    // check user subscription status
+    const subData   = FN.isSubscribed + encAddr(wallet);
+    const subHex    = await call(addr, subData);
+    const subscribed = BigInt(subHex) > 0n;
+
+    // ── update UI ──────────────────────────────────────────
+    contract = addr;
+    document.getElementById('contractShort').textContent = short(addr);
+
+    document.getElementById('statPrice').textContent  = fmtEth(priceEth, 4);
+    document.getElementById('statSupply').textContent = supply;
+    document.getElementById('passPrice').innerHTML    = `${fmtEth(priceEth, 4)} <span>HLUSD</span>`;
+
+    if (subscribed) {
+      document.getElementById('statStatus').innerHTML    = '<span class="chip green">✓ Active</span>';
+      document.getElementById('statStatusSub').textContent = 'pass held';
+      document.getElementById('alreadyMsg').classList.add('show');
+      document.getElementById('subscribeBtn').disabled  = true;
+    } else {
+      document.getElementById('statStatus').innerHTML    = '<span class="chip red">✕ None</span>';
+      document.getElementById('statStatusSub').textContent = 'no pass';
+      document.getElementById('alreadyMsg').classList.remove('show');
+      document.getElementById('subscribeBtn').disabled  = false;
+    }
+
+    document.getElementById('passSection').style.display = 'block';
+
+    if (isCreator) {
+      document.getElementById('statCBal').textContent = fmtEth(cBal, 4);
+      document.getElementById('creatorCard').style.display = 'block';
+    }
+
+    toast('Contract loaded!', 'ok');
+  } catch(e) {
+    showAlert('loadAlert', '✕ ' + (e.message || 'Failed to read contract'), 'err');
+  } finally {
+    btn.textContent = 'Load';
+    btn.disabled = false;
+  }
+}
+
+async function checkStatus() {
+  if (!contract) { toast('Load a contract first', 'err'); return; }
+  try {
+    const subHex    = await call(contract, FN.isSubscribed + encAddr(wallet));
+    const subscribed = BigInt(subHex) > 0n;
+    if (subscribed) {
+      document.getElementById('statStatus').innerHTML = '<span class="chip green">✓ Active</span>';
+      document.getElementById('alreadyMsg').classList.add('show');
+      document.getElementById('subscribeBtn').disabled = true;
+      showAlert('subAlert', '✓ You hold an active ChainPass for this contract.', 'ok');
+    } else {
+      document.getElementById('statStatus').innerHTML = '<span class="chip red">✕ None</span>';
+      document.getElementById('alreadyMsg').classList.remove('show');
+      document.getElementById('subscribeBtn').disabled = false;
+      showAlert('subAlert', '✕ No ChainPass found for your wallet on this contract.', 'err');
+    }
+  } catch(e) {
+    toast('Read failed: ' + e.message, 'err');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TRANSACTIONS  (explicit gas + gasPrice → skip estimateGas)
+// ═══════════════════════════════════════════════════════════
+
+// ── Subscribe ──────────────────────────────────────────────
+async function doSubscribe() {
+  if (!contract)       { toast('Load a contract first', 'err'); return; }
+  if (!contractPrice)  { toast('Price not loaded — reload contract', 'err'); return; }
+  hideAlert('subAlert');
+
+  try {
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from:     wallet,
+        to:       contract,
+        data:     FN.subscribe,            // subscribe() — zero arguments
+        value:    '0x' + contractPrice.toString(16),  // exact subscriptionPrice
+        gas:      GAS.subscribe,
+        gasPrice: GAS_PRICE
+      }]
+    });
+
+    document.getElementById('subPending').classList.add('show');
+    document.getElementById('subTxLink').href        = `${EXPLORER}/tx/${txHash}`;
+    document.getElementById('subTxLink').textContent = txHash.slice(0,16) + '…';
+
+    addHistory('p', 'ChainPass subscription', -fromWei(contractPrice), txHash);
+    toast('Transaction submitted — waiting for confirmation…', 'info', 8000);
+
+    // Poll for receipt
+    waitReceipt(txHash, () => {
+      document.getElementById('subPending').classList.remove('show');
+      showAlert('subAlert', '🎉 ChainPass minted! Your access is now active on-chain.', 'ok');
+      toast('ChainPass minted! 🎉', 'ok', 6000);
+      loadContract();        // refresh stats
+      refreshBalance();
+    }, () => {
+      document.getElementById('subPending').classList.remove('show');
+      showAlert('subAlert', '✕ Transaction failed on-chain. Check the explorer for details.', 'err');
+    });
+  } catch(e) {
+    const m = e?.message || 'Rejected';
+    showAlert('subAlert', '✕ ' + (m.length > 120 ? m.slice(0,120)+'…' : m), 'err');
+  }
+}
+
+// ── Withdraw ───────────────────────────────────────────────
+async function doWithdraw() {
+  if (!contract || !isCreator) return;
+  hideAlert('creatorAlert');
+  try {
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from:     wallet,
+        to:       contract,
+        data:     FN.withdraw,
+        gas:      GAS.withdraw,
+        gasPrice: GAS_PRICE
+      }]
+    });
+    document.getElementById('creatorPending').classList.add('show');
+    document.getElementById('creatorTxLink').href        = `${EXPLORER}/tx/${txHash}`;
+    document.getElementById('creatorTxLink').textContent = txHash.slice(0,16) + '…';
+    addHistory('w', 'Withdraw from contract', 0, txHash);
+    toast('Withdrawal submitted', 'ok');
+    waitReceipt(txHash, () => {
+      document.getElementById('creatorPending').classList.remove('show');
+      showAlert('creatorAlert', '✓ Funds withdrawn successfully.', 'ok');
+      loadContract();
+      refreshBalance();
+    });
+  } catch(e) {
+    showAlert('creatorAlert', '✕ ' + (e?.message || 'Failed'), 'err');
+  }
+}
+
+// ── Set Price ──────────────────────────────────────────────
+async function doSetPrice() {
+  if (!contract || !isCreator) return;
+  const v = parseFloat(document.getElementById('newPriceEl').value);
+  if (!v || v <= 0) { toast('Enter a valid price in HLUSD', 'err'); return; }
+  hideAlert('creatorAlert');
+  try {
+    const priceWei = toWei(v);
+    const data = FN.setPrice + encUint(priceWei);
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from:     wallet,
+        to:       contract,
+        data,
+        gas:      GAS.setPrice,
+        gasPrice: GAS_PRICE
+      }]
+    });
+    document.getElementById('creatorPending').classList.add('show');
+    document.getElementById('creatorTxLink').href        = `${EXPLORER}/tx/${txHash}`;
+    document.getElementById('creatorTxLink').textContent = txHash.slice(0,16) + '…';
+    toast('Price update submitted', 'ok');
+    waitReceipt(txHash, () => {
+      document.getElementById('creatorPending').classList.remove('show');
+      showAlert('creatorAlert', `✓ Price updated to ${v} HLUSD.`, 'ok');
+      loadContract();
+    });
+  } catch(e) {
+    showAlert('creatorAlert', '✕ ' + (e?.message || 'Failed'), 'err');
+  }
+}
+
+// ── Send HLUSD ─────────────────────────────────────────────
+async function doSend() {
+  const to  = document.getElementById('sendTo').value.trim();
+  const amt = parseFloat(document.getElementById('sendAmt').value);
+  hideAlert('sendAlert');
+  if (!to.match(/^0x[0-9a-fA-F]{40}$/)) { showAlert('sendAlert','✕ Enter a valid 0x address','err'); return; }
+  if (!amt || amt <= 0)                  { showAlert('sendAlert','✕ Enter an amount','err'); return; }
+  if (amt > parseFloat(walletBal))       { showAlert('sendAlert','✕ Insufficient balance','err'); return; }
+  try {
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from:     wallet,
+        to,
+        value:    toWeiHex(amt),
+        gas:      GAS.transfer,
+        gasPrice: GAS_PRICE
+      }]
+    });
+    document.getElementById('sendPending').classList.add('show');
+    document.getElementById('sendTxLink').href        = `${EXPLORER}/tx/${txHash}`;
+    document.getElementById('sendTxLink').textContent = txHash.slice(0,16) + '…';
+    addHistory('s', `Send to ${short(to)}`, -amt, txHash);
+    toast('Sent!', 'ok');
+    waitReceipt(txHash, () => {
+      document.getElementById('sendPending').classList.remove('show');
+      showAlert('sendAlert', '✓ Transfer confirmed on-chain.', 'ok');
+      refreshBalance();
+    });
+  } catch(e) {
+    showAlert('sendAlert', '✕ ' + (e?.message || 'Failed'), 'err');
+  }
+}
+
+// ── Poll for tx receipt ────────────────────────────────────
+function waitReceipt(hash, onOk, onFail, tries = 0) {
+  if (tries > 50) return; // ~2.5 min timeout
+  setTimeout(async () => {
+    try {
+      const r = await rpc('eth_getTransactionReceipt', [hash]);
+      if (!r) return waitReceipt(hash, onOk, onFail, tries + 1);
+      r.status === '0x1' ? onOk?.() : onFail?.();
+    } catch { waitReceipt(hash, onOk, onFail, tries + 1); }
+  }, 3000);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  WALLET CONNECTION
+// ═══════════════════════════════════════════════════════════
+async function refreshBalance() {
+  if (!wallet) return;
+  try {
+    const hex = await rpc('eth_getBalance', [wallet, 'latest']);
+    const eth = fromWei(BigInt(hex));
+    walletBal = eth.toFixed(6);
+    document.getElementById('balEl').innerHTML =
+      `${eth.toLocaleString(undefined,{minimumFractionDigits:4,maximumFractionDigits:4})} <span class="bal-sym">HLUSD</span>`;
+  } catch {
+    document.getElementById('balEl').innerHTML = '<span style="color:var(--dim)">Error</span> <span class="bal-sym">HLUSD</span>';
+  }
+}
+
+async function connectWallet() {
+  if (!window.ethereum) {
+    toast('MetaMask not found — please install it', 'err', 6000); return;
+  }
+  const btn = document.getElementById('connectBtn');
+  btn.innerHTML = '<div class="spin"></div> Connecting…';
+  btn.disabled = true;
+
+  try {
+    // 1. Request accounts
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (!accounts.length) throw new Error('No accounts returned');
+
+    // 2. Switch or add Helachain Testnet
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: CHAIN_ID }]
+      });
+    } catch(e) {
+      if (e.code === 4902) {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [HELA_NET]
+        });
+      } else throw e;
+    }
+
+    wallet = accounts[0];
+    onConnected();
+    await refreshBalance();
+
+  } catch(e) {
+    toast((e.message || 'Connection failed'), 'err', 6000);
+  } finally {
+    btn.innerHTML = 'Connect Wallet';
+    btn.disabled = false;
+  }
+}
+
+function onConnected() {
+  document.getElementById('connectScreen').style.display = 'none';
+  document.getElementById('app').style.display           = 'block';
+  document.getElementById('connectBtn').style.display    = 'none';
+  document.getElementById('disconnectBtn').style.display = 'inline-flex';
+  document.getElementById('dot').className               = 'dot on';
+  document.getElementById('statusTxt').textContent       = short(wallet);
+  document.getElementById('addrTxt').textContent         = wallet;
+
+  // Account / chain change listeners
+  window.ethereum.on('accountsChanged', accs => {
+    if (!accs.length) { disconnect(); return; }
+    wallet = accs[0];
+    document.getElementById('addrTxt').textContent   = wallet;
+    document.getElementById('statusTxt').textContent = short(wallet);
+    refreshBalance();
+    resetContract();
+  });
+  window.ethereum.on('chainChanged', () => location.reload());
+
+  toast('Connected to Helachain Testnet', 'ok');
+}
+
+function disconnect() {
+  wallet = null; walletBal = '0'; contract = null; contractPrice = null;
+  isCreator = false; txLog = [];
+  document.getElementById('connectScreen').style.display = 'block';
+  document.getElementById('app').style.display           = 'none';
+  document.getElementById('connectBtn').style.display    = 'inline-flex';
+  document.getElementById('disconnectBtn').style.display = 'none';
+  document.getElementById('dot').className               = 'dot';
+  document.getElementById('statusTxt').textContent       = 'Not connected';
+  document.getElementById('balEl').innerHTML             = '— <span class="bal-sym">HLUSD</span>';
+  renderHistory();
+  toast('Disconnected', 'info', 2000);
+}
+
+// ── Auto-reconnect if already authorised on HeLa ──────────
+window.addEventListener('load', async () => {
+  if (!window.ethereum) return;
+  try {
+    const [accounts, chainId] = await Promise.all([
+      window.ethereum.request({ method: 'eth_accounts' }),
+      window.ethereum.request({ method: 'eth_chainId' })
+    ]);
+    if (accounts.length && chainId.toLowerCase() === CHAIN_ID.toLowerCase()) {
+      wallet = accounts[0];
+      onConnected();
+      refreshBalance();
+    }
+  } catch {}
+});
+</script>
+</body>
+</html>

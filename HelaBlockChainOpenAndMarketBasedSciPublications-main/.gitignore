@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+**/.env
+**/.env.local
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Uploads (PDF files — too big for git)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Data (local DB — reset on deploy)
+backend/data/papers.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
