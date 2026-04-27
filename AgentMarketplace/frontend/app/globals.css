@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  --neon-cyan: #00f3ff;
+  --neon-purple: #bc13fe;
+  --neon-pink: #ff00ea;
+  --dark-bg: #050505;
+  --dark-card: rgba(15, 15, 20, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+* { box-sizing: border-box; scroll-behavior: smooth; }
+
+body {
+  background: var(--dark-bg);
+  color: #e2e8f0;
+  font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background Gradients */
+.bg-hero-gradient {
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.08), transparent 30%),
+    radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.08), transparent 30%),
+    radial-gradient(ellipse at 50% 80%, rgba(255, 0, 234, 0.05), transparent 40%),
+    var(--dark-bg);
+}
+
+/* Glass card */
+.glass {
+  background: var(--dark-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(to right, #00f3ff, #bc13fe, #ff00ea);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+  animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Agent Card setup */
+.agent-card {
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.agent-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(0, 243, 255, 0.4);
+  box-shadow: 0 15px 40px -10px rgba(0, 243, 255, 0.15), 
+              0 0 20px -5px rgba(188, 19, 254, 0.1);
+}
+
+.agent-card:hover .agent-icon-wrapper {
+  transform: translateZ(20px) scale(1.1);
+  box-shadow: 0 0 20px var(--neon-cyan);
+}
+
+.agent-icon-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(2deg); }
+  66% { transform: translateY(5px) rotate(-2deg); }
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-fast {
+  animation: float 5s ease-in-out infinite reverse;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--dark-bg); }
+::-webkit-scrollbar-thumb { 
+  background: linear-gradient(to bottom, #00f3ff, #bc13fe); 
+  border-radius: 9999px; 
+}
+
+/* Mesh Grid overlay for cyberpunk feel */
+.bg-grid {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
