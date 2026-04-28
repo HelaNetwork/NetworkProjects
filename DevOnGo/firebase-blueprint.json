@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Information about the user including progress and stats",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "wallet_address": { "type": "string" },
+        "xp": { "type": "number" },
+        "level": { "type": "number" },
+        "streak": { "type": "number" },
+        "completed_lessons": { "type": "array", "items": { "type": "string" } },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "xp", "level", "streak", "completed_lessons"]
+    },
+    "GameSession": {
+      "title": "Game Session",
+      "description": "A multiplayer game session room",
+      "type": "object",
+      "properties": {
+        "created_by": { "type": "string" },
+        "room_code": { "type": "string" },
+        "status": { "type": "string", "enum": ["lobby", "playing", "ended"] },
+        "current_question_index": { "type": "number" },
+        "question_deadline": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["created_by", "room_code", "status"]
+    },
+    "GamePlayer": {
+      "title": "Game Player",
+      "description": "Represents a player in a game session",
+      "type": "object",
+      "properties": {
+        "session_id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "score": { "type": "number" },
+        "is_ready": { "type": "boolean" },
+        "email": { "type": "string" }
+      },
+      "required": ["session_id", "user_id", "score", "is_ready"]
+    },
+    "Achievement": {
+      "title": "Achievement",
+      "description": "An achievement unlocked by a user",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "badge_id": { "type": "string" },
+        "unlocked_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "badge_id", "unlocked_at"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/game_sessions/{sessionId}": {
+      "schema": "GameSession",
+      "description": "Multiplayer game sessions"
+    },
+    "/game_sessions/{sessionId}/players/{playerId}": {
+      "schema": "GamePlayer",
+      "description": "Players in a specific game session"
+    },
+    "/achievements/{achievementId}": {
+      "schema": "Achievement",
+      "description": "Unlocked achievements"
+    }
+  }
+}

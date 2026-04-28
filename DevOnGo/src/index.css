@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-bg: var(--theme-bg);
+  --color-brand-sidebar: var(--theme-sidebar);
+  --color-brand-primary: var(--theme-primary);
+  --color-brand-primary-hover: var(--theme-primary-hover);
+  --color-brand-ink: var(--theme-ink);
+  --color-brand-text-muted: var(--theme-text-muted);
+  --color-brand-border: var(--theme-border);
+  --color-brand-accent: var(--theme-accent);
+  --color-brand-success: var(--theme-success);
+}
+
+:root {
+  --theme-bg: #F9FAFB;
+  --theme-sidebar: #FFFFFF;
+  --theme-primary: #6366F1;
+  --theme-primary-hover: #4F46E5;
+  --theme-ink: #111827;
+  --theme-text-muted: #6B7280;
+  --theme-border: #E5E7EB;
+  --theme-accent: #F59E0B;
+  --theme-success: #10B981;
+}
+
+.dark {
+  --theme-bg: #111827; /* gray-900 */
+  --theme-sidebar: #1F2937; /* gray-800 */
+  --theme-primary: #818CF8; /* indigo-400 */
+  --theme-primary-hover: #6366F1; /* indigo-500 */
+  --theme-ink: #F9FAFB; /* gray-50 */
+  --theme-text-muted: #9CA3AF; /* gray-400 */
+  --theme-border: #374151; /* gray-700 */
+  --theme-accent: #FBBF24; /* amber-400 */
+  --theme-success: #34D399; /* emerald-400 */
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.05em;
+}
+
+@layer components {
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors text-brand-text-muted hover:text-brand-primary hover:bg-brand-primary/10;
+  }
+  .nav-item.active {
+    @apply bg-brand-primary/10 text-brand-primary;
+  }
+}
