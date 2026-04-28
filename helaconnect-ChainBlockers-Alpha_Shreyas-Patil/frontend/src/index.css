@@ -1,0 +1,397 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    /* @apply border-border; */
+  }
+
+  :root {
+    --mint: 168 85% 39%;
+    --mint-light: 168 85% 95%;
+    --bg-primary: 222 47% 11%;
+    --bg-secondary: 222 39% 14%;
+    --bg-card: 222 35% 17%;
+    --text-primary: 210 40% 96%;
+    --text-secondary: 215 20% 65%;
+    --border: 217 33% 20%;
+  }
+
+  .light {
+    --bg-primary: 210 40% 98%;
+    --bg-secondary: 210 20% 94%;
+    --bg-card: 0 0% 100%;
+    --text-primary: 222 47% 11%;
+    --text-secondary: 215 20% 40%;
+    --border: 220 14% 90%;
+  }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-gray-50 dark:bg-dark-300 text-gray-900 dark:text-white font-sans transition-colors duration-300;
+  }
+
+  html:not(.light) body {
+    background-color: #0d1117;
+  }
+
+  html.light body {
+    background-color: #f0f4f8;
+  }
+
+  ::selection {
+    background: rgba(20, 184, 166, 0.3);
+    color: #14b8a6;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0d1117;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #14b8a6;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #0d9488;
+  }
+}
+
+@layer components {
+  /* Glassmorphism card */
+  .glass-card {
+    @apply backdrop-blur-md border border-white/10 rounded-2xl;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .light .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    @apply border-gray-200/60 shadow-lg;
+  }
+
+  /* Mint gradient text */
+  .mint-gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #5eead4, #14b8a6, #0d9488);
+  }
+
+  /* Mint button */
+  .btn-mint {
+    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 relative overflow-hidden;
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+  }
+
+  .btn-mint:hover {
+    @apply scale-[1.02] -translate-y-0.5;
+    box-shadow: 0 0 30px rgba(20, 184, 166, 0.5);
+  }
+
+  .btn-mint:active {
+    @apply scale-95;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 border;
+    border-color: rgba(20, 184, 166, 0.4);
+    color: #14b8a6;
+    background: rgba(20, 184, 166, 0.05);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(20, 184, 166, 0.15);
+    border-color: rgba(20, 184, 166, 0.8);
+    @apply scale-[1.02];
+  }
+
+  /* Input field */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl font-medium transition-all duration-200 outline-none;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .input-field::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .input-field:focus {
+    border-color: rgba(20, 184, 166, 0.6);
+    background: rgba(20, 184, 166, 0.05);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  }
+
+  .light .input-field {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #0d1117;
+  }
+
+  .light .input-field::placeholder {
+    color: rgba(0, 0, 0, 0.35);
+  }
+
+  .light .input-field:focus {
+    border-color: rgba(20, 184, 166, 0.7);
+    background: rgba(20, 184, 166, 0.05);
+  }
+
+  /* Skill tag */
+  .skill-tag {
+    @apply px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 select-none;
+    border: 1px solid rgba(20, 184, 166, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .skill-tag:hover {
+    border-color: rgba(20, 184, 166, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(20, 184, 166, 0.1);
+  }
+
+  .skill-tag.selected {
+    border-color: #14b8a6;
+    color: #14b8a6;
+    background: rgba(20, 184, 166, 0.15);
+    box-shadow: 0 0 10px rgba(20, 184, 166, 0.2);
+  }
+
+  /* Nav link */
+  .nav-tab {
+    @apply px-5 py-2.5 rounded-xl font-medium transition-all duration-200 text-sm;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .nav-tab:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-tab.active {
+    color: #14b8a6;
+    background: rgba(20, 184, 166, 0.12);
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.2);
+  }
+
+  .light .nav-tab {
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .light .nav-tab:hover {
+    color: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .light .nav-tab.active {
+    color: #0d9488;
+    background: rgba(20, 184, 166, 0.1);
+  }
+
+  /* Badge */
+  .badge-mint {
+    @apply text-xs font-semibold px-2.5 py-1 rounded-full;
+    background: rgba(20, 184, 166, 0.15);
+    color: #5eead4;
+    border: 1px solid rgba(20, 184, 166, 0.3);
+  }
+
+  /* Loading shimmer */
+  .shimmer {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Glow border */
+  .glow-border {
+    box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.3), 0 0 20px rgba(20, 184, 166, 0.1);
+  }
+
+  /* Step progress */
+  .step-dot {
+    @apply w-2.5 h-2.5 rounded-full transition-all duration-300;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .step-dot.active {
+    background: #14b8a6;
+    box-shadow: 0 0 10px rgba(20, 184, 166, 0.6);
+    @apply w-6;
+  }
+
+  .step-dot.done {
+    background: #0d9488;
+  }
+}
+
+/* Animated gradient background for onboarding */
+.onboarding-bg {
+  background: radial-gradient(ellipse at 20% 50%, rgba(20, 184, 166, 0.06) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 60%),
+              radial-gradient(ellipse at 60% 80%, rgba(20, 184, 166, 0.04) 0%, transparent 60%),
+              #0d1117;
+}
+
+.light .onboarding-bg {
+  background: radial-gradient(ellipse at 20% 50%, rgba(20, 184, 166, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+              #f0f4f8;
+}
+
+/* Navbar glass */
+.navbar-glass {
+  background: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.light .navbar-glass {
+  background: rgba(240, 244, 248, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Card hover */
+.card-hover {
+  @apply transition-all duration-300;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(20, 184, 166, 0.15);
+}
+
+/* Monkey logo ring animation */
+@keyframes rotate-ring {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes counter-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.ring-rotate {
+  animation: rotate-ring 8s linear infinite;
+}
+
+.ring-counter {
+  animation: counter-rotate 6s linear infinite;
+}
+
+/* Custom DatePicker Styles */
+.react-datepicker__triangle {
+  @apply hidden;
+}
+
+.react-datepicker__month-container {
+  @apply dark:bg-transparent;
+}
+
+.react-datepicker__header {
+  @apply !flex !flex-col !gap-3 !border-none bg-white dark:!bg-[#2a3240];
+}
+.react-datepicker__header h2 {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+/* year dropdown */
+.react-datepicker__year-dropdown--scrollable {
+  @apply space-y-2 !border-gray-200 !bg-white p-2 dark:!border-gray-500 dark:!bg-gray-900;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.react-datepicker__year-dropdown--scrollable::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.react-datepicker__year-option {
+  @apply !relative !rounded-lg text-gray-700 dark:!text-gray-300;
+}
+
+.react-datepicker__year-option:hover {
+  @apply !bg-mint-500 !text-gray-100 dark:!bg-mint-700 dark:!text-white;
+}
+
+.react-datepicker__year-option--selected_year {
+  @apply bg-mint-600 !text-gray-100 dark:!bg-mint-500 dark:!text-white;
+}
+
+/* year dropdown */
+.react-datepicker__day-names .react-datepicker__day-name {
+  @apply !text-gray-700 dark:!text-gray-300;
+}
+
+.react-datepicker__year-read-view--selected-year {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.react-datepicker {
+  @apply !overflow-hidden !border-[1px] !border-gray-200 !bg-white shadow-lg shadow-gray-300/50 backdrop-blur-lg dark:!border-gray-600 dark:!bg-gray-800/30 dark:shadow-gray-900/50;
+}
+
+.react-datepicker__week div {
+  @apply !text-gray-700 dark:!text-gray-300;
+}
+
+.react-datepicker__week div:hover {
+  @apply !bg-mint-500 !text-gray-50 dark:!bg-mint-700 dark:!text-white;
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply !bg-mint-500 !text-gray-100 dark:!bg-mint-700 dark:!text-white;
+}
+
+.react-datepicker__day--selected {
+  @apply !bg-mint-500 !text-gray-100 dark:!bg-mint-700 dark:!text-white;
+}
+
+.react-datepicker__year-dropdown .react-datepicker__year-dropdown--scrollable {
+  @apply bg-white dark:!bg-gray-800;
+}
+
+/* Global Light Mode overrides for hardcoded text-white */
+html.light .text-white {
+  color: #111827;
+}
+html.light .text-white\/80 {
+  color: rgba(17, 24, 39, 0.8);
+}
+html.light .text-white\/70 {
+  color: rgba(17, 24, 39, 0.7);
+}
+html.light .text-white\/50 {
+  color: rgba(17, 24, 39, 0.6);
+}
+html.light .text-white\/40 {
+  color: rgba(17, 24, 39, 0.5);
+}
+html.light .text-white\/30 {
+  color: rgba(17, 24, 39, 0.4);
+}
+html.light .text-white\/20 {
+  color: rgba(17, 24, 39, 0.3);
+}
+html.light .text-white\/10 {
+  color: rgba(17, 24, 39, 0.15);
+}
+html.light .text-white\/5 {
+  color: rgba(17, 24, 39, 0.08);
+}
