@@ -1,0 +1,12 @@
+# HeLa AI Agent — Python Dependencies
+# Install with: pip install -r requirements.txt
+
+streamlit==1.45.0
+langchain>=0.3.25
+langchain-google-genai>=2.1.0
+langchain-core>=0.3.58
+langgraph>=0.4.3
+beautifulsoup4>=4.13.0
+requests>=2.32.0
+google-generativeai>=0.8.0
+duckduckgo-search>=7.0.0
