@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4fcf7;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --card: rgba(255, 255, 255, 0.65);
+  --accent: #10b981;
+  --accent-soft: rgba(16, 185, 129, 0.12);
+  --ring: rgba(16, 185, 129, 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0c1222;
+    --foreground: #f1f5f9;
+    --muted: #94a3b8;
+    --card: rgba(15, 23, 42, 0.55);
+    --accent-soft: rgba(52, 211, 153, 0.15);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.2s ease-in-out infinite;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* RainbowKit modal on top of glass UI */
+[data-rk] {
+  z-index: 100;
+}
