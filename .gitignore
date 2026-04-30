@@ -1,2 +1,10 @@
-backend/.env
-node_modules/
+/node_modules
+.env
+
+.vercelartifacts/
+cache/
+ignition/
+contracts/
+scripts/deploy.js
+test/
+hardhat.config.js
