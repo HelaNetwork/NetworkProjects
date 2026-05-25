@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AAP — Agent Audit Protocol | HeLa Chain</title>
+  <meta name="description" content="Transparent logging, explainability, and governance of autonomous financial agent decisions on HeLa Chain."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glows">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">⬡</div>
+      <div class="logo-text">
+        <span class="logo-title">AAP</span>
+        <span class="logo-sub">Agent Audit Protocol</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="overview" id="nav-overview">
+        <span class="nav-icon">◈</span> Overview
+      </a>
+      <a href="#" class="nav-item" data-page="decisions" id="nav-decisions">
+        <span class="nav-icon">◎</span> Decision Feed
+        <span class="nav-badge" id="badge-decisions">0</span>
+      </a>
+      <a href="#" class="nav-item" data-page="approval" id="nav-approval">
+        <span class="nav-icon">◉</span> Approval Queue
+        <span class="nav-badge warn" id="badge-approval">0</span>
+      </a>
+      <a href="#" class="nav-item" data-page="challenges" id="nav-challenges">
+        <span class="nav-icon">⊕</span> Challenges
+        <span class="nav-badge danger" id="badge-challenges">0</span>
+      </a>
+      <a href="#" class="nav-item" data-page="verify" id="nav-verify">
+        <span class="nav-icon">◍</span> Verify Record
+      </a>
+      <a href="#" class="nav-item" data-page="portfolio" id="nav-portfolio">
+        <span class="nav-icon">◆</span> Portfolio
+        <span class="nav-badge" id="badge-portfolio" style="color:var(--green)">₹</span>
+      </a>
+      <a href="#" class="nav-item" data-page="governance" id="nav-governance">
+        <span class="nav-icon">⊗</span> DAO Rules
+      </a>
+      <a href="#" class="nav-item" data-page="report" id="nav-report">
+        <span class="nav-icon">≡</span> Protocol Report
+      </a>
+    </nav>
+
+    <div class="sidebar-status">
+      <div class="status-row">
+        <span class="status-dot" id="hela-status-dot"></span>
+        <span id="hela-status-text">Connecting to HeLa...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-dot" id="ws-status-dot"></span>
+        <span id="ws-status-text">Live Feed</span>
+      </div>
+      <div class="agent-info">
+        <code id="agent-address">did:hela:0x---</code>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="page-title" id="page-title">Overview</span>
+      <span class="breadcrumb">HeLa Testnet · Chain 666</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-analyze" id="btn-analyze">
+        <span>▶ Analyze Trade</span>
+      </button>
+      <button class="btn-kill" id="btn-kill">⏹ Kill Switch</button>
+      <button class="btn-wallet" id="btn-wallet">Connect Wallet</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- ══ PAGE: OVERVIEW (Chatbot Landing) ═══════════════════════════════ -->
+    <section class="page active" id="page-overview">
+
+      <!-- Market Ticker -->
+      <div class="ticker-bar" id="ticker-bar">
+        <div class="ticker-track" id="ticker-track">
+          <span class="ticker-item"><span class="tick-sym">RELIANCE</span> <span class="tick-price">₹2,847</span> <span class="tick-chg up">+1.2%</span></span>
+          <span class="ticker-item"><span class="tick-sym">TCS</span> <span class="tick-price">₹3,921</span> <span class="tick-chg up">+0.8%</span></span>
+          <span class="ticker-item"><span class="tick-sym">HDFC</span> <span class="tick-price">₹1,723</span> <span class="tick-chg down">-0.3%</span></span>
+          <span class="ticker-item"><span class="tick-sym">INFY</span> <span class="tick-price">₹1,481</span> <span class="tick-chg up">+1.5%</span></span>
+          <span class="ticker-item"><span class="tick-sym">ETH</span> <span class="tick-price">$3,214</span> <span class="tick-chg up">+2.1%</span></span>
+          <span class="ticker-item"><span class="tick-sym">BTC</span> <span class="tick-price">$67,240</span> <span class="tick-chg up">+0.9%</span></span>
+          <span class="ticker-item"><span class="tick-sym">WIPRO</span> <span class="tick-price">₹511</span> <span class="tick-chg down">-1.2%</span></span>
+          <span class="ticker-item"><span class="tick-sym">ICICIBANK</span> <span class="tick-price">₹1,102</span> <span class="tick-chg up">+0.5%</span></span>
+          <span class="ticker-item"><span class="tick-sym">BHARTIARTL</span> <span class="tick-price">₹1,648</span> <span class="tick-chg up">+1.8%</span></span>
+          <span class="ticker-item"><span class="tick-sym">NIFTY50</span> <span class="tick-price">24,142</span> <span class="tick-chg up">+0.4%</span></span>
+          <span class="ticker-item"><span class="tick-sym">SENSEX</span> <span class="tick-price">79,312</span> <span class="tick-chg up">+0.3%</span></span>
+        </div>
+      </div>
+
+      <!-- Chatbot Layout -->
+      <div class="chat-layout">
+
+        <!-- Chat Panel (main) -->
+        <div class="chat-panel">
+          <!-- Agent Selector -->
+          <div class="agent-selector">
+            <span class="agent-sel-label">AI Agent:</span>
+            <div class="agent-chips" id="agent-chips">
+              <button class="agent-chip active" data-agent="gemini" title="Standard · Rep ≥10">
+                <span class="agent-chip-icon">✦</span>
+                <span class="agent-chip-name">Gemini</span>
+                <span class="agent-chip-badge">Standard</span>
+              </button>
+              <button class="agent-chip" data-agent="llama3" title="Free · All users">
+                <span class="agent-chip-icon">🦙</span>
+                <span class="agent-chip-name">Llama 3</span>
+                <span class="agent-chip-badge free">Fast</span>
+              </button>
+              <button class="agent-chip locked" data-agent="gpt4o" title="Requires Rep ≥40">
+                <span class="agent-chip-icon">⬡</span>
+                <span class="agent-chip-name">GPT-4o</span>
+                <span class="agent-chip-badge locked-badge">Rep 40+</span>
+              </button>
+              <button class="agent-chip locked" data-agent="claude" title="Requires Rep ≥70">
+                <span class="agent-chip-icon">◈</span>
+                <span class="agent-chip-name">Claude</span>
+                <span class="agent-chip-badge locked-badge">Rep 70+</span>
+              </button>
+            </div>
+            <div class="rep-display">
+              <span class="rep-label">Your Rep:</span>
+              <span class="rep-score" id="rep-score">25</span>
+              <span class="rep-tier" id="rep-tier">Standard</span>
+            </div>
+          </div>
+
+          <!-- Chat Messages -->
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg assistant">
+              <div class="chat-avatar">✦</div>
+              <div class="chat-bubble">
+                <div class="chat-agent-name">Gemini 1.5 Pro · AAP</div>
+                <div class="chat-text">
+                  <strong>Welcome to AAP — Agent Audit Protocol.</strong><br><br>
+                  I'm your AI trading assistant on HeLa blockchain. Every decision I make is logged as a tamper-proof PDR record, anchored on-chain, and open for DAO governance.<br><br>
+                  Try asking:<br>
+                  · <em>Analyze RELIANCE</em> or <em>Should I buy TCS?</em><br>
+                  · <em>What's ETH doing today?</em><br>
+                  · <em>How is my portfolio performing?</em>
+                </div>
+                <div class="chat-time">Just now</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typing Indicator (hidden) -->
+          <div class="chat-typing" id="chat-typing" style="display:none">
+            <div class="chat-avatar">✦</div>
+            <div class="typing-bubble">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="chat-input-row">
+            <input class="chat-input" id="chat-input"
+              placeholder="Ask about stocks, crypto, portfolio, or audit records..."
+              autocomplete="off"/>
+            <button class="chat-send-btn" id="chat-send-btn">
+              <span>▶</span>
+            </button>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="chat-quick-actions">
+            <button class="qa-btn" data-prompt="Analyze RELIANCE">📊 RELIANCE</button>
+            <button class="qa-btn" data-prompt="Analyze TCS">📊 TCS</button>
+            <button class="qa-btn" data-prompt="What is ETH doing today?">Ξ ETH</button>
+            <button class="qa-btn" data-prompt="How is my portfolio performing?">💼 Portfolio</button>
+            <button class="qa-btn" data-prompt="Explain the PDR audit trail">🔍 Audit Trail</button>
+          </div>
+        </div>
+
+        <!-- Right Sidebar: Stats + Protocol Flow -->
+        <div class="chat-sidebar">
+
+          <!-- Stats -->
+          <div class="chat-stats-grid">
+            <div class="cs-card">
+              <div class="cs-val" id="stat-total">0</div>
+              <div class="cs-lbl">Decisions</div>
+            </div>
+            <div class="cs-card green">
+              <div class="cs-val" id="stat-auto">0</div>
+              <div class="cs-lbl">Auto-Approved</div>
+            </div>
+            <div class="cs-card warn">
+              <div class="cs-val" id="stat-manual">0</div>
+              <div class="cs-lbl">Pending</div>
+            </div>
+            <div class="cs-card danger">
+              <div class="cs-val" id="stat-challenges">0</div>
+              <div class="cs-lbl">Challenges</div>
+            </div>
+            <div class="cs-card cyan">
+              <div class="cs-val" id="stat-conf">0.00</div>
+              <div class="cs-lbl">Avg Conf.</div>
+            </div>
+            <div class="cs-card purple">
+              <div class="cs-val" id="stat-anchored">0</div>
+              <div class="cs-lbl">HeLa Anchors</div>
+            </div>
+          </div>
+
+          <!-- Protocol Flow -->
+          <div class="section-card" style="margin-bottom:16px">
+            <div class="section-header">
+              <h2>Protocol Flow</h2>
+              <span class="live-dot"></span>
+            </div>
+            <div class="protocol-flow" style="flex-direction:column;gap:0">
+              <div class="flow-step-v active"><span class="fsv-icon">🤖</span><span class="fsv-label">Financial Agent</span><span class="fsv-sub">LangGraph + Gemini</span></div>
+              <div class="fsv-line"></div>
+              <div class="flow-step-v active"><span class="fsv-icon">📋</span><span class="fsv-label">PDR Builder</span><span class="fsv-sub">Pre-validation</span></div>
+              <div class="fsv-line"></div>
+              <div class="flow-step-v active"><span class="fsv-icon">🌐</span><span class="fsv-label">IPFS Upload</span><span class="fsv-sub">Pinata pinning</span></div>
+              <div class="fsv-line"></div>
+              <div class="flow-step-v active"><span class="fsv-icon">⬡</span><span class="fsv-label">HeLa Anchor</span><span class="fsv-sub">AuditAnchor.sol</span></div>
+              <div class="fsv-line"></div>
+              <div class="flow-step-v" id="flow-dao"><span class="fsv-icon">🗳️</span><span class="fsv-label">DAO Governance</span><span class="fsv-sub" id="flow-dao-sub">24h challenge window</span></div>
+            </div>
+          </div>
+
+          <!-- Recent Decisions -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Recent Decisions</h2>
+              <span class="live-dot"></span>
+            </div>
+            <div class="mini-feed" id="mini-feed">
+              <div class="feed-empty">No decisions yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- ══ PAGE: DECISIONS ══════════════════════════════════════════════════ -->
+    <section class="page" id="page-decisions">
+      <div class="page-controls">
+
+          <div class="stat-icon">◎</div>
+          <div class="stat-body">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Decisions</div>
+          </div>
+          <div class="stat-trend up">+12%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">✓</div>
+          <div class="stat-body">
+            <div class="stat-value" id="stat-auto">0</div>
+            <div class="stat-label">Auto-Approved</div>
+          </div>
+          <div class="stat-trend up">+8%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon warn">⚠</div>
+          <div class="stat-body">
+            <div class="stat-value" id="stat-manual">0</div>
+            <div class="stat-label">Pending Manual</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon danger">⊕</div>
+          <div class="stat-body">
+            <div class="stat-value" id="stat-challenges">0</div>
+            <div class="stat-label">Active Challenges</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon cyan">◈</div>
+          <div class="stat-body">
+            <div class="stat-value" id="stat-conf">0.00</div>
+            <div class="stat-label">Avg Confidence</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">⬡</div>
+          <div class="stat-body">
+            <div class="stat-value" id="stat-anchored">0</div>
+            <div class="stat-label">HeLa Anchors</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocol Flow -->
+      <div class="section-card">
+        <div class="section-header">
+          <h2>Protocol Flow</h2>
+          <span class="section-subtitle">End-to-end pipeline status</span>
+        </div>
+        <div class="protocol-flow">
+          <div class="flow-step active">
+            <div class="flow-icon">🤖</div>
+            <div class="flow-label">Financial Agent</div>
+            <div class="flow-sub">LangGraph + Gemini</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step active">
+            <div class="flow-icon">📋</div>
+            <div class="flow-label">PDR Builder</div>
+            <div class="flow-sub">Pre-validation</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step active">
+            <div class="flow-icon">🌐</div>
+            <div class="flow-label">IPFS Upload</div>
+            <div class="flow-sub">Pinata pinning</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step active">
+            <div class="flow-icon">🌳</div>
+            <div class="flow-label">Merkle Batch</div>
+            <div class="flow-sub">10 decisions/tx</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step active">
+            <div class="flow-icon">⬡</div>
+            <div class="flow-label">HeLa Anchor</div>
+            <div class="flow-sub">AuditAnchor.sol</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" id="flow-dao">
+            <div class="flow-icon">🗳️</div>
+            <div class="flow-label">DAO Governance</div>
+            <div class="flow-sub" id="flow-dao-sub">24h challenge window</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Decisions + Live Feed -->
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Recent Decisions</h2>
+            <span class="live-dot"></span>
+          </div>
+          <div class="mini-feed" id="mini-feed">
+            <div class="feed-empty">No decisions yet. Click "Analyze Trade" to start.</div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Signal Breakdown</h2>
+            <span class="section-subtitle">Latest analysis</span>
+          </div>
+          <div class="signal-panel" id="signal-panel">
+            <div class="signal-row">
+              <span class="signal-name">RSI (14)</span>
+              <span class="signal-value" id="sig-rsi">—</span>
+              <span class="signal-zone" id="sig-rsi-zone">—</span>
+            </div>
+            <div class="signal-row">
+              <span class="signal-name">MACD</span>
+              <span class="signal-value" id="sig-macd">—</span>
+              <span class="signal-zone" id="sig-macd-cross">—</span>
+            </div>
+            <div class="signal-row">
+              <span class="signal-name">Bollinger</span>
+              <span class="signal-value" id="sig-bb">—</span>
+              <span class="signal-zone" id="sig-bb-pos">—</span>
+            </div>
+            <div class="signal-row">
+              <span class="signal-name">Volume</span>
+              <span class="signal-value" id="sig-vol">—</span>
+              <span class="signal-zone" id="sig-vol-spike">—</span>
+            </div>
+            <div class="signal-row">
+              <span class="signal-name">India VIX</span>
+              <span class="signal-value" id="sig-vix">—</span>
+              <span class="signal-zone" id="sig-vix-sent">—</span>
+            </div>
+            <div class="signal-row">
+              <span class="signal-name">News Sentiment</span>
+              <span class="signal-value" id="sig-sent">—</span>
+              <span class="signal-zone" id="sig-sent-label">—</span>
+            </div>
+            <div class="overall-signal" id="overall-signal">
+              <span>Technical Signal:</span>
+              <span class="signal-badge" id="sig-overall">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ PAGE: DECISIONS ══════════════════════════════════════════════════ -->
+    <section class="page" id="page-decisions">
+
+          <button class="filter-tab active" data-filter="ALL">All</button>
+          <button class="filter-tab" data-filter="PENDING_CHALLENGE">Pending</button>
+          <button class="filter-tab" data-filter="APPROVED">Approved</button>
+          <button class="filter-tab" data-filter="CHALLENGED">Challenged</button>
+          <button class="filter-tab" data-filter="BLOCKED">Blocked</button>
+        </div>
+        <input class="search-input" placeholder="Search by ID or symbol..." id="decision-search"/>
+      </div>
+      <div class="decision-list" id="decision-list">
+        <div class="feed-empty">No decisions yet. Click "Analyze Trade" to analyze an NSE stock.</div>
+      </div>
+    </section>
+
+    <!-- ══ PAGE: APPROVAL QUEUE ════════════════════════════════════════════ -->
+    <section class="page" id="page-approval">
+      <div class="section-card">
+        <div class="section-header">
+          <h2>Manual Approval Queue</h2>
+          <span class="section-subtitle">Trades requiring human review before execution</span>
+        </div>
+        <div class="approval-list" id="approval-list">
+          <div class="feed-empty">No pending approvals.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PAGE: CHALLENGES ════════════════════════════════════════════════ -->
+    <section class="page" id="page-challenges">
+      <div class="page-controls">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter-ch="ALL">All</button>
+          <button class="filter-tab" data-filter-ch="OPEN">Open</button>
+          <button class="filter-tab" data-filter-ch="UPHELD">Upheld</button>
+          <button class="filter-tab" data-filter-ch="DISMISSED">Dismissed</button>
+        </div>
+        <button class="btn-challenge-new" id="btn-challenge-new">+ Raise Challenge</button>
+      </div>
+      <div class="challenge-list" id="challenge-list">
+        <div class="feed-empty">No challenges raised yet.</div>
+      </div>
+    </section>
+
+    <!-- ══ PAGE: VERIFY ════════════════════════════════════════════════════ -->
+    <section class="page" id="page-verify">
+      <div class="section-card verify-card">
+        <div class="section-header">
+          <h2>Verify Decision Record</h2>
+          <span class="section-subtitle">3-level cryptographic verification against HeLa Chain</span>
+        </div>
+        <div class="verify-form">
+          <label>Decision ID</label>
+          <div class="verify-input-row">
+            <input class="verify-input" id="verify-input" placeholder="aap_RELIANCE_abc123_0001"/>
+            <button class="btn-verify" id="btn-verify">Verify</button>
+          </div>
+          <div class="verify-level-select">
+            <label>Verification Level:</label>
+            <select id="verify-level">
+              <option value="1">Level 1 — Hash Integrity</option>
+              <option value="2">Level 2 — Deterministic Replay</option>
+              <option value="3" selected>Level 3 — Full (L1+L2+ZK Proof)</option>
+            </select>
+          </div>
+        </div>
+        <div class="verify-result" id="verify-result" style="display:none;"></div>
+      </div>
+
+      <!-- Verification Level Explainer -->
+      <div class="three-col">
+        <div class="level-card">
+          <div class="level-num">L1</div>
+          <div class="level-name">Hash Integrity</div>
+          <div class="level-desc">Recomputes sha256 of the PDR and checks it matches the stored hash anchored on HeLa. Proves the record is untampered.</div>
+          <div class="level-time">~100ms</div>
+        </div>
+        <div class="level-card">
+          <div class="level-num">L2</div>
+          <div class="level-name">Deterministic Replay</div>
+          <div class="level-desc">Re-runs the agent with identical inputs from the PDR. Same model version must produce same decision ±10% confidence.</div>
+          <div class="level-time">~5–15s</div>
+        </div>
+        <div class="level-card">
+          <div class="level-num">L3</div>
+          <div class="level-name">ZK-SNARK Proof</div>
+          <div class="level-desc">Proves decision followed all rules (confidence≥0.40, risk≤0.80, RSI in range) WITHOUT revealing exact values via Groth16 circuit.</div>
+          <div class="level-time">~10–30s</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PAGE: PORTFOLIO ═════════════════════════════════════════════════ -->
+    <section class="page" id="page-portfolio">
+
+      <!-- Portfolio Hero Stats -->
+      <div class="port-hero">
+        <div class="port-hero-main">
+          <div class="port-label">Total Portfolio Value</div>
+          <div class="port-value" id="port-total-value">₹0</div>
+          <div class="port-pnl" id="port-pnl-row">
+            <span id="port-pnl-amt"></span>
+            <span id="port-pnl-pct"></span>
+            <span class="port-pnl-period">today</span>
+          </div>
+        </div>
+        <div class="port-hero-stats">
+          <div class="port-hero-stat">
+            <div class="port-hs-val" id="port-invested">₹0</div>
+            <div class="port-hs-lbl">Invested</div>
+          </div>
+          <div class="port-hero-stat">
+            <div class="port-hs-val green" id="port-unrealised">₹0</div>
+            <div class="port-hs-lbl">Unrealised P&amp;L</div>
+          </div>
+          <div class="port-hero-stat">
+            <div class="port-hs-val" id="port-positions">0</div>
+            <div class="port-hs-lbl">Open Positions</div>
+          </div>
+          <div class="port-hero-stat">
+            <div class="port-hs-val cyan" id="port-agent-trades">0</div>
+            <div class="port-hs-lbl">Agent Trades Today</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Holdings + Allocation -->
+      <div class="two-col" style="margin-bottom:20px">
+
+        <!-- Holdings Table -->
+        <div class="section-card" style="margin-bottom:0">
+          <div class="section-header">
+            <h2>Holdings</h2>
+            <span class="section-subtitle">NSE — Simulated positions</span>
+          </div>
+          <div class="holdings-table">
+            <div class="ht-header">
+              <span>Stock</span>
+              <span>Qty</span>
+              <span>Avg Cost</span>
+              <span>LTP</span>
+              <span>Value</span>
+              <span>P&amp;L</span>
+              <span>Agent</span>
+            </div>
+            <div id="holdings-body"></div>
+          </div>
+        </div>
+
+        <!-- Allocation Ring -->
+        <div class="section-card" style="margin-bottom:0">
+          <div class="section-header">
+            <h2>Allocation</h2>
+            <span class="section-subtitle">By sector</span>
+          </div>
+          <div class="alloc-container">
+            <div class="alloc-ring-wrap">
+              <svg id="alloc-ring" viewBox="0 0 160 160" width="160" height="160"></svg>
+              <div class="alloc-ring-center" id="alloc-center-text">
+                <div class="alloc-ct-val" id="alloc-ct-val">—</div>
+                <div class="alloc-ct-lbl">of portfolio</div>
+              </div>
+            </div>
+            <div class="alloc-legend" id="alloc-legend"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity on Portfolio -->
+      <div class="section-card">
+        <div class="section-header">
+          <h2>Agent Activity — Portfolio Impact</h2>
+          <span class="section-subtitle">Decisions affecting your holdings</span>
+        </div>
+        <div class="activity-timeline" id="activity-timeline"></div>
+      </div>
+
+      <!-- Risk Exposure -->
+      <div class="section-card">
+        <div class="section-header">
+          <h2>Risk Exposure</h2>
+          <span class="section-subtitle">Per position</span>
+        </div>
+        <div class="risk-bars" id="risk-bars"></div>
+      </div>
+
+    </section>
+
+    <!-- ══ PAGE: GOVERNANCE ════════════════════════════════════════════════ -->
+    <section class="page" id="page-governance">
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Hardcoded Rules</h2>
+            <span class="section-subtitle">Immutable — written into contract</span>
+          </div>
+          <div class="rule-list">
+            <div class="rule-item hardcoded">
+              <div class="rule-key">MAX_PORTFOLIO_PCT</div>
+              <div class="rule-val">5%</div>
+              <div class="rule-desc">Max single trade as % of portfolio</div>
+            </div>
+            <div class="rule-item hardcoded">
+              <div class="rule-key">MARKET_OPEN_BUFFER</div>
+              <div class="rule-val">15 min</div>
+              <div class="rule-desc">No trades in first 15 min of market open</div>
+            </div>
+            <div class="rule-item hardcoded">
+              <div class="rule-key">MIN_AGENT_STAKE</div>
+              <div class="rule-val">0.01 HELA</div>
+              <div class="rule-desc">Agent must stake this to register</div>
+            </div>
+            <div class="rule-item hardcoded">
+              <div class="rule-key">MAX_SLASHES</div>
+              <div class="rule-val">3</div>
+              <div class="rule-desc">Agent auto-deactivated after 3 slashes</div>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Community Rules</h2>
+            <span class="section-subtitle">DAO-voted — changeable</span>
+          </div>
+          <div class="rule-list" id="community-rules">
+            <div class="rule-item">
+              <div class="rule-key">AUTO_APPROVE_LIMIT</div>
+              <div class="rule-val">₹10,000</div>
+              <div class="rule-desc">Auto-approve trades below this value</div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-key">RISK_THRESHOLD_AUTO</div>
+              <div class="rule-val">0.50</div>
+              <div class="rule-desc">Risk score above this = manual review</div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-key">ALLOWED_ASSETS</div>
+              <div class="rule-val">8 symbols</div>
+              <div class="rule-desc">RELIANCE, TCS, HDFC, INFY, WIPRO + 3</div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-key">CHALLENGE_WINDOW</div>
+              <div class="rule-val">24 hours</div>
+              <div class="rule-desc">Window to raise a challenge after decision</div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-key">CHALLENGE_STAKE</div>
+              <div class="rule-val">0.005 HELA</div>
+              <div class="rule-desc">Stake required to raise a challenge</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PAGE: PROTOCOL REPORT ═══════════════════════════════════════════ -->
+    <section class="page" id="page-report">
+      <div class="report-container">
+        <div class="report-hero">
+          <h1>Agent Audit Protocol (AAP)</h1>
+          <p>Transparent, Explainable, and Governable AI Trading on HeLa Chain</p>
+          <div class="report-tags">
+            <span class="tag">Problem Statement #4</span>
+            <span class="tag">HeLa Chain · ID 666/8668</span>
+            <span class="tag">LangGraph + Gemini</span>
+            <span class="tag">ZK-SNARK · Groth16</span>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h2>Problem</h2>
+          <p>Autonomous agents increasingly make high-stakes financial decisions — BUY/SELL orders worth lakhs of rupees — with no standardized way to verify <em>why</em> a decision was made, <em>who</em> made it, or <em>whether</em> it can be trusted. No audit trail. No human override. No tamper-proof record.</p>
+        </div>
+
+        <div class="report-section">
+          <h2>Solution Architecture</h2>
+          <div class="arch-grid">
+            <div class="arch-box off-chain">
+              <h3>Off-Chain</h3>
+              <ul>
+                <li>LangGraph + Gemini 1.5 Pro agent</li>
+                <li>20+ technical indicators (RSI, MACD, Bollinger)</li>
+                <li>News sentiment analysis</li>
+                <li>Multi-factor risk scorer</li>
+                <li>PDR builder + pre-validator</li>
+                <li>IPFS upload via Pinata</li>
+                <li>Merkle tree batcher</li>
+              </ul>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box on-chain">
+              <h3>On-Chain (HeLa)</h3>
+              <ul>
+                <li>AuditAnchor.sol — Merkle roots</li>
+                <li>ChallengeRegistry.sol — disputes</li>
+                <li>PolicyRegistry.sol — DAO rules</li>
+                <li>AgentRegistry.sol — DID + stake</li>
+                <li>24h challenge window</li>
+                <li>Bond staking + slashing</li>
+                <li>DAO token voting</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h2>5 Key Innovations</h2>
+          <div class="innovations-grid">
+            <div class="innovation-card">
+              <div class="innov-num">01</div>
+              <h3>Linked Hash Chain</h3>
+              <p>Each PDR contains <code>prev_pdr_hash</code> of the prior record. Any insertion or deletion is cryptographically detectable — like a blockchain for agent decisions.</p>
+            </div>
+            <div class="innovation-card">
+              <div class="innov-num">02</div>
+              <h3>Bond Staking Challenges</h3>
+              <p>Challengers stake 0.005 HELA to raise a dispute. Returned + reward if upheld. Burned if dismissed. Eliminates challenge spam while incentivizing legitimate oversight.</p>
+            </div>
+            <div class="innovation-card">
+              <div class="innov-num">03</div>
+              <h3>3-Level Verification</h3>
+              <p>L1: Hash integrity. L2: Deterministic replay (same inputs → same output). L3: ZK-SNARK proof (prove rules followed without revealing private data).</p>
+            </div>
+            <div class="innovation-card">
+              <div class="innov-num">04</div>
+              <h3>Privacy-Preserving Logs</h3>
+              <p>Logs contain trade data, reasoning, risk scores — zero PII. No user name, account number, or portfolio size. Agent DID is pseudonymous by design.</p>
+            </div>
+            <div class="innovation-card">
+              <div class="innov-num">05</div>
+              <h3>Policy-Based Approval Gate</h3>
+              <p>Auto-approve &lt;₹10,000. Manual review ₹10K–1L. Block above risk threshold 0.80. User-configurable limits. DAO votes to change thresholds.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h2>Why HeLa Chain?</h2>
+          <div class="hela-table">
+            <div class="hela-row">
+              <div class="hela-feature">EVM Compatible</div>
+              <div class="hela-value">Solidity contracts deploy without modification</div>
+            </div>
+            <div class="hela-row">
+              <div class="hela-feature">Low Gas</div>
+              <div class="hela-value">~₹0.015 per Merkle batch (100 decisions). Economically viable at scale.</div>
+            </div>
+            <div class="hela-row">
+              <div class="hela-feature">DID Native</div>
+              <div class="hela-value">Agent identities resolve as W3C DIDs — regulatory compliance ready</div>
+            </div>
+            <div class="hela-row">
+              <div class="hela-feature">Privacy Layer</div>
+              <div class="hela-value">Built-in privacy primitives for regulated finance (SEBI, RBI compliance)</div>
+            </div>
+            <div class="hela-row">
+              <div class="hela-feature">DAO Ready</div>
+              <div class="hela-value">OpenZeppelin Governor compatible — governance out of the box</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h2>PDR Schema</h2>
+          <pre class="code-block">{
+  "decision_id":   "aap_RELIANCE_abc123_0001",
+  "timestamp":     "2026-04-18T15:30:00Z",
+  "action":        "BUY",
+  "asset":         "RELIANCE",
+  "quantity":      10,
+  "price":         2850.50,
+  "trade_value_inr": 28505.00,
+
+  "input_features": { "rsi_14": 42.3, "macd_crossover": "BULLISH", ... },
+  "external_signals": { "news_sentiment_score": 0.72, ... },
+  "model_info":    { "llm": "gemini-1.5-pro", "model_hash": "abc123..." },
+  "reasoning_chain": [ {"step":1, "thought":"RSI recovering..."}, ... ],
+  "human_explanation": "Buying RELIANCE because RSI shows recovery...",
+
+  "confidence_score": 0.87,
+  "risk_score":       "MEDIUM",
+  "risk_score_numeric": 0.42,
+
+  "approval_type":     "AUTO",
+  "execution_status":  "PENDING_CHALLENGE",
+  "challenge_window_hours": 24,
+
+  "prev_pdr_hash":   "sha256:8b3d...",
+  "pdr_hash":        "sha256:f9e1...",
+  "ipfs_cid":        "QmXoy...",
+  "hela_anchor_tx":  "0xa3b2...",
+  "zk_proof":        { "circuit": "ConstrainedDecision_v1", ... }
+}</pre>
+        </div>
+
+        <div class="report-section">
+          <h2>Roadmap</h2>
+          <div class="roadmap">
+            <div class="roadmap-item done">
+              <div class="roadmap-phase">Phase 1 ✓</div>
+              <div class="roadmap-items">Smart contracts · PDR schema · LangGraph agent · IPFS · Merkle anchoring · ZK circuit · FastAPI · Dashboard</div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-phase">Phase 2</div>
+              <div class="roadmap-items">Real Zerodha Kite execution · PostgreSQL persistence · Real IPFS pinning · Live HeLa testnet deployment · Full Groth16 proofs</div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-phase">Phase 3</div>
+              <div class="roadmap-items">Production HeLa mainnet · DAO token distribution · Multi-agent swarm · Anomaly scoring auto-extension · Healthcare/governance adapters</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ MODALS ══════════════════════════════════════════════════════════════ -->
+
+  <!-- Analyze Modal -->
+  <div class="modal-overlay" id="modal-analyze">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Analyze NSE Stock</h3>
+        <button class="modal-close" data-close="modal-analyze">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Symbol</label>
+          <select id="analyze-symbol">
+            <option value="RELIANCE">RELIANCE — Reliance Industries</option>
+            <option value="TCS">TCS — Tata Consultancy Services</option>
+            <option value="HDFC">HDFC — HDFC Bank</option>
+            <option value="INFY">INFY — Infosys</option>
+            <option value="WIPRO">WIPRO — Wipro</option>
+            <option value="ICICIBANK">ICICIBANK — ICICI Bank</option>
+            <option value="KOTAKBANK">KOTAKBANK — Kotak Mahindra Bank</option>
+            <option value="BHARTIARTL">BHARTIARTL — Bharti Airtel</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity (shares)</label>
+          <input type="number" id="analyze-qty" value="10" min="1" max="1000"/>
+        </div>
+        <div class="form-note">
+          <span>⬡</span> Decision will be logged to IPFS + anchored on HeLa Chain
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-close="modal-analyze">Cancel</button>
+        <button class="btn-primary" id="btn-analyze-submit">Run Analysis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDR Detail Modal -->
+  <div class="modal-overlay" id="modal-pdr">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 id="pdr-modal-title">Decision Record</h3>
+        <button class="modal-close" data-close="modal-pdr">✕</button>
+      </div>
+      <div class="modal-body" id="pdr-modal-body">
+      </div>
+    </div>
+  </div>
+
+  <!-- Challenge Modal -->
+  <div class="modal-overlay" id="modal-challenge">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Raise a Challenge</h3>
+        <button class="modal-close" data-close="modal-challenge">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="challenge-stake-notice">
+          <span>⚠</span> Requires staking <strong>0.005 HELA</strong>. Returned if upheld, burned if dismissed.
+        </div>
+        <div class="form-group">
+          <label>Decision ID</label>
+          <input id="ch-decision-id" placeholder="aap_RELIANCE_..."/>
+        </div>
+        <div class="form-group">
+          <label>Reason</label>
+          <textarea id="ch-reason" rows="3" placeholder="Describe why this decision is incorrect or harmful..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Evidence Notes</label>
+          <textarea id="ch-evidence" rows="2" placeholder="Reference to conflicting data, rule violations, etc."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-close="modal-challenge">Cancel</button>
+        <button class="btn-primary btn-danger-submit" id="btn-challenge-submit">Submit Challenge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kill Switch Modal -->
+  <div class="modal-overlay" id="modal-kill">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>⏹ Emergency Kill Switch</h3>
+        <button class="modal-close" data-close="modal-kill">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="kill-warning">
+          <p>This will <strong>immediately pause</strong> all agent operations. No new trades will be executed until manually resumed. This action is recorded on HeLa Chain.</p>
+        </div>
+        <div class="form-group">
+          <label>Reason (required)</label>
+          <input id="kill-reason" placeholder="e.g., Unusual market volatility detected"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-close="modal-kill">Cancel</button>
+        <button class="btn-kill-confirm" id="btn-kill-confirm">⏹ Confirm Pause All Agents</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
