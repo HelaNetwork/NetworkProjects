@@ -1,0 +1,1738 @@
+================================================================================
+                    COTTONX - SYSTEM ARCHITECTURE DOCUMENT
+                    Personal Onchain AI Treasurer Platform
+================================================================================
+
+Version: 1.0
+Date: April 2026
+Project Status: Active Development
+Deployment Target: GCP Cloud Run + Firestore + Base/EVM Blockchain
+
+
+================================================================================
+1. EXECUTIVE SUMMARY
+================================================================================
+
+CottonX is a multi-agent AI orchestration platform designed to enable autonomous
+management of decentralized finance operations. The system provides:
+
+• Four specialized AI agents (Eric, Harper, Rishi, Yasmin) for different DeFi domains
+• Non-custodial wallet management via Coinbase Developer Platform
+• Real-time bidirectional communication via WebSocket
+• Natural language intent processing with intent routing
+• Secure transaction execution on EVM-compatible blockchains
+• Persistent audit trails and decision logging
+
+The architecture replaces traditional serverless AWS infrastructure (Lambda, SQS,
+DynamoDB, API Gateway, SageMaker) with a unified GCP Cloud Run deployment,
+reducing operational complexity while maintaining scalability.
+
+
+================================================================================
+2. SYSTEM ARCHITECTURE OVERVIEW
+================================================================================
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                           USER INTERACTION LAYER                           │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────────────────────────────────────────────────┐      │
+│  │              Next.js Frontend Application (port 3000)           │      │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │      │
+│  │  │   Auth UI    │  │   Chat UI    │  │  Wallet UI   │           │      │
+│  │  │  (Firebase)  │  │ (Real-time)  │  │  (OnChain)   │           │      │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘           │      │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │      │
+│  │  │ Agent Select │  │ Character    │  │ Game/Stats   │           │      │
+│  │  │              │  │ Management   │  │              │           │      │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘           │      │
+│  └──────────────────────────────────────────────────────────────────┘      │
+│                                    ↓ WebSocket + HTTP                      │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                          MIDDLEWARE & COMMUNICATION                        │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  Express.js Server (port 8080) - GCP Cloud Run Container        │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ HTTP Endpoints:                                           │  │     │
+│  │  │  • GET / → Status & connection count                      │  │     │
+│  │  │  • GET /health → Cloud Run health probe                   │  │     │
+│  │  ├───────────────────────────────────────────────────────────┤  │     │
+│  │  │ WebSocket Upgrade Handler:                                │  │     │
+│  │  │  • Validates sessionId & characterId from query params    │  │     │
+│  │  │  • Attaches metadata to WebSocket object                  │  │     │
+│  │  │  • Registers connection in wsManager                      │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ WebSocket Message Handler:                                │  │     │
+│  │  │  • Parses incoming JSON frames                            │  │     │
+│  │  │  • Routes "sendMessage" action to processChat()           │  │     │
+│  │  │  • Implements rate limiting (500 RPM global)              │  │     │
+│  │  │  • Handles connection lifecycle                           │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ In-Memory Connection Manager (wsManager):                 │  │     │
+│  │  │  • Key format: session#{id}::character#{id}               │  │     │
+│  │  │  • Maps WebSocket connections to session/character pairs  │  │     │
+│  │  │  • Sends targeted messages to specific sessions           │  │     │
+│  │  │  • Handles automatic cleanup on disconnect                │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+│                                    ↓ Async Processing                      │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                      CORE PROCESSING & ORCHESTRATION                       │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  queueChatExecutor.ts - Chat Processing Pipeline               │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ processChat(payload) - Main Entry Point:                  │  │     │
+│  │  │  • Extracts: sessionId, characterId, userMessage          │  │     │
+│  │  │  • Loads character wallet from Firestore                  │  │     │
+│  │  │  • Initializes Multi-Agent Orchestrator                   │  │     │
+│  │  │  • Invokes orchestrator.invokeAgent()                     │  │     │
+│  │  │  • Streams response back via WebSocket                    │  │     │
+│  │  │  • Persists chat history to Firestore                     │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ getOrchestrator() - Agent Initialization:                 │  │     │
+│  │  │  • Caches orchestrator instance (10s TTL)                 │  │     │
+│  │  │  • Fetches agents from Firestore config                   │  │     │
+│  │  │  • Creates specialized classifier                         │  │     │
+│  │  │  • Registers all four agents (Eric, Harper, Rishi, Yasmin)│  │     │
+│  │  │  • Configures tools based on ENABLE_EXTERNAL_APIS flag    │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+│                                    ↓ Agent Selection                       │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  Multi-Agent Orchestrator Framework                            │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Intent Classification (Classifier Agent):                 │  │     │
+│  │  │  • Routes user intent to appropriate specialist agent     │  │     │
+│  │  │  • Uses LLM to understand user request semantics          │  │     │
+│  │  │  • Considers agent specialization and current context     │  │     │
+│  │  │  • Supports multi-hop delegation for complex tasks        │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Agent Pool - Four Specialized Agents:                     │  │     │
+│  │  │                                                           │  │     │
+│  │  │  1. ERIC (Market Analyst)                                 │  │     │
+│  │  │     • Risk assessments                                    │  │     │
+│  │  │     • Market analysis                                     │  │     │
+│  │  │     • Trading recommendations                             │  │     │
+│  │  │     • Data aggregation                                    │  │     │
+│  │  │                                                           │  │     │
+│  │  │  2. HARPER (Trading Expert)                               │  │     │
+│  │  │     • Trade execution                                     │  │     │
+│  │  │     • Balance management                                  │  │     │
+│  │  │     • Pool creation & LP management                       │  │     │
+│  │  │     • Candle data analysis                                │  │     │
+│  │  │                                                           │  │     │
+│  │  │  3. RISHI (Smart Contract Expert)                         │  │     │
+│  │  │     • Wallet creation & management                        │  │     │
+│  │  │     • Smart contract deployment                           │  │     │
+│  │  │     • Token transfers                                     │  │     │
+│  │  │     • Web3 infrastructure                                 │  │     │
+│  │  │                                                           │  │     │
+│  │  │  4. YASMIN (Marketing Expert)                             │  │     │
+│  │  │     • Content creation                                    │  │     │
+│  │  │     • Tweet generation                                    │  │     │
+│  │  │     • Image creation                                      │  │     │
+│  │  │     • NFT minting                                         │  │     │
+│  │  │     • Social media management                             │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+│                                    ↓ Tool Execution                        │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                           TOOL EXECUTION LAYER                             │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  unified-handler.ts - Tool Router & Dispatcher                  │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Tool Categories (18+ handlers):                           │  │     │
+│  │  │                                                           │  │     │
+│  │  │ WALLET TOOLS:                                             │  │     │
+│  │  │  • create-wallet-handler.ts  → Create new wallets         │  │     │
+│  │  │  • get-wallet-handler.ts     → Retrieve wallet info       │  │     │
+│  │  │  • eth-balance-handler.ts    → Check ETH balance          │  │     │
+│  │  │  • token-balance-handler.ts  → Check token balances       │  │     │
+│  │  │  • transfer-eth-handler.ts   → Send ETH transfers         │  │     │
+│  │  │  • transfer-token.ts         → Send token transfers       │  │     │
+│  │  │                                                           │  │     │
+│  │  │ TRADING TOOLS:                                            │  │     │
+│  │  │  • execute-trade-handler.ts  → Uniswap swaps              │  │     │
+│  │  │  • create-uniswap-pool.ts    → Create LP positions        │  │     │
+│  │  │  • get-candles-handler.ts    → Fetch OHLCV data           │  │     │
+│  │  │                                                           │  │     │
+│  │  │ SMART CONTRACT TOOLS:                                     │  │     │
+│  │  │  • deploy-contract-handler.ts → Deploy smart contracts    │  │     │
+│  │  │  • create-basename.ts        → Onchain identity           │  │     │
+│  │  │                                                           │  │     │
+│  │  │ SOCIAL/CONTENT TOOLS:                                     │  │     │
+│  │  │  • create-tweet-handler.ts   → Tweet generation           │  │     │
+│  │  │  • create-image-handler.ts   → Image generation           │  │     │
+│  │  │  • create-nft-handler.ts     → NFT minting                │  │     │
+│  │  │  • get-tweets-handler.ts     → Read tweets                │  │     │
+│  │  │  • get-grok-information-handler.ts → Grok API             │  │     │
+│  │  │                                                           │  │     │
+│  │  │ UTILITY TOOLS:                                            │  │     │
+│  │  │  • request-funds-handler.ts  → Faucet requests            │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+│                    ↓ Web3 Libraries & External APIs                        │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  Web3 & External Integration Layer                             │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Web3 Libraries:                                           │  │     │
+│  │  │  • Ethers.js v6 → Low-level blockchain interactions       │  │     │
+│  │  │  • Viem         → Type-safe blockchain library            │  │     │
+│  │  │                                                           │  │     │
+│  │  │ Onchain Services:                                         │  │     │
+│  │  │  • Coinbase CDP SDK → Non-custodial wallet management     │  │     │
+│  │  │  • Uniswap V2      → Trading & LP management              │  │     │
+│  │  │  • Zora Protocol   → NFT creation & management            │  │     │
+│  │  │                                                           │  │     │
+│  │  │ External APIs:                                            │  │     │
+│  │  │  • Twitter/X API v2 → Tweet reading & posting             │  │     │
+│  │  │  • Grok API        → xAI information retrieval            │  │     │
+│  │  │  • Pinata IPFS     → NFT metadata storage                 │  │     │
+│  │  │  • Replicate AI    → Image generation                     │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+│                                    ↓                                       │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                       DATA STORAGE & PERSISTENCE                           │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  Google Firestore (GCP Project: cottonx-dc6a4)                  │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Collections:                                              │  │     │
+│  │  │                                                           │  │     │
+│  │  │ • characters/ → Character metadata & configs              │  │     │
+│  │  │   Fields: name, prompt, skills, model, createdAt         │  │     │
+│  │  │                                                           │  │     │
+│  │  │ • chats/ → Conversation history (TTL: 3600s)             │  │     │
+│  │  │   Fields: sessionId, characterId, messages[], timestamps  │  │     │
+│  │  │   TTL-based auto-deletion for privacy                    │  │     │
+│  │  │                                                           │  │     │
+│  │  │ • wallets/ → Character wallet mappings                    │  │     │
+│  │  │   Fields: address, characterId, createdAt, balance       │  │     │
+│  │  │                                                           │  │     │
+│  │  │ • transactions/ → Audit trail (optional TTL)              │  │     │
+│  │  │   Fields: txHash, from, to, action, timestamp, agent      │  │     │
+│  │  │                                                           │  │     │
+│  │  │ Indexes:                                                  │  │     │
+│  │  │  • Composite index on (sessionId, characterId, timestamp) │  │     │
+│  │  │  • Single indexes on common query fields                  │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ DynamoDB Compatibility Shim (dynamo_v3.ts):               │  │     │
+│  │  │  • Maps DynamoDB operations to Firestore API              │  │     │
+│  │  │  • Allows legacy code to work with Firestore              │  │     │
+│  │  │  • Implements: createItem, getItem, updateItem, scan      │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+│                                    ↓ Real-time                             │
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  Firebase Authentication (Firebase Project)                     │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Auth Methods:                                             │  │     │
+│  │  │  • Email/Password                                         │  │     │
+│  │  │  • Google OAuth 2.0                                       │  │     │
+│  │  │  • JWT token validation for sessions                      │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+│                                                                            │
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  LLM Provider Abstraction                                       │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Configuration via LLM_PROVIDER environment variable:       │  │     │
+│  │  │                                                           │  │     │
+│  │  │ Option 1: gemini (Google Gemini)                          │  │     │
+│  │  │  • Model: Gemini 1.5 Flash                                │  │     │
+│  │  │  • API Key: GEMINI_API_KEY                                │  │     │
+│  │  │  • Configuration: GeminiAgent, GeminiClassifier            │  │     │
+│  │  │                                                           │  │     │
+│  │  │ Option 2: featherless (OpenAI-compatible)                 │  │     │
+│  │  │  • Model: DeepSeek-V3                                     │  │     │
+│  │  │  • API Key: FEATHERLESS_API_KEY                           │  │     │
+│  │  │  • Endpoint: api.featherless.ai/v1                        │  │     │
+│  │  │  • Configuration: OpenAIAgent, OpenAIClassifier            │  │     │
+│  │  │                                                           │  │     │
+│  │  │ Option 3: groq (Groq AI)                                  │  │     │
+│  │  │  • API Key: GROQ_API_KEY                                  │  │     │
+│  │  │  • Fallback for cost optimization                         │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                        BLOCKCHAIN INTERACTION LAYER                        │
+├────────────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────────┐     │
+│  │  EVM-Compatible Blockchain Networks                            │     │
+│  │  ┌───────────────────────────────────────────────────────────┐  │     │
+│  │  │ Primary Network: HeLa Testnet                             │  │     │
+│  │  │  • Chain ID: 666888                                       │  │     │
+│  │  │  • RPC URL: https://testnet-rpc.helachain.com             │  │     │
+│  │  │  • Native Token: HLA                                      │  │     │
+│  │  │  • WETH Contract: 0x0000... (placeholder)                 │  │     │
+│  │  │                                                           │  │     │
+│  │  │ Alternative Networks:                                     │  │     │
+│  │  │  • Base (EVM chain)                                       │  │     │
+│  │  │  • Ethereum Sepolia (testnet)                             │  │     │
+│  │  │  • Custom EVM chains (via RPC URL configuration)          │  │     │
+│  │  │                                                           │  │     │
+│  │  │ Smart Contracts:                                          │  │     │
+│  │  │  • ERC20 Token (custom deployment)                        │  │     │
+│  │  │  • Uniswap V2 Router & Factory                            │  │     │
+│  │  │  • Zora NFT Protocol                                      │  │     │
+│  │  └───────────────────────────────────────────────────────────┘  │     │
+│  └──────────────────────────────────────────────────────────────────┘     │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+3. COMPONENT DESCRIPTIONS
+================================================================================
+
+3.1 Frontend Application (Next.js)
+────────────────────────────────────────────────────────────────────────────────
+
+Location: /frontend
+Framework: Next.js 15.0.3 with React 18
+Port: 3000
+
+Key Components:
+  • layout.tsx        - Root layout with provider configuration
+  • page.tsx          - Main page component (authentication guard)
+  • Game.tsx          - Main game/interaction interface
+  • Chat.tsx          - Real-time chat with WebSocket integration
+  • CharacterSelect.tsx - Agent/character selection UI
+  • WalletButton.tsx  - Wagmi wallet connection component
+  • AuthButton.tsx    - Firebase authentication UI
+
+Context Providers:
+  • AuthContext.tsx   - Firebase authentication state management
+  • CharacterSelectContext.tsx - Selected character/agent state
+  • providers.tsx     - Aggregates all providers (Auth, Wagmi, Toaster)
+  • wagmi.tsx        - Wagmi configuration (wallet connectors)
+
+Libraries:
+  • Firebase Admin SDK - Authentication & session management
+  • Wagmi + Coinbase OnChainKit - Wallet integration
+  • Tailwind CSS - Styling
+  • Radix UI - Accessible UI components
+  • Lucide React - Icons
+
+Environment Variables:
+  NEXT_PUBLIC_WSS_URL         - WebSocket server URL
+  NEXT_PUBLIC_FIREBASE_*      - Firebase configuration
+
+
+3.2 Backend Server (Express.js + WebSocket)
+────────────────────────────────────────────────────────────────────────────────
+
+Location: /backend/src/server.ts
+Framework: Express.js with ws (WebSocket library)
+Port: 8080
+Deployment: GCP Cloud Run
+
+Key Responsibilities:
+  • HTTP API endpoints for health checks and status
+  • WebSocket upgrade handling (query parameter validation)
+  • Asynchronous message processing
+  • Rate limiting (500 requests per minute globally)
+  • Connection lifecycle management
+
+HTTP Endpoints:
+  GET /           - Status endpoint (returns active connections)
+  GET /health     - Cloud Run readiness probe
+
+WebSocket Handler:
+  Path: /ws
+  Query Parameters: sessionId, characterId (required)
+  Authentication: Via sessionId (Firebase token validation in client)
+  Message Format: JSON frames with "action" field
+  Supported Actions: "sendMessage"
+
+Rate Limiting:
+  • Per-minute bucket reset every 60 seconds
+  • Global limit: 500 requests per minute
+  • Returns 429 on limit exceeded
+
+
+3.3 Chat Processing Pipeline (queueChatExecutor.ts)
+────────────────────────────────────────────────────────────────────────────────
+
+Location: /backend/src/lambda/queueChatExecutor.ts
+
+Main Function: processChat(payload: InvokeModelPayload)
+  Input:
+    - sessionId: Unique user session identifier
+    - characterId: Selected agent/character ID
+    - userMessage: User's natural language input
+
+Processing Steps:
+  1. Load character wallet from Firestore
+  2. Initialize Multi-Agent Orchestrator
+  3. Prepare agent registry with tools
+  4. Invoke orchestrator.invokeAgent()
+  5. Stream response chunks back to client
+  6. Persist complete chat history
+  7. Update character wallet state
+
+Output: Streamed response via WebSocket + persisted in Firestore
+
+
+3.4 LLM Provider Abstraction
+────────────────────────────────────────────────────────────────────────────────
+
+Architecture Pattern: Strategy Pattern - selectable LLM providers
+
+Providers:
+
+A. Google Gemini (gemini-agent.ts)
+   • Model: Gemini 1.5 Flash
+   • Inference Config: maxTokens (4000), temperature (0-2), topP (0.9)
+   • Tool Format: Google Generative AI FunctionDeclarations
+   • Features: Streaming, function calling, multi-turn conversations
+
+B. OpenAI-Compatible (openai-agent.ts)
+   • Provider: Featherless (deepseek-ai/DeepSeek-V3)
+   • Base URL: https://api.featherless.ai/v1
+   • Tool Format: OpenAI format (function definitions)
+   • Features: Streaming, function calling, cost-effective
+
+C. Classifiers (gemini-classifier.ts, openai-classifier.ts)
+   • Specialized models for intent routing
+   • Lower token usage (maxTokens: 4000)
+   • Temperature: 0 (deterministic intent classification)
+
+Selection Logic:
+  LLM_PROVIDER environment variable
+  Default: gemini
+  Available: gemini, featherless, groq
+
+Chat Storage:
+  FirestoreChatStorage class
+  • Stores conversation history
+  • TTL-based auto-deletion (3600 seconds)
+  • Session-based organization
+
+
+3.5 Multi-Agent Orchestrator
+────────────────────────────────────────────────────────────────────────────────
+
+Framework: multi-agent-orchestrator (AWS open-source)
+
+Architecture:
+  ┌─────────────────────────────────────────┐
+  │  User Intent (Natural Language)         │
+  └──────────────┬──────────────────────────┘
+                 ↓
+  ┌─────────────────────────────────────────┐
+  │  Classifier Agent                       │
+  │  (Routes to specialized agent)          │
+  └──────────────┬──────────────────────────┘
+                 ↓
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Specialized Agent Selection                                    │
+  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+  │  │    ERIC      │  │   HARPER     │  │    RISHI     │ ...      │
+  │  └──────────────┘  └──────────────┘  └──────────────┘          │
+  └──────────────┬─────────────────────────────────────────────────┘
+                 ↓
+  ┌─────────────────────────────────────────┐
+  │  Tool Calling Loop                      │
+  │  (Recursive function calling)           │
+  └──────────────┬──────────────────────────┘
+                 ↓
+  ┌─────────────────────────────────────────┐
+  │  Unified Tool Handler                   │
+  │  (Dispatches to specific handler)       │
+  └──────────────┬──────────────────────────┘
+                 ↓
+  ┌─────────────────────────────────────────┐
+  │  Response Streaming to User             │
+  └─────────────────────────────────────────┘
+
+Agent Configuration Source: Firestore
+  Collection: characters/
+  Dynamic loading with 10-second cache TTL
+  Allows runtime agent updates without server restart
+
+Features:
+  • Multi-turn conversations
+  • Recursive tool calling (tools can call other tools)
+  • Streaming responses
+  • Tool use planning and execution
+  • Context-aware decision making
+
+
+3.6 Tool System (18+ Specialized Handlers)
+────────────────────────────────────────────────────────────────────────────────
+
+Router: unified-handler.ts
+  • Central dispatcher for all tool calls
+  • Route matching based on tool name/function
+  • Error handling and fallback logic
+
+Tool Categories:
+
+WALLET MANAGEMENT (6 tools):
+  • create-wallet-handler.ts
+    - Creates new Coinbase CDP wallet
+    - Generates private key (non-custodial)
+    - Returns wallet address
+  
+  • get-wallet-handler.ts
+    - Retrieves wallet metadata
+    - Display name, address, creation date
+  
+  • eth-balance-handler.ts
+    - Query native token balance
+    - Uses Ethers.js provider
+    - Returns formatted balance
+  
+  • token-balance-handler.ts
+    - Query ERC20 token balance
+    - Supports any ERC20 contract
+    - Decimal-aware formatting
+  
+  • transfer-eth-handler.ts
+    - Send native tokens
+    - Uses Coinbase CDP for signing
+    - Waits for transaction confirmation
+  
+  • transfer-token.ts
+    - Send ERC20 tokens
+    - Approval handling if needed
+    - Decimal conversion
+
+TRADING TOOLS (3 tools):
+  • execute-trade-handler.ts
+    - Uniswap V2 token swaps
+    - SlipPage tolerance configuration
+    - Returns swap details
+  
+  • create-uniswap-pool.ts
+    - Create new Uniswap V2 liquidity pools
+    - Set initial price via token ratio
+    - Manage liquidity positions
+  
+  • get-candles-handler.ts
+    - Fetch OHLCV candle data
+    - Multiple timeframe support
+    - For technical analysis
+
+SMART CONTRACT TOOLS (2 tools):
+  • deploy-contract-handler.ts
+    - Deploy new smart contracts
+    - Supports Solidity compilation
+    - Sets constructor arguments
+  
+  • create-basename.ts
+    - Creates Basenames (onchain identity)
+    - Via Coinbase API integration
+    - Human-readable addresses
+
+CONTENT & SOCIAL TOOLS (5 tools):
+  • create-tweet-handler.ts
+    - Generate tweet content
+    - Post to Twitter/X via API
+    - Supports media attachments
+  
+  • create-image-handler.ts
+    - Generate images via Replicate AI
+    - Model: Stable Diffusion
+    - Returns image URL
+  
+  • create-nft-handler.ts
+    - Mint NFTs via Zora Protocol
+    - Upload metadata to Pinata IPFS
+    - Returns NFT contract address
+  
+  • get-tweets-handler.ts
+    - Read tweets from specific accounts
+    - Tweet sentiment analysis (optional)
+    - Real-time data
+  
+  • get-grok-information-handler.ts
+    - Query xAI Grok API
+    - Get recent news/information
+    - Supports custom queries
+
+UTILITY TOOLS (2 tools):
+  • request-funds-handler.ts
+    - Request testnet funds from faucet
+    - ETH, test tokens
+  
+  • Additional handlers in handlers/ directory
+
+Tool Execution Model:
+  • Recursive function calling (tool can request other tools)
+  • Maximum recursion depth: configurable
+  • Each tool has clear input schema and output format
+  • Error handling with fallback suggestions
+
+
+3.7 Web3 Integration Layer
+────────────────────────────────────────────────────────────────────────────────
+
+Libraries:
+  • Ethers.js v6
+    - Primary blockchain interaction library
+    - Contract interaction, transaction signing
+    - Provider abstraction
+  
+  • Viem
+    - Type-safe alternative for Ethereum
+    - Used in parallel with Ethers for reliability
+    - Better TypeScript support
+  
+  • Coinbase Developer Platform (CDP) SDK
+    - Non-custodial wallet management
+    - Automatic transaction signing
+    - Key management integration
+  
+  • Wagmi (Frontend only)
+    - React hooks for Ethereum
+    - Wallet connection management
+    - Contract reading/writing
+
+Blockchain Configuration:
+  • Primary Network: HeLa Testnet (Chain ID: 666888)
+  • RPC Endpoint: https://testnet-rpc.helachain.com
+  • WETH Address: Configurable via environment
+  • Uniswap V2: Router & Factory addresses (configurable)
+
+Transaction Flow:
+  1. Agent determines action (swap, transfer, etc.)
+  2. Constructs transaction parameters
+  3. Uses Coinbase CDP for signing
+  4. Broadcasts to network
+  5. Monitors for confirmation
+  6. Returns transaction hash
+  7. Logs to audit trail
+
+Gas Optimization:
+  • Gas estimation before execution
+  • Nonce management
+  • Batch transaction support (when applicable)
+
+
+3.8 Data Persistence Layer
+────────────────────────────────────────────────────────────────────────────────
+
+Primary Database: Google Firestore
+  Project: cottonx-dc6a4
+  Region: us-central1 (default)
+
+Collections:
+
+characters/ {characterId}
+  Fields:
+    • name: string (Agent name)
+    • prompt: string (System prompt)
+    • skills: array<string> (Available tools)
+    • model: string (LLM model identifier)
+    • createdAt: timestamp
+    • walletAddress: string (Associated wallet)
+    • config: object (Agent configuration)
+
+chats/ {sessionId}_{characterId}
+  Fields:
+    • sessionId: string
+    • characterId: string
+    • messages: array<ChatMessage>
+      - role: "user" | "assistant"
+      - content: string
+      - timestamp: timestamp
+      - toolCalls: array<ToolCall> (if applicable)
+    • createdAt: timestamp
+    • updatedAt: timestamp
+    • TTL: 3600 seconds (auto-delete)
+
+wallets/ {walletId}
+  Fields:
+    • address: string
+    • characterId: string
+    • privateKeyEncrypted: string (encrypted via GCP)
+    • createdAt: timestamp
+    • balance: number
+    • lastUpdated: timestamp
+
+transactions/ {txHash}
+  Fields:
+    • txHash: string
+    • from: string (sender address)
+    • to: string (recipient address)
+    • action: string (transfer, swap, etc.)
+    • value: string (amount)
+    • status: "pending" | "confirmed" | "failed"
+    • timestamp: timestamp
+    • agent: string (which agent executed)
+    • reason: string (explanation)
+
+Indexes:
+  • Composite: (sessionId, characterId, createdAt)
+  • Single: sessionId, characterId, characterId
+  • Single: txHash, from, to, status
+
+Authentication:
+  • Firebase Authentication
+  • Methods: Email/Password, Google OAuth
+  • JWT token validation
+  • Per-user data isolation
+
+
+3.9 WebSocket Connection Management (wsManager)
+────────────────────────────────────────────────────────────────────────────────
+
+Location: /backend/src/ws/manager.ts
+
+Data Structure:
+  Map<string, WebSocket>
+  Key format: session#{sessionId}::character#{characterId}
+
+Methods:
+  • register(sessionId, characterId, ws)
+    - Registers new WebSocket connection
+    - Replaces existing connection for same session/character
+    - Emits close handler for cleanup
+  
+  • sendMessage(sessionId, characterId, message)
+    - Sends message to specific session/character pair
+    - Returns boolean (success/failure)
+    - Checks connection readiness (OPEN state)
+  
+  • isConnected(sessionId, characterId)
+    - Checks if connection exists and is open
+    - Used before sending messages
+  
+  • getActiveConnections()
+    - Returns array of all active connection keys
+    - For debugging and monitoring
+
+Lifecycle:
+  1. Frontend initiates WebSocket with sessionId & characterId
+  2. Server validates parameters
+  3. wsManager.register() stores connection
+  4. Server broadcasts messages via wsManager.sendMessage()
+  5. On close, wsManager automatically removes connection
+
+Message Format:
+  Outgoing (server → client):
+  {
+    "type": "message" | "error" | "status",
+    "characterId": string,
+    "content": string,
+    "timestamp": number
+  }
+
+
+3.10 Agent Specialization & Persona
+────────────────────────────────────────────────────────────────────────────────
+
+Location: /backend/src/lambda/tools/persona/
+
+System Prompt Components:
+
+IDENTITY_REINFORCEMENT
+  • Each agent has distinct personality
+  • Role-specific language and tone
+  • Specialized knowledge base
+
+HELA_NETWORK_CONTEXT
+  • Network-specific information
+  • Blockchain parameters
+  • Available smart contracts
+
+TEAM_AWARENESS
+  • Agents know about other team members
+  • Can delegate to appropriate agent
+  • Collaborative task planning
+
+Four Agent Personas:
+
+1. ERIC (Market Analyst)
+   - Risk assessment specialist
+   - Knows: Technical analysis, market trends, risk metrics
+   - Tools: get-candles, get-grok-information
+   - Language: Data-driven, analytical
+
+2. HARPER (Trading Expert)
+   - Execution specialist
+   - Knows: Uniswap mechanics, liquidity management, slippage
+   - Tools: execute-trade, create-uniswap-pool, get-candles
+   - Language: Action-oriented, precise
+
+3. RISHI (Smart Contract Expert)
+   - Infrastructure specialist
+   - Knows: Solidity, wallet management, contract deployment
+   - Tools: create-wallet, deploy-contract, transfer-eth, transfer-token
+   - Language: Technical, formal
+
+4. YASMIN (Marketing Expert)
+   - Content specialist
+   - Knows: Social media, NFTs, brand management
+   - Tools: create-tweet, create-image, create-nft, get-tweets
+   - Language: Creative, engaging
+
+
+================================================================================
+4. DATA FLOW DIAGRAMS
+================================================================================
+
+4.1 User Message Flow
+────────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ User Types Message in Chat UI                                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│  Frontend (React)                                                       │
+│  └─ Chat.tsx calls WebSocket.send()                                    │
+│     Payload:                                                            │
+│     {                                                                   │
+│       "action": "sendMessage",                                          │
+│       "characterId": "eric_123",                                        │
+│       "data": "Show me the current ETH price"                          │
+│     }                                                                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Server Receives WebSocket Frame                                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│  server.ts                                                              │
+│  └─ wss.on('message') handler                                          │
+│     1. Validates message format                                         │
+│     2. Rate limiting check (500 RPM)                                    │
+│     3. Calls processChat(payload)                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Chat Processing Pipeline                                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│  queueChatExecutor.ts → processChat()                                   │
+│  1. Extract sessionId, characterId, userMessage                         │
+│  2. Load character wallet from Firestore                                │
+│  3. Fetch character configuration                                       │
+│  4. Initialize orchestrator via getOrchestrator()                       │
+│  5. Create user message object                                          │
+│  6. Call orchestrator.invokeAgent(selectedAgent, messages)              │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Agent Orchestration                                                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│  MultiAgentOrchestrator                                                 │
+│  1. Classifier agent analyzes user intent                               │
+│  2. Determines which agent should handle request                        │
+│  3. Routes to selected agent (Eric, Harper, Rishi, Yasmin)             │
+│  4. Selected agent receives:                                            │
+│     - System prompt (with persona + tools)                              │
+│     - Conversation history                                              │
+│     - Tool descriptions                                                 │
+│     - Available functions                                               │
+│  5. Agent processes through LLM                                         │
+│     (Gemini or Featherless based on config)                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Tool Calling (if needed)                                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│  If agent decides tools are needed:                                     │
+│  1. LLM returns function call request                                   │
+│     { "function": "get-candles", "args": {...} }                        │
+│  2. Orchestrator extracts tool call                                     │
+│  3. Calls unified-handler.ts with tool name and args                    │
+│  4. Specific handler executes (e.g., get-candles-handler.ts)           │
+│  5. Handler calls Ethers.js or external API                             │
+│  6. Result returned to agent                                            │
+│  7. Agent incorporates tool result into response                        │
+│  8. If more tools needed, repeat (recursion)                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Response Streaming                                                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│  queueChatExecutor.ts → Agent response                                  │
+│  1. Each response chunk sent immediately                                │
+│  2. Via wsManager.sendMessage() to client                               │
+│  3. Message type: "stream" with chunk content                           │
+│  4. Frontend updates Chat UI in real-time                               │
+│  5. Final response marked with "done": true                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Persistence                                                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│  FirestoreChatStorage.addMessage()                                      │
+│  1. After agent completes response                                      │
+│  2. Stores full conversation to Firestore                               │
+│     Doc: chats/{sessionId}_{characterId}                                │
+│     Includes: user message, tool calls, agent response, timestamps      │
+│  3. Sets TTL to 3600 seconds (1 hour)                                   │
+│  4. Enables conversation history for multi-turn                         │
+│  5. Auto-deletes for privacy after timeout                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│ User Sees Response                                                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│  Frontend (Chat.tsx)                                                    │
+│  └─ WebSocket message listener                                         │
+│     1. Receives streamed chunks                                         │
+│     2. Appends to message content in real-time                          │
+│     3. Displays to user as message appears                              │
+│     4. Marks message as "complete" when done flag received              │
+│     5. User can continue conversation                                   │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+4.2 Token Transfer Flow (Example Tool Execution)
+────────────────────────────────────────────────────────────────────────────────
+
+User Input: "Transfer 100 USDC to 0x123... please"
+                          ↓
+Classifier Routes to RISHI (Smart Contract Expert)
+                          ↓
+RISHI Agent Invokes LLM with transfer-token tool available
+                          ↓
+LLM Returns: { "function": "transfer-token", "args": { 
+              "contractAddress": "0xUSDC...", 
+              "to": "0x123...", 
+              "amount": "100" 
+            }}
+                          ↓
+Orchestrator Calls transfer-token handler
+                          ↓
+transfer-token.ts:
+  1. Parse arguments (contract, recipient, amount)
+  2. Validate address format
+  3. Load character wallet via Coinbase CDP
+  4. Check balance (call token-balance-handler)
+  5. If insufficient balance: return error
+  6. Construct ERC20 transfer transaction
+     - Contract: USDC address
+     - Method: transfer(to, amount)
+     - Value: decoded amount (handle decimals)
+  7. Sign transaction via Coinbase CDP (non-custodial)
+  8. Broadcast to HeLa network via Ethers.js
+  9. Wait for confirmation (configurable blocks)
+  10. Retrieve transaction hash
+                          ↓
+Return to Agent:
+  { "status": "success", "txHash": "0xabc...", 
+    "to": "0x123...", "amount": "100 USDC" }
+                          ↓
+RISHI Constructs Response:
+  "Transfer complete! Sent 100 USDC to 0x123...
+   Transaction: 0xabc...
+   You can view it on the explorer."
+                          ↓
+Response Streamed to User
+                          ↓
+Firestore Logs:
+  Doc: transactions/{txHash}
+  {
+    "txHash": "0xabc...",
+    "from": "{characterWallet}",
+    "to": "0x123...",
+    "action": "transfer-token",
+    "value": "100",
+    "status": "confirmed",
+    "timestamp": 1681234567,
+    "agent": "rishi",
+    "reason": "User requested transfer"
+  }
+
+
+4.3 Agent Intent Routing
+────────────────────────────────────────────────────────────────────────────────
+
+User Input: "I want to create a Uniswap pool for my new token"
+                          ↓
+Orchestrator Sends to CLASSIFIER:
+  "Route this intent to the best agent:
+   - Eric (Market Analyst)
+   - Harper (Trading Expert)
+   - Rishi (Smart Contract Expert)
+   - Yasmin (Marketing Expert)"
+                          ↓
+Classifier Analysis:
+  • Key terms: "Uniswap pool", "token", "create"
+  • Uniswap = Trading domain
+  • Pool creation requires contract interaction
+  • Could be Harper (execution) OR Rishi (infrastructure)
+  • Decision: HARPER (primary trading expert)
+                          ↓
+HARPER Agent Receives Request:
+  System Prompt: "You are Harper, the Trading Expert..."
+  Available Tools: [execute-trade, create-uniswap-pool, get-candles]
+  Message: "I want to create a Uniswap pool for my new token"
+                          ↓
+HARPER's Response Options:
+  A) If sufficient context:
+     Call create-uniswap-pool with token addresses
+  
+  B) If missing info:
+     Ask user for token addresses, initial price ratio
+     OR suggest delegating to Rishi for token deployment
+                          ↓
+Tool Execution or Delegation
+  If delegation needed:
+    HARPER: "Rishi, can you deploy this token first?"
+    RISHI: Executes deploy-contract
+    RISHI: Returns token address
+    HARPER: Uses returned address in create-uniswap-pool
+                          ↓
+Final Response to User
+
+
+================================================================================
+5. TECHNOLOGY STACK SUMMARY
+================================================================================
+
+5.1 Frontend Stack
+────────────────────────────────────────────────────────────────────────────────
+
+Framework & Runtime:
+  • Next.js 15.0.3 - React framework with SSR/SSG
+  • React 18 - UI library
+  • Node.js - Runtime
+
+Styling & UI:
+  • Tailwind CSS 3.4.1 - Utility-first CSS
+  • Radix UI - Accessible component library
+  • Lucide React - Icon library
+  • clsx & tailwind-merge - Class composition
+
+State Management:
+  • React Context API - Built-in provider pattern
+  • Wagmi - Ethereum state & hooks
+  • Firebase SDK - Authentication state
+
+Blockchain & Wallets:
+  • Wagmi 2.12.29 - React Ethereum hooks
+  • Ethers.js 6.13.4 - Low-level blockchain interactions
+  • Firebase 11.0.0 - Auth & user management
+  • Coinbase OnChainKit 0.35.5 - Wallet UI components
+
+Type Safety:
+  • TypeScript 5.x
+
+Build & Development:
+  • Node.js package manager (npm/bun)
+
+
+5.2 Backend Stack
+────────────────────────────────────────────────────────────────────────────────
+
+Runtime:
+  • Node.js with TypeScript 5.6.2
+  • tsx 4.19.0 - TypeScript execution (watch mode)
+
+Core Framework:
+  • Express.js 4.21.0 - HTTP/REST server
+  • ws 8.18.0 - WebSocket server
+
+AI/LLM Integration:
+  • @google/generative-ai 0.21.0 - Google Gemini API
+  • openai 6.34.0 - OpenAI API (for Featherless compatibility)
+  • multi-agent-orchestrator 0.0.17 - AWS agent framework
+
+Web3 & Blockchain:
+  • ethers 6.13.4 - Ethereum library
+  • viem 2.21.44 - Type-safe blockchain library
+  • @coinbase/coinbase-sdk 0.10.0 - Coinbase Developer Platform
+  • twitter-api-v2 1.18.1 - Twitter/X API
+  • @zoralabs/protocol-sdk 0.11.6 - Zora NFT protocol
+
+Database & Storage:
+  • @google-cloud/firestore 7.10.0 - Firestore database
+  • @google-cloud/storage 7.14.0 - Cloud Storage
+
+Authentication:
+  • jsonwebtoken 9.0.2 - JWT token handling
+
+Utilities:
+  • axios 1.15.0 - HTTP client
+  • dotenv 16.4.5 - Environment variables
+  • cors 2.8.5 - CORS middleware
+  • source-map-support 0.5.21 - Error stack traces
+
+Testing:
+  • Jest 29.7.0 - Test framework
+  • ts-jest 29.2.5 - TypeScript Jest support
+  • @types/jest 29.5.12
+
+Development:
+  • TypeScript 5.6.2 - Type safety
+  • ts-node 10.9.2 - TypeScript execution
+  • Various @types packages
+
+
+5.3 DevOps & Deployment
+────────────────────────────────────────────────────────────────────────────────
+
+Cloud Platform:
+  • Google Cloud Platform (GCP)
+  • Cloud Run - Containerized backend deployment
+  • Firestore - Managed NoSQL database
+  • Cloud Storage - File/image storage
+
+Infrastructure as Code:
+  • AWS CDK - Infrastructure definition (for reference)
+  • Docker - Containerization (Dockerfile provided)
+
+Environment & Configuration:
+  • dotenv - Local development environment variables
+  • firebase.json - Firebase project configuration
+  • cdk.json - AWS CDK configuration
+
+Continuous Development:
+  • npm scripts for local dev
+  • concurrently - Run multiple npm scripts (backend + frontend)
+
+
+5.4 External Services & APIs
+────────────────────────────────────────────────────────────────────────────────
+
+AI/ML Services:
+  • Google Gemini API - Primary LLM
+  • Featherless API - OpenAI-compatible LLM provider
+  • Groq API - Cost-effective LLM alternative
+  • Replicate AI - Image generation
+
+Blockchain & Web3:
+  • HeLa Testnet RPC - EVM-compatible blockchain
+  • Uniswap V2 - DEX trading
+  • Zora Protocol - NFT creation
+  • Coinbase Developer Platform - Wallet management
+
+Social & Content:
+  • Twitter/X API v2 - Tweet reading/posting
+  • Pinata - IPFS for NFT metadata
+  • xAI Grok API - Information retrieval
+
+Authentication:
+  • Firebase Authentication - User sign-in
+
+
+================================================================================
+6. DEPLOYMENT ARCHITECTURE
+================================================================================
+
+6.1 Local Development Environment
+────────────────────────────────────────────────────────────────────────────────
+
+Development Setup:
+  npm run dev  (from root)
+  ├─ Backend:  npm run dev --prefix backend
+  │  └─ Runs: npx tsx --watch src/server.ts
+  │  └─ Port: 8080
+  │  └─ Watches: /backend/src changes
+  │  └─ Auto-reload on file change
+  │
+  └─ Frontend: npm run dev --prefix frontend
+     └─ Runs: next dev
+     └─ Port: 3000
+     └─ Hot reload with Fast Refresh
+
+Environment Configuration:
+  /backend/.env.local
+    • GEMINI_API_KEY
+    • FEATHERLESS_API_KEY
+    • LLM_PROVIDER
+    • Firebase credentials
+    • Blockchain RPC URLs
+  
+  /frontend/.env.local
+    • NEXT_PUBLIC_WSS_URL=ws://localhost:8080
+    • NEXT_PUBLIC_FIREBASE_*
+
+
+6.2 Production Deployment (GCP Cloud Run)
+────────────────────────────────────────────────────────────────────────────────
+
+Architecture:
+
+┌─────────────────────────────────────────────────────┐
+│         GCP Project: cottonx-dc6a4                   │
+├─────────────────────────────────────────────────────┤
+│ ┌─────────────────────────────────────────────────┐ │
+│ │  Cloud Run Service (Backend)                    │ │
+│ │  • Docker container (Dockerfile provided)       │ │
+│ │  • Node.js 18+ runtime                          │ │
+│ │  • Auto-scaling (0 to N instances)              │ │
+│ │  • HTTPS endpoint (automatic SSL)               │ │
+│ │  • Health check: GET /health                    │ │
+│ │  • Max concurrency: configurable                │ │
+│ │  • Memory: 512MB - 4GB (configurable)           │ │
+│ │  • Timeout: 3600s (long-lived WebSocket)        │ │
+│ └─────────────────────────────────────────────────┘ │
+│          ↓                                          │
+│ ┌─────────────────────────────────────────────────┐ │
+│ │  Firestore Database                             │ │
+│ │  • Region: us-central1                          │ │
+│ │  • Collections: characters, chats, wallets, ... │ │
+│ │  • TTL policies (auto-delete chats)             │ │
+│ │  • Composite indexes for queries                │ │
+│ │  • Backup enabled                               │ │
+│ └─────────────────────────────────────────────────┘ │
+│          ↓                                          │
+│ ┌─────────────────────────────────────────────────┐ │
+│ │  Cloud Storage (Optional)                       │ │
+│ │  • For image/NFT metadata storage                │ │
+│ │  • CDN integration available                     │ │
+│ └─────────────────────────────────────────────────┘ │
+│          ↓                                          │
+│ ┌─────────────────────────────────────────────────┐ │
+│ │  Cloud Load Balancer (Frontend)                 │ │
+│ │  • HTTPS traffic distribution                   │ │
+│ │  • DDoS protection (Cloud Armor)                │ │
+│ └─────────────────────────────────────────────────┘ │
+│          ↓                                          │
+│ ┌─────────────────────────────────────────────────┐ │
+│ │  Cloud Run Service (Frontend)                   │ │
+│ │  • Next.js production build                     │ │
+│ │  • Static asset serving                         │ │
+│ │  • Auto-scaling                                 │ │
+│ └─────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────┘
+
+Deployment Process:
+
+1. Build Backend:
+   docker build -t gcr.io/cottonx-dc6a4/backend:latest .
+   docker push gcr.io/cottonx-dc6a4/backend:latest
+
+2. Deploy to Cloud Run:
+   gcloud run deploy cottonx-backend \
+     --image gcr.io/cottonx-dc6a4/backend:latest \
+     --platform managed \
+     --region us-central1 \
+     --memory 1Gi \
+     --timeout 3600s \
+     --max-instances 100
+
+3. Build Frontend:
+   next build
+
+4. Deploy Frontend to Cloud Run (or Firebase Hosting):
+   gcloud run deploy cottonx-frontend \
+     --source . \
+     --platform managed \
+     --region us-central1 \
+     --memory 512Mi
+
+Environment Variables (Cloud Run):
+  Set via Cloud Run UI or gcloud:
+  gcloud run deploy --set-env-vars KEY1=value1,KEY2=value2
+
+
+6.3 Scaling & Performance
+────────────────────────────────────────────────────────────────────────────────
+
+Cloud Run Auto-scaling:
+  • Minimum instances: 0 (serverless)
+  • Maximum instances: Configurable (default 100)
+  • Scaling metric: Concurrent requests
+  • Cold start: ~500ms (Node.js)
+
+Load Distribution:
+  • Cloud Load Balancer distributes traffic
+  • Session affinity: Not required (stateless HTTP)
+  • WebSocket connections: Load balancer routes via session/character params
+
+Firestore Scalability:
+  • Auto-scales read/write capacity
+  • No instance management
+  • Global replication available
+  • TTL auto-cleanup reduces storage
+
+Performance Optimization:
+  • Connection pooling (Ethers.js providers)
+  • Response streaming (real-time user feedback)
+  • Caching (orchestrator instance 10s TTL)
+  • Rate limiting (500 RPM global)
+
+
+6.4 Monitoring & Logging
+────────────────────────────────────────────────────────────────────────────────
+
+Cloud Logging:
+  • Automatic integration with Cloud Run
+  • View logs: Cloud Console → Cloud Run → Logs
+  • Real-time log streaming
+
+Metrics Available:
+  • Request count & latency
+  • Instance count & scaling events
+  • Memory/CPU usage
+  • WebSocket connection count
+
+Custom Instrumentation:
+  • logConsole utility in utils.ts
+  • Logs to stdout (captured by Cloud Logging)
+  • Structured logging (JSON format recommended)
+
+Alerting:
+  • Cloud Monitoring for alerts
+  • Set thresholds on error rates, latency, etc.
+
+
+================================================================================
+7. SECURITY ARCHITECTURE
+================================================================================
+
+7.1 Authentication & Authorization
+────────────────────────────────────────────────────────────────────────────────
+
+User Authentication:
+  • Firebase Authentication (frontend)
+  • Methods: Email/Password, Google OAuth 2.0
+  • JWT tokens issued by Firebase
+  • Token validation: Client-side (implicit trust assumption)
+
+Session Management:
+  • sessionId: Unique identifier per authenticated session
+  • characterId: Selected AI agent for session
+  • WebSocket connection validates both parameters
+  • No token reauthentication required per message (streaming optimization)
+
+Authorization:
+  • Firestore security rules: Development mode (open)
+  • Production: Should implement user-based access control
+  • Document-level permissions for chat history isolation
+
+
+7.2 Non-Custodial Wallet Architecture
+────────────────────────────────────────────────────────────────────────────────
+
+Private Key Management:
+  • Coinbase Developer Platform SDK
+  • Private keys never leave user's wallet
+  • Agent cannot access raw private keys
+  • Transaction signing happens at Coinbase service
+  • User retains full control
+
+Wallet Operations:
+  • create-wallet: Generates new wallet address
+  • Wallet encrypted at rest in Firestore
+  • Only user who created wallet can authorize transactions
+  • No agent can unilaterally sign transactions
+
+Transaction Authorization:
+  • Each transaction requires signing
+  • Signed via Coinbase CDP
+  • Agent prepares transaction parameters
+  • Signing is non-custodial (user retains control)
+  • No access to raw private keys in backend
+
+
+7.3 API Security
+────────────────────────────────────────────────────────────────────────────────
+
+Rate Limiting:
+  • Global limit: 500 requests per minute
+  • Per-minute bucket reset every 60 seconds
+  • Returns 429 on limit exceeded
+
+Input Validation:
+  • WebSocket messages: JSON validation
+  • Query parameters: sessionId & characterId required
+  • Chat messages: Sanitized before processing
+
+HTTPS/WSS:
+  • All traffic encrypted in transit (Cloud Run provides TLS)
+  • WebSocket upgrade to WSS in production
+  • Certificate management: Automatic (GCP managed)
+
+CORS Configuration:
+  • Express CORS middleware enabled
+  • Configurable origins in production
+  • Credentials: Same-origin only
+
+Environment Variables:
+  • API keys stored in .env files (development)
+  • Cloud Run environment variables (production)
+  • Never committed to version control
+  • Rotate keys periodically
+
+
+7.4 Data Security
+────────────────────────────────────────────────────────────────────────────────
+
+Chat Data:
+  • Stored in Firestore (encrypted at rest)
+  • TTL: 3600 seconds (auto-delete)
+  • User isolation: Per session/character
+
+Wallet Data:
+  • Private keys encrypted via Coinbase SDK
+  • Not directly exposed in backend
+  • Sensitive data minimal in logs
+
+Transaction Data:
+  • Transaction hashes (public)
+  • Stored for audit trail
+  • Immutable on blockchain
+
+Audit Logging:
+  • All transactions logged
+  • Agent decision logs
+  • Timestamp & actor recorded
+  • TTL policies for cleanup
+
+
+7.5 Smart Contract Security Considerations
+────────────────────────────────────────────────────────────────────────────────
+
+Known Risks:
+  • Uniswap slippage: Configurable tolerance
+  • Gas estimation: May fail with insufficient gas
+  • Reentrancy: Only calling trusted Uniswap contracts
+  • Approval mechanism: ERC20 standard approval workflow
+
+Mitigations:
+  • Limit tool parameters (max gas, slippage)
+  • Validate contract addresses before interaction
+  • Use only audited, well-known contracts (Uniswap V2, Zora)
+  • Error handling & transaction simulation
+
+
+7.6 Compliance & Privacy
+────────────────────────────────────────────────────────────────────────────────
+
+Privacy:
+  • Chat history auto-deletes (3600s TTL)
+  • No personally identifiable information stored
+  • User data isolated by session/authentication
+  • No third-party data sharing
+
+Compliance:
+  • Blockchains are public (transactions visible on-chain)
+  • Regulatory requirements vary by jurisdiction
+  • No KYC/AML implemented (testnet focus)
+  • Production deployment may require compliance layer
+
+
+================================================================================
+8. INTEGRATION POINTS & EXTERNAL DEPENDENCIES
+================================================================================
+
+8.1 LLM Provider Integration
+────────────────────────────────────────────────────────────────────────────────
+
+Google Gemini API:
+  • Endpoint: https://generativelanguage.googleapis.com/v1/
+  • Authentication: API_KEY in header
+  • Rate Limits: Varies by plan
+  • Response Format: Streaming JSON
+
+Featherless API (OpenAI-compatible):
+  • Endpoint: https://api.featherless.ai/v1
+  • Authentication: Bearer token in header
+  • Rate Limits: Varies by account
+  • Response Format: OpenAI-standard JSON
+
+Groq API:
+  • Endpoint: https://api.groq.com/
+  • Model: Various (mixtral, llama, etc.)
+  • Response Format: OpenAI-standard
+
+Provider Selection:
+  • LLM_PROVIDER environment variable
+  • Fallback chain: Gemini → Featherless → Groq
+
+
+8.2 Blockchain Integration
+────────────────────────────────────────────────────────────────────────────────
+
+HeLa Testnet:
+  • Chain ID: 666888
+  • RPC URL: https://testnet-rpc.helachain.com
+  • Block time: ~12 seconds
+  • Gas token: HLA
+
+Uniswap V2:
+  • Factory: Deployed on HeLa
+  • Router: 0x... (configurable)
+  • WETH: 0x... (configurable)
+  • Integration: execute-trade, create-uniswap-pool
+
+Coinbase Developer Platform:
+  • Wallet creation & management
+  • Transaction signing
+  • No key management burden on backend
+
+Smart Contract Deployment:
+  • Solidity compilation: Via handler
+  • Contract bytecode & ABI
+  • Constructor arguments
+
+
+8.3 Social Media Integration
+────────────────────────────────────────────────────────────────────────────────
+
+Twitter/X API v2:
+  • Authentication: OAuth 2.0
+  • Endpoints: tweets.search.recent, tweets.create
+  • Rate Limits: Varies by endpoint
+  • Credentials: API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_SECRET
+
+Features:
+  • Read tweets (get-tweets-handler)
+  • Post tweets (create-tweet-handler)
+  • Media attachments (images)
+
+Grok API (xAI):
+  • Endpoint: https://api.x.ai/v1/
+  • Model: grok-2
+  • Use case: Information retrieval
+
+
+8.4 Content Generation
+────────────────────────────────────────────────────────────────────────────────
+
+Image Generation:
+  • Provider: Replicate AI
+  • Model: Stable Diffusion
+  • API Token: REPLICATE_API_TOKEN
+  • Output: Image URL
+
+NFT Minting:
+  • Provider: Zora Protocol
+  • Features: Create & mint NFTs
+  • Metadata: Pinata IPFS
+  • Contract: ERC1155 (Zora)
+
+
+8.5 IPFS Storage
+────────────────────────────────────────────────────────────────────────────────
+
+Pinata:
+  • Endpoint: https://api.pinata.cloud/
+  • Authentication: JWT token (PINATA_JWT)
+  • Use case: NFT metadata storage
+  • Response: IPFS hash & gateway URL
+
+
+================================================================================
+9. ERROR HANDLING & RESILIENCE
+================================================================================
+
+9.1 Error Handling Strategy
+────────────────────────────────────────────────────────────────────────────────
+
+Backend Error Handling:
+  • Try-catch blocks around async operations
+  • User-friendly error messages
+  • Error logging to stdout (Cloud Logging)
+  • WebSocket error handling
+
+Network Errors:
+  • Retry logic: Exponential backoff (external API calls)
+  • Timeout handling: Graceful degradation
+  • Fallback options: Alternative LLM providers
+
+Blockchain Errors:
+  • Insufficient gas: Suggest increased gas limit
+  • Slippage exceeded: Adjust tolerance
+  • Contract errors: Decode and explain
+
+Tool Failures:
+  • Individual tool failure doesn't crash agent
+  • Agent continues with alternative tools
+  • User notified of partial success
+
+
+9.2 Fault Tolerance
+────────────────────────────────────────────────────────────────────────────────
+
+Connection Resilience:
+  • WebSocket reconnection on client side
+  • Server cleanup on connection drop
+  • Pending messages queued/retried
+
+Data Consistency:
+  • Firestore transactions for critical operations
+  • Chat history persisted after each message
+  • Idempotent tool operations (no double-charge)
+
+Graceful Degradation:
+  • If external API unavailable: Return cached data or estimate
+  • If LLM provider down: Fall back to alternative
+  • If Firestore unavailable: In-memory cache (temporary)
+
+
+================================================================================
+10. DEVELOPMENT & TESTING
+================================================================================
+
+10.1 Local Development Workflow
+────────────────────────────────────────────────────────────────────────────────
+
+Setup:
+  1. Clone repository
+  2. npm install (root, backend, frontend)
+  3. Configure .env files (keys from providers)
+  4. npm run dev
+
+Development Features:
+  • Hot reload (both backend & frontend)
+  • TypeScript type checking
+  • Jest test framework available
+  • Local Firestore emulator (optional)
+
+
+10.2 Testing
+────────────────────────────────────────────────────────────────────────────────
+
+Test Files Available:
+  • test-full-integration.ts - End-to-end workflow
+  • test-classifier.ts - Agent routing logic
+  • test-agents-logic.ts - Agent behavior validation
+  • test-twitter.ts - Twitter integration
+  • test-zernio.ts - Zernio/social features
+  • test-featherless-direct.ts - LLM provider testing
+
+Running Tests:
+  npm run test
+  npm run build
+
+Manual Testing:
+  1. Start dev server: npm run dev
+  2. Open http://localhost:3000
+  3. Authenticate with Firebase
+  4. Select agent/character
+  5. Send test messages
+
+
+10.3 Debugging
+────────────────────────────────────────────────────────────────────────────────
+
+Backend Debugging:
+  • View server logs in terminal
+  • logConsole utility for custom logging
+  • Breakpoints: Chrome DevTools for Node.js
+
+Frontend Debugging:
+  • React DevTools browser extension
+  • Network tab for WebSocket messages
+  • Console logs for client-side errors
+
+WebSocket Debugging:
+  • Browser DevTools → Network → WS tab
+  • View sent/received frames
+  • Message format validation
+
+
+================================================================================
+11. FUTURE ENHANCEMENTS & ROADMAP
+================================================================================
+
+Phase 2 Features (Post-MVP):
+  1. Multi-signature wallet support
+  2. Advanced budget management & analytics
+  3. Subscription tracking & automation
+  4. DeFi strategy automation (yield farming)
+  5. On-chain DAO governance participation
+  6. Advanced risk management & alerts
+  7. Portfolio rebalancing automation
+  8. Tax reporting integration
+
+Infrastructure Improvements:
+  1. Database sharding for large-scale deployment
+  2. Caching layer (Redis) for performance
+  3. Message queue (Cloud Pub/Sub) for async processing
+  4. Monitoring dashboard (GCP Cloud Monitoring)
+  5. API versioning & backward compatibility
+  6. GraphQL API option (alternative to REST)
+
+Security Enhancements:
+  1. Multi-factor authentication
+  2. Role-based access control (RBAC)
+  3. Smart contract audits (before production)
+  4. Security key support (Yubikey, etc.)
+  5. Anomaly detection on transactions
+
+
+================================================================================
+12. APPENDIX: KEY FILE LOCATIONS
+================================================================================
+
+Backend Structure:
+  /backend/src/
+    ├── server.ts                          - Main Express server
+    ├── utils.ts                           - Utility functions
+    ├── agents/
+    │   ├── gemini-agent.ts                - Gemini LLM wrapper
+    │   ├── openai-agent.ts                - OpenAI-compatible wrapper
+    │   ├── gemini-classifier.ts           - Intent classifier
+    │   ├── openai-classifier.ts           - Intent classifier
+    │   └── firestore-chat-storage.ts      - Chat persistence
+    ├── lambda/
+    │   ├── queueChatExecutor.ts           - Main chat processor
+    │   ├── dynamo_v3.ts                   - Firestore shim
+    │   ├── tools/
+    │   │   ├── unified-handler.ts         - Tool dispatcher
+    │   │   ├── wallet-tool.ts             - Wallet tools
+    │   │   ├── trading-tool.ts            - Trading tools
+    │   │   ├── twitter-tool.ts            - Twitter integration
+    │   │   ├── handlers/                  - 18+ tool handlers
+    │   │   └── persona/                   - Agent personalization
+    │   └── ws/
+    │       └── manager.ts                 - WebSocket connection manager
+    ├── gcp/
+    │   └── firestore.ts                   - Firestore initialization
+    └── contracts/
+        └── ERC20/                         - Smart contract files
+
+Frontend Structure:
+  /frontend/src/
+    ├── app/
+    │   ├── page.tsx                       - Main page
+    │   └── layout.tsx                     - Root layout
+    ├── components/
+    │   ├── Chat.tsx                       - Chat interface
+    │   ├── Game.tsx                       - Main game component
+    │   ├── CharacterSelect.tsx            - Agent selection
+    │   └── ui/                            - Reusable UI components
+    ├── contexts/
+    │   ├── AuthContext.tsx                - Auth state
+    │   └── CharacterSelectContext.tsx    - Character selection state
+    ├── providers/
+    │   ├── providers.tsx                  - Provider aggregation
+    │   └── wagmi.tsx                      - Wagmi configuration
+    ├── lib/
+    │   ├── firebase.ts                    - Firebase initialization
+    │   └── utils.ts                       - Client utilities
+    ├── hooks/
+    │   └── use-toast.ts                   - Toast notifications
+    └── middleware.ts                      - Next.js middleware
+
+Configuration Files:
+  • package.json (root, backend, frontend)
+  • tsconfig.json (backend, frontend)
+  • next.config.ts (frontend)
+  • cdk.json (CDK configuration)
+  • firebase.json (Firebase configuration)
+  • firestore.rules (Security rules)
+  • firestore.indexes.json (Database indexes)
+  • Dockerfile (Container image)
+  • .env.example (Environment template)
+
+
+================================================================================
+END OF DOCUMENT
+================================================================================
+
+Document Generated: April 2026
+Project: CottonX - Personal Onchain AI Treasurer
+Status: Active Development
+Last Updated: Latest deployment
+
+
+For the latest information, refer to:
+• Project README: /README.md
+• Backend README: /backend/README.md
+• Frontend README: /frontend/README.md
+• Zernio Setup: /backend/ZERNIO_SETUP.md
