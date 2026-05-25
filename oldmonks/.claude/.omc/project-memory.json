@@ -1,0 +1,122 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776550202507,
+  "projectRoot": "C:\\Users\\Croma\\OneDrive\\Desktop\\Documents\\GitHub\\old-monks-",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "ai-wallet-assistant": {
+      "path": "ai-wallet-assistant",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1776550202419,
+      "keyFiles": [
+        "README.md",
+        "TODO.md",
+        "TODO_PROGRESS.md"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "ai-wallet-assistant\\frontend\\app\\page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1776550716565,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\app\\history\\page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1776551568201,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend",
+      "accessCount": 2,
+      "lastAccessed": 1776550440910,
+      "type": "directory"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\app\\globals.css",
+      "accessCount": 2,
+      "lastAccessed": 1776550555736,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\components\\HistoryTable.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1776551663538,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\components\\StatusBadge.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1776551697195,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\app\\layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776550251576,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\components\\Header.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776550268902,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\app\\providers.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776550304714,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\components\\ConnectWallet.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776550304870,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\lib\\web3Config.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776550415261,
+      "type": "file"
+    },
+    {
+      "path": "ai-wallet-assistant\\frontend\\lib\\history.ts",
+      "accessCount": 1,
+      "lastAccessed": 1776551421350,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
