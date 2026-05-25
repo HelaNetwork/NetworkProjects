@@ -1,7 +1,13 @@
+# Workspace ignores
+.venv/
+__pycache__/
+data_pipeline.db
+
+# HeLa project ignores
 /node_modules
 .env
-
-.vercelartifacts/
+.vercel
+artifacts/
 cache/
 ignition/
 contracts/

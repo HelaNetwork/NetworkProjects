@@ -1,0 +1,60 @@
+{
+  "ticker": "BYND",
+  "company_name": "Beyond Meat Inc.",
+  "market_data": {
+    "price": 6.82,
+    "price_change_pct": -9.4,
+    "volume": 18500000,
+    "avg_volume": 6200000,
+    "rsi_14": 24.1,
+    "rsi_prev": 31.5,
+    "macd": -0.84,
+    "macd_signal": -0.41,
+    "macd_histogram": -0.43,
+    "macd_histogram_prev": -0.18,
+    "prev_highs": [9.20, 8.75, 8.10],
+    "prev_lows":  [7.50, 7.10, 6.82],
+    "support_level": 7.50,
+    "resistance_level": 9.50,
+    "high_52w": 18.94,
+    "low_52w": 5.58,
+    "volatility_atr": 0.82,
+    "volatility_atr_prev": 0.44,
+    "bollinger_upper": 8.90,
+    "bollinger_lower": 7.10,
+    "insider_sell_count_30d": 7,
+    "insider_buy_count_30d": 0
+  },
+  "news": [
+    {
+      "title": "Beyond Meat reports wider-than-expected Q1 loss, cuts full-year revenue guidance by 20%",
+      "source": "Reuters",
+      "date": "2025-04-10"
+    },
+    {
+      "title": "Beyond Meat CFO resigns effective immediately; company launches 'strategic alternatives' review",
+      "source": "Bloomberg",
+      "date": "2025-04-12"
+    },
+    {
+      "title": "Beyond Meat draws down remaining $50M revolving credit line amid cash burn concerns",
+      "source": "Wall Street Journal",
+      "date": "2025-04-14"
+    },
+    {
+      "title": "SEC opens formal inquiry into Beyond Meat revenue recognition and channel-stuffing allegations",
+      "source": "Financial Times",
+      "date": "2025-04-15"
+    },
+    {
+      "title": "Beyond Meat directors sell combined $4.2M in shares over past 30 days",
+      "source": "MarketWatch",
+      "date": "2025-04-13"
+    },
+    {
+      "title": "Plant-based food category retail volumes fall 18% YoY; Beyond Meat loses shelf space at major chains",
+      "source": "Bloomberg",
+      "date": "2025-04-11"
+    }
+  ]
+}
