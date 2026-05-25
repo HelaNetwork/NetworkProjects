@@ -1,0 +1,124 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 0.1 Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    function incoming() {
+      return request.resource.data;
+    }
+    function existing() {
+      return resource.data;
+    }
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- USERS ---
+    match /users/{userId} {
+      function isValidUser(data) {
+        let requiredKeys = ['id', 'email', 'xp', 'level', 'streak', 'completed_lessons'];
+        return data.keys().hasAll(requiredKeys)
+          && data.keys().size() <= 10
+          && data.id == userId
+          && data.email is string && data.email.size() <= 200
+          && data.xp is number && data.xp >= 0
+          && data.level is number && data.level >= 0
+          && data.streak is number && data.streak >= 0
+          && data.completed_lessons is list
+          && (!('wallet_address' in data) || data.wallet_address is string)
+          && (!('last_bonus_claim' in data) || data.last_bonus_claim is string || data.last_bonus_claim is timestamp)
+          && (!('unlocked_modules' in data) || data.unlocked_modules is list)
+          && (!('created_at' in data) || data.created_at is timestamp);
+      }
+      
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidUser(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['xp', 'level', 'streak', 'completed_lessons', 'unlocked_modules', 'last_bonus_claim', 'wallet_address'])
+      );
+    }
+
+    // --- GAME SESSIONS ---
+    match /game_sessions/{sessionId} {
+      function isValidSession(data) {
+        let requiredKeys = ['created_by', 'room_code', 'status', 'mode'];
+        return data.keys().hasAll(requiredKeys)
+          && data.keys().size() <= 12
+          && data.created_by is string
+          && data.room_code is string && data.room_code.size() == 6
+          && data.status in ['lobby', 'playing', 'ended']
+          && data.mode in ['multiplayer', 'solo', 'bot', 'contest']
+          && (!('entry_fee' in data) || data.entry_fee is number)
+          && (!('prize_pool' in data) || data.prize_pool is number)
+          && (!('current_question_index' in data) || data.current_question_index is number)
+          && (!('question_deadline' in data) || data.question_deadline is string)
+          && (!('created_at' in data) || data.created_at is timestamp)
+          && (!('isPublic' in data) || data.isPublic is bool);
+      }
+      
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidSession(incoming()) && incoming().created_by == request.auth.uid;
+      allow update: if isSignedIn() && isValidSession(incoming()) && (
+        (isOwner(existing().created_by) && incoming().diff(existing()).affectedKeys().hasAny(['status', 'current_question_index', 'question_deadline', 'prize_pool']))
+        || (!isOwner(existing().created_by) && incoming().diff(existing()).affectedKeys().hasOnly(['prize_pool']))
+      );
+    }
+
+    // --- PLAYERS (Subcollection of sessions) ---
+    match /game_sessions/{sessionId}/players/{playerId} {
+      function isValidPlayer(data) {
+        let requiredKeys = ['session_id', 'user_id', 'score', 'is_ready'];
+        return data.keys().hasAll(requiredKeys)
+          && data.keys().size() <= 9
+          && data.session_id == sessionId
+          && data.user_id == playerId
+          && data.score is number && data.score >= 0
+          && data.is_ready is bool
+          && (!('email' in data) || data.email is string)
+          && (!('isDone' in data) || data.isDone is bool)
+          && (!('qsProcessed' in data) || data.qsProcessed is number)
+          && (!('status' in data) || data.status is string);
+      }
+
+      allow read: if isSignedIn();
+      allow create: if (isOwner(playerId) || (playerId == 'bot_alpha' && isSignedIn())) && isValidPlayer(incoming());
+      allow update: if (isOwner(playerId) || (playerId == 'bot_alpha' && isSignedIn())) && isValidPlayer(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['score', 'is_ready', 'isDone', 'qsProcessed', 'status'])
+      );
+      allow delete: if isOwner(playerId);
+    }
+
+    // --- ACHIEVEMENTS ---
+    match /achievements/{achievementId} {
+      function isValidAchievement(data) {
+        return data.keys().hasAll(['user_id', 'badge_id', 'unlocked_at'])
+          && data.user_id is string
+          && data.badge_id is string;
+      }
+      
+      allow read: if isSignedIn();
+      allow create: if isOwner(incoming().user_id) && isValidAchievement(incoming());
+      // No updates allowed
+    }
+    // --- GAME HISTORY ---
+    match /game_history/{historyId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.user_ids;
+      allow create: if isSignedIn(); // Backend or authorized client
+    }
+  }
+}
