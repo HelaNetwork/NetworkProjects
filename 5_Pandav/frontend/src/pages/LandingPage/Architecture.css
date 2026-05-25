@@ -1,0 +1,252 @@
+.arch {
+  position: relative;
+  padding: var(--section-padding);
+  z-index: 2;
+}
+
+.arch__inner {
+  display: flex;
+  gap: 60px;
+}
+
+/* Left column is empty for the 3D particles */
+.arch__visual-col {
+  flex: 1;
+}
+
+/* Right column for content */
+.arch__content-col {
+  flex: 1;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.arch__header {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arch__header.arch__visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.arch__title {
+  font-size: clamp(36px, 4vw, 56px);
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+.arch__title-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--accent-light);
+  letter-spacing: 0.02em;
+}
+
+.arch__subtitle {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 600px;
+}
+
+/* Stack layout */
+.arch__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  position: relative;
+}
+
+.arch__layer-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.arch__layer {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  /* Use CSS variable to combine reveal + hover transforms without conflict */
+  --arch-translate: 20px;
+  transform: translateY(var(--arch-translate));
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              background var(--transition-base),
+              border-color var(--transition-base);
+}
+
+.arch__layer.arch__visible {
+  opacity: 1;
+  --arch-translate: 0px;
+}
+
+.arch__layer:hover,
+.arch__layer:focus-visible {
+  background: var(--bg-card-hover);
+  border-color: var(--border-glass-hover);
+  --arch-translate: -4px;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow-card);
+}
+
+.arch__layer-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.arch__layer-content {
+  flex: 1;
+}
+
+.arch__layer-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.arch__layer-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.arch__layer-index {
+  position: absolute;
+  right: -20px;
+  bottom: -30px;
+  font-size: 100px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.02);
+  line-height: 1;
+  font-family: var(--font-mono, monospace);
+  pointer-events: none;
+  transition: color var(--transition-base);
+}
+
+.arch__layer:hover .arch__layer-index {
+  color: rgba(255, 255, 255, 0.04);
+}
+
+.arch__connector {
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Metrics Grid */
+.arch__metrics {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 600px;
+  align-self: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
+}
+
+.arch__metrics.arch__visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.arch__metrics-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.arch__metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.arch__metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  transition: background var(--transition-base),
+              border-color var(--transition-base),
+              box-shadow var(--transition-base);
+}
+
+.arch__metric-card:hover,
+.arch__metric-card:focus-visible {
+  background: var(--bg-card-hover);
+  border-color: var(--border-glass-hover);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.arch__metric-val {
+  font-family: var(--font-mono, monospace);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-light);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.arch__metric-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .arch__inner {
+    flex-direction: column;
+  }
+  
+  .arch__visual-col {
+    display: none;
+  }
+
+  .arch__content-col {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .arch__layer {
+    flex-direction: column;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .arch__layer-index {
+    right: 10px;
+    bottom: -10px;
+    font-size: 60px;
+  }
+}
