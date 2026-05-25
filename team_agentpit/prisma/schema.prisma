@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AgentType {
+  strategy
+  user
+}
+
+enum ProposalStatus {
+  pending
+  executed
+  rejected
+}
+
+enum ExecutionStatus {
+  relayed
+  simulated
+}
+
+model Agent {
+  id                String    @id
+  type              AgentType
+  address           String
+  registryAgentId   String?   @unique
+  agentUri          String?
+  identityCid       String?
+  identityGatewayUrl String?
+  identityUploadSource String?
+  identityDocument  Json?
+  verifiedWallet    String?
+  identityTxHash    String?
+  skills            Json
+  description       String
+  metadata          Json?
+  registeredAt      DateTime
+  proposals    Proposal[]
+  feedbackReceived Feedback[] @relation("FeedbackTarget")
+  feedbackGiven Feedback[] @relation("FeedbackReviewer")
+
+  @@index([address])
+  @@index([registryAgentId])
+}
+
+model Proposal {
+  id               String         @id
+  vault            String
+  proposerAgentId  String
+  proposerAddress  String
+  title            String
+  summary          String
+  rationale        String
+  expectedApyBps   Int
+  riskLevel        String
+  marketSnapshot   Json
+  protocolPlan     Json
+  calls            Json
+  status           ProposalStatus @default(pending)
+  score            Int?
+  createdAt        DateTime
+  updatedAt        DateTime       @updatedAt
+  proposerAgent    Agent          @relation(fields: [proposerAgentId], references: [id])
+  executions       Execution[]
+
+  @@index([vault, createdAt])
+}
+
+model Execution {
+  id              String          @id @default(cuid())
+  proposalId      String
+  vault           String
+  userAgentId     String
+  approval        Json
+  status          ExecutionStatus
+  txHash          String
+  executionMode   String
+  amountDeployed  String?
+  notes           Json
+  relayNotes      Json?
+  createdAt       DateTime        @default(now())
+  proposal        Proposal        @relation(fields: [proposalId], references: [id])
+
+  @@index([proposalId, createdAt])
+}
+
+model Feedback {
+  id                  String   @id @default(cuid())
+  registryAgentId     String
+  reviewerAgentId     String?
+  reviewerAddress     String?
+  score               Int
+  category            String
+  comment             String?
+  txHash              String?
+  source              String
+  createdAt           DateTime @default(now())
+  targetAgent         Agent?   @relation("FeedbackTarget", fields: [registryAgentId], references: [registryAgentId])
+  reviewerAgent       Agent?   @relation("FeedbackReviewer", fields: [reviewerAgentId], references: [id])
+
+  @@index([registryAgentId, createdAt])
+}
+
+model VaultSignal {
+  id          String   @id
+  ownerAddress String
+  vaultAddress String
+  assetAddress String
+  assetSymbol String
+  fundedAmount String
+  status      String
+  userAgentId String
+  chain       String
+  notes       String?
+  createdAt   DateTime
+
+  @@index([ownerAddress, createdAt])
+  @@index([vaultAddress, createdAt])
+}

@@ -10,7 +10,6 @@ data_pipeline.db
 artifacts/
 cache/
 ignition/
-contracts/
 scripts/deploy.js
 test/
 hardhat.config.js

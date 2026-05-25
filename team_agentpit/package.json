@@ -1,0 +1,50 @@
+{
+  "name": "delegent-agent-marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm build && concurrently --raw \"pnpm dev:backend\" \"pnpm dev:mcp\"",
+    "dev:backend": "node --env-file=.env dist/backend/server.js",
+    "dev:mcp": "node --env-file=.env dist/mcp/server.js",
+    "demo": "pnpm build && node --env-file=.env dist/agents/demo.js",
+    "build": "pnpm prisma:generate && tsc --outDir dist",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate dev",
+    "contracts:compile": "cd contracts && hardhat compile",
+    "contracts:deploy": "cd contracts && hardhat run scripts/deploy.js",
+    "contracts:deploy:hela": "cd contracts && hardhat run --network helaTestnet scripts/deploy.js",
+    "contracts:deploy:multi": "cd contracts && hardhat run scripts/deploy-multichain.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.5",
+    "@prisma/client": "^6.16.2",
+    "@x402/core": "^2.10.0",
+    "@x402/evm": "^2.10.0",
+    "@x402/express": "^2.10.0",
+    "@x402/fetch": "^2.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.1",
+    "express": "^5.1.0",
+    "prisma": "^6.16.2",
+    "viem": "^2.37.5",
+    "ws": "^8.18.3",
+    "yaml": "^2.8.1",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.8",
+    "@openzeppelin/contracts": "^4.9.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.2",
+    "@types/ws": "^8.18.1",
+    "concurrently": "^9.2.1",
+    "ethers": "^6.16.0",
+    "hardhat": "^3.4.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
