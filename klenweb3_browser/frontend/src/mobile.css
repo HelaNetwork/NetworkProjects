@@ -1,0 +1,60 @@
+/* MOBILE RESPONSIVENESS for Klen Browser */
+@media (max-width: 768px) {
+  .tabs-bar {
+    display: none; /* Hide tabs bar on mobile, only show address bar */
+  }
+
+  .browser-header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .nav-buttons {
+    display: none; /* Hide nav buttons on mobile to save space */
+  }
+
+  .address-bar-container {
+    padding: 0 0.5rem;
+  }
+
+  .ext-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+
+  .extensions-bar {
+    gap: 0.25rem;
+  }
+
+  .popover {
+    width: 300px;
+    right: 10px;
+    left: auto;
+  }
+
+  .nt-content {
+    padding: 0 1rem;
+  }
+
+  .nt-time {
+    font-size: 3.5rem;
+  }
+
+  .nt-search {
+    padding: 0.75rem 1rem;
+  }
+
+  .nt-stats {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .nt-stat-card {
+    width: 100%;
+  }
+
+  .nt-quick-links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
