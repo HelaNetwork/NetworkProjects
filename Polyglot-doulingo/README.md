@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://polyglot-liart.vercel.app](https://polyglot-liart.vercel.app)
+
 ## The Problem
 Web3 onboarding is difficult and complex. Users need interactive, incentivized ways to learn DeFi.
 

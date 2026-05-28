@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://eventpass-offgrid.vercel.app](https://eventpass-offgrid.vercel.app)
+
 ## The Problem
 Event tickets are plagued by scalping bots and lack secondary market royalties for creators.
 

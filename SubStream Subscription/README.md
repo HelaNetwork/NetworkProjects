@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://substream-offgrid.vercel.app](https://substream-offgrid.vercel.app)
+
 ## The Problem
 Web3 lacks native recurring payment rails, forcing creators to rely on Web2 platforms like Patreon.
 

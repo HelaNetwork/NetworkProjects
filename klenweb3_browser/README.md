@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://klen-browser.vercel.app](https://klen-browser.vercel.app)
+
 ## The Problem
 Exploring Web3 on mobile is fragmented, requiring external wallet extensions and separate ad blockers.
 

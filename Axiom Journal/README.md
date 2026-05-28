@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://axiom-journal.vercel.app/](https://axiom-journal.vercel.app/)
+
 ## The Problem
 Scientific journals are paywalled, and curators have perverse incentives that harm research integrity.
 

@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://resonance-offgrid.vercel.app](https://resonance-offgrid.vercel.app)
+
 ## The Problem
 Traditional music streaming pays fractions of a cent. Artists lack control over distribution and royalties.
 

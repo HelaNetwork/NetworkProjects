@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://rift-ivory.vercel.app](https://rift-ivory.vercel.app)
+
 ## The Problem
 Centralized betting platforms take massive fees and lack transparency in odds and payouts.
 

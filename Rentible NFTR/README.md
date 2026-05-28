@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://rentible-offgrid.vercel.app](https://rentible-offgrid.vercel.app)
+
 ## The Problem
 DeFi lacks standardized primitives for time-locked value such as vesting schedules and recurring leases.
 

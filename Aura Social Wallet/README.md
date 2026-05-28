@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://aura-wallet-nine.vercel.app](https://aura-wallet-nine.vercel.app)
+
 ## The Problem
 It is difficult to discover new trends or track trusted connections across the fragmented Web3 landscape.
 

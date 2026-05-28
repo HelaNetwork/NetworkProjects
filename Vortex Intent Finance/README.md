@@ -2,6 +2,8 @@
 
 > **A next-generation Web3 prototype built natively for the Hela Ecosystem.**
 
+**Deployed Link:** [https://vortex-offgrid.vercel.app](https://vortex-offgrid.vercel.app)
+
 ## The Problem
 Swapping tokens requires too many manual steps involving approvals, slippage, and routing choices.
 
