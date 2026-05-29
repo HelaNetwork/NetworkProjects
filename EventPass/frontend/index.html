@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPass - Book Web3 Events</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">EVENT<span style="font-weight:300;">PASS</span></div>
+        <div class="nav-links">
+            <a href="#">Movies</a>
+            <a href="#">Events</a>
+            <a href="#">Plays</a>
+            <a href="#creator-hub">Organizer Hub</a>
+        </div>
+        <button id="connectWalletBtn" class="btn-connect">Connect Wallet</button>
+    </nav>
+
+    <!-- EVENT HERO -->
+    <header class="event-hero">
+        <div class="event-hero-bg"></div>
+        <div class="event-hero-content">
+            <span class="event-tag">Music Festival</span>
+            <h1>Web3 Summit Live 2026</h1>
+            <p>San Francisco, CA • Dec 12 - Dec 14 • 18+ Only</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- LEFT COLUMN: Event Details -->
+        <div class="event-details">
+            <div class="card event-description">
+                <h2>About the Event</h2>
+                <p>Join the world's leading creators and builders for a 3-day immersive experience in San Francisco. Features live performances, hackathons, and exclusive networking events.</p>
+                <p><strong>Note:</strong> All tickets are issued as Anti-bot NFTs on the Hela Network. Resale is capped at 110% of original price to prevent scalping.</p>
+                
+                <h3 style="margin-top: 2rem;">Artist Lineup</h3>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <div style="background: var(--background); padding: 1rem; border-radius: 4px; border: 1px solid var(--border); flex: 1; text-align: center; font-weight: 600;">Odesza</div>
+                    <div style="background: var(--background); padding: 1rem; border-radius: 4px; border: 1px solid var(--border); flex: 1; text-align: center; font-weight: 600;">Fred Again..</div>
+                    <div style="background: var(--background); padding: 1rem; border-radius: 4px; border: 1px solid var(--border); flex: 1; text-align: center; font-weight: 600;">Skrillex</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Checkout Modal -->
+        <div class="checkout-sidebar">
+            <section id="marketplace" class="card" style="position: sticky; top: 100px;">
+                <h2 style="border: none; padding: 0; color: var(--secondary); font-size: 1.8rem; font-weight: 800;">Book Tickets</h2>
+                
+                <div class="stat-box" style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="stat-label" style="color: var(--text);">General Admission</div>
+                    <div class="stat-value" style="font-size: 1.2rem; color: var(--text);">0.01 ETH</div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label for="ticketQuantity">Select Quantity (Max 4)</label>
+                    <input type="number" id="ticketQuantity" class="form-control" min="1" max="4" value="1">
+                </div>
+                
+                <hr style="border: none; border-top: 1px dashed var(--border); margin: 1.5rem 0;">
+                
+                <button id="mintTicketBtn" class="btn-primary">Checkout & Mint</button>
+                <p id="mintStatus" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted); text-align: center;"></p>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #fff8f8; border: 1px solid #fbd5d5; border-radius: 4px; font-size: 0.85rem; color: var(--primary);">
+                    <i class="fa-solid fa-shield-halved"></i> 100% Secure on-chain transaction.
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- CREATOR HUB (Bottom Section) -->
+    <h2 id="creator-hub" class="section-header">Organizer Hub</h2>
+    <div class="creator-hub-grid">
+        <!-- Creator Bank -->
+        <section id="creator-bank" class="card">
+            <h2><i class="fa-solid fa-vault"></i> Earnings Bank</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Manage revenue from your events. Instantly withdraw earnings directly to your Web3 wallet.
+            </p>
+            
+            <div class="stat-box">
+                <div class="stat-label">Available Balance</div>
+                <div id="creatorBalance" class="stat-value">0.00 <span style="font-size: 1rem;">ETH</span></div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <label for="withdrawAmount">Withdraw Amount (ETH)</label>
+                <input type="number" id="withdrawAmount" class="form-control" step="0.01" min="0" placeholder="0.00">
+            </div>
+            
+            <button id="withdrawBankBtn" class="btn-outline" style="border-color: var(--secondary); color: var(--secondary);">Initiate Withdrawal</button>
+        </section>
+
+        <!-- Reputation Credit Scoring -->
+        <section id="credit-score" class="card">
+            <h2><i class="fa-solid fa-chart-line"></i> Reputation Credit Line</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Access undercollateralized capital for your next event based on your on-chain ticket sales history.
+            </p>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="stat-box" style="flex: 1; margin: 0;">
+                    <div class="stat-label">Reputation Score</div>
+                    <div id="repScore" class="stat-value" style="color: var(--primary);">--</div>
+                </div>
+                <div class="stat-box" style="flex: 1; margin: 0;">
+                    <div class="stat-label">Active Loan</div>
+                    <div id="activeLoan" class="stat-value">0.00 <span style="font-size: 1rem;">ETH</span></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <button id="borrowBtn" class="btn-primary" style="flex: 1; background: var(--secondary);">Borrow 0.1 ETH</button>
+                <button id="repayBtn" class="btn-outline" style="flex: 1;">Repay Loan</button>
+            </div>
+            <p id="creditStatus" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted); text-align: center;"></p>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
